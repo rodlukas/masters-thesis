@@ -1,4 +1,5 @@
 # Master's thesis: Extension of the web application for the project “Úspěšný prvňáček”
+![Build LaTeX document](https://github.com/rodlukas/masters-thesis/workflows/Build%20LaTeX%20document/badge.svg)
 ## [EN] Abstract
 TBD
 

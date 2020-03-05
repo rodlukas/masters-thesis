@@ -9,7 +9,7 @@
 \newif\if@thesistypedefined
 \DeclareOption{thesis=B}{\gdef\@thesistype{B}\@thesistypedefinedtrue}
 \DeclareOption{thesis=M}{\gdef\@thesistype{M}\@thesistypedefinedtrue}
-
+% shorthands=off kvuli https://tex.stackexchange.com/questions/529984/document-with-custom-bibliography-driver-compiling-with-babel-3-33-and-biblatex
 \DeclareOption{czech}{
 	\AtBeginDocument{\selectlanguage{czech}}
 	\PassOptionsToPackage{english,main=czech,shorthands=off}{babel}

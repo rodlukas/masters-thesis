@@ -7,7 +7,12 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v2
       - name: Compile LaTeX document
-        uses: xu-cheng/latex-action@master
+        uses: xu-cheng/latex-action@v1
         with:
           root_file: main.tex
-          args: -xelatex -file-line-error -interaction=nonstopmode -bibtex -shell-escape
+          args: -xelatex -file-line-error -interaction=nonstopmode -shell-escape
+      - name: Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: main
+          path: main.pdf

@@ -1,0 +1,124 @@
+% options:
+% thesis=B bachelor's thesis
+% thesis=M master's thesis
+% czech thesis in Czech language
+% hidelinks remove colour boxes around hyperlinks
+
+\documentclass[thesis=M,czech]{FITthesis}[2019/12/23]
+
+\usepackage{graphicx} %graphics files inclusion
+\usepackage{dirtree} %directory tree visualisation
+\usepackage{minted}
+\usepackage{xevlna}
+\usepackage{csquotes}
+\usepackage{pdflscape} % lscape pokud se nema otacet stranka
+\usepackage{bookmark} % pro moznost ukonceni part
+\usepackage[style=iso-numeric]{biblatex}
+
+\usemintedstyle{xcode} % aby nebyly zvyrazneny chyby v Reactu (minted neumi JSX) TODO
+\addbibresource{sources.bib}
+\setcounter{biburllcpenalty}{7000} % aby se spravne lamaly adresy v bibliografii:
+\setcounter{biburlucpenalty}{8000}
+\setcounter{tocdepth}{3} % nadpisy vsech urovni v obsahu
+\definecolor{bg}{rgb}{0.95,0.95,0.95} % pozadi pro kody
+\renewcommand{\listingscaption}{Ukázka kódu}
+\renewcommand{\listoflistingscaption}{Seznam ukázek kódu}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+\department{Katedra softwarového inženýrství}
+\title{Rozšíření webové aplikace pro projekt \enquote{Úspěšný prvňáček}}
+\authorGN{Lukáš} %(křestní) jméno (jména) autora
+\authorFN{Rod} %příjmení autora
+\authorWithDegrees{Bc. Lukáš Rod} %jméno autora včetně současných akademických titulů
+\author{Lukáš Rod} %jméno autora bez akademických titulů
+\supervisor{Ing. Stanislav Kuznetsov}
+\acknowledgements{Rád bych poděkoval Ing. Stanislavu Kuznetsovi za cenné rady a pomoc při tvorbě této práce. Děkuji za spolupráci své mamce, PaedDr. Janě Rodové, která se mnou jakožto lektorka Úspěšného prvňáčka po celou dobu spolupracovala. Děkuji celé své rodině a přátelům za podporu a trpělivost během celého studia.}
+
+\abstractCS{...} %TODO
+
+\abstractEN{...} %TODO
+
+\placeForDeclarationOfAuthenticity{V~Praze}
+\declarationOfAuthenticityOption{1} %volba Prohlášení (číslo 1-6)
+
+\keywordsCS{webová aplikace, Úspěšný prvňáček, Python, Django, React, Django REST framework} %TODO
+\keywordsEN{web application, Successful first-grader, Python, Django, React, Django REST framework} %TODO
+\website{https://github.com/rodlukas/masters-thesis} %volitelná URL práce, objeví se v tiráži - úplně odstraňte, nemáte-li URL práce
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+\begin{document}
+    
+    \begin{introduction}
+    	\input{DP_uvod}
+    \end{introduction}
+    
+    \chapter{Cíle práce}
+        \input{DP_cile}
+    
+    \part{Teoretická část}
+        \input{DP_teoreticka}
+        
+    \part{Praktická část}
+        \input{DP_prakticka}
+        
+    \bookmarksetup{startatroot} % aby nasledujici kapitoly nespadaly do partu s praktickou casti
+    \addtocontents{toc}{\bigskip}
+    
+    \begin{conclusion}
+    	\input{DP_zaver}
+    \end{conclusion}
+    
+    \printbibliography
+    \appendix
+    
+    \chapter{Seznam použitých zkratek} %TODO
+        % \printglossaries
+        \begin{description}
+            \item[API] Application Programming Interface
+            \item[AJAX] Asynchronous JavaScript and XML
+            \item[CBA] Component-Based Architecture
+            \item[CMS] Content Management System
+            \item[CRM] Customer Relationship Management
+            \item[CRUD] create-read-update-delete
+            \item[CSR] Client-Side Rendering
+            \item[CSRF] Cross-Site Request Forgery
+            \item[CSS] Cascading Style Sheets
+            \item[DRF] Django REST Framework
+            \item[DRY] Don\textquotesingle t repeat yourself
+            \item[GUI] Graphical User Interface
+            \item[HTML] Hypertext Markup Language
+            \item[HTTP] Hypertext Transfer Protocol
+            \item[IaaS] Infrastructure as a Service
+            \item[JS] Javascript
+            \item[JSON] JavaScript Object Notation
+            \item[MVC] Model-view-controller
+            \item[MVP] Model-view-presenter
+            \item[MVT] Model-view-template
+            \item[MVW] Model-view-whatever
+            \item[MPA] Multi-Page Application
+            \item[ORM] Object-Relational Mapping
+            \item[PaaS] Platform as a Service
+            \item[SEO] Search Engine Optimization
+            \item[SPA] Single-Page Application
+            \item[SQL] Structured Query Language
+            \item[SSR] Server-Side Rendering
+            \item[UI] User Interface
+            \item[URL] Uniform Resource Locator
+            \item[ÚP] Úspěšný prvňáček
+            \item[UX] User Experience
+            \item[XML] eXtensible Markup Language
+            \item[XSS] Cross-Site Scripting
+        \end{description}
+    
+    \chapter{Obsah přiloženého DVD} %TODO
+        \begin{figure}
+        	\dirtree{%
+        		.1 readme.txt\DTcomment{stručný popis obsahu DVD}.
+        		.1 src.
+        		.2 impl\DTcomment{zdrojové kódy implementace}.
+        		.2 thesis\DTcomment{zdrojová forma práce ve formátu \LaTeX{}}.
+        		.1 text\DTcomment{text práce}.
+        		.2 rodlukas{\_}dp.pdf\DTcomment{text práce ve formátu PDF}.
+        	}
+        \end{figure}
+\end{document}

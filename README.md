@@ -1,4 +1,7 @@
 # Master's thesis: Extension of the web application for the project “Úspěšný prvňáček”
+## [EN] Abstract
+TBD
+
 ## [EN] Assignment
 1. Gather and describe new requirements for the extension of the application for the project “Úspěšný prvňáček”.
 2. Analyze new requirements for the extension of the current solution.
@@ -13,8 +16,12 @@ Brief info (EN + CZ) and text (CZ) is also available at [Czech Technical Univers
 **This thesis is written in Czech language, so the following text won't be in English.**
 
 ***
-## [CZ] Téma a zadání diplomové práce
+## [CZ] Téma, abstrakt a zadání diplomové práce
 ### Rozšíření webové aplikace pro projekt „Úspěšný prvňáček“
+#### Abstrakt
+TBD
+
+#### Zadání
 1. Proveďte sběr a popis nových požadavků na rozšíření aplikace pro projekt „Úspěšný prvňáček“.
 2. Proveďte analýzu nových požadavků na rozšíření stávajícího řešení.
 3. Navrhněte aktualizovanou strukturu databáze a další související změny.
@@ -26,7 +33,7 @@ Brief info (EN + CZ) and text (CZ) is also available at [Czech Technical Univers
 ## Další informace o práci
 Práce navazuje na mou předešlou **[bakalářskou práci *Webová aplikace pro evidenci klientů projektu „Úspěšný prvňáček“*](https://github.com/rodlukas/bachelors-thesis)**.
 
-Práce byla vypracována v roce 2020 na **[Fakultě informačních technologií ČVUT v Praze](https://fit.cvut.cz/)**. Obor *Webové a softwarové inženýrství*, zaměření *Softwarové inženýrství* ([BI-WSI-SI](http://bk.fit.cvut.cz/cz/plany/pl30013758.html)).
+Práce byla (TBD) vypracována v roce 2020 na **[Fakultě informačních technologií ČVUT v Praze](https://fit.cvut.cz/)**. Obor *Webové a softwarové inženýrství*, zaměření *Softwarové inženýrství* ([BI-WSI-SI](http://bk.fit.cvut.cz/cz/plany/pl30013758.html)).
 ## Jak si práci přečíst
 Práce je dispozici ve [formátu PDF (TBD)](https://github.com/rodlukas/masters-thesis/raw/master/BP.pdf). K jejímu otevření postačí běžný PDF prohlížeč.
 > Součástí tohoto repozitáře je také [PREZENTACE (TBD)](https://github.com/rodlukas/masters-thesis/raw/master/prezentace/BP_prezentace.pdf) shrnující informace o práci (aplikaci) použitá při obhajobě.

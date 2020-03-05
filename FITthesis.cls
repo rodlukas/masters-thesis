@@ -12,7 +12,7 @@
 
 \DeclareOption{czech}{
 	\AtBeginDocument{\selectlanguage{czech}}
-	\PassOptionsToPackage{english,main=czech}{babel}
+	\PassOptionsToPackage{english,main=czech,shorthands=off}{babel}
 	\def\@lang{1}
 }
 \DeclareOption{english}{

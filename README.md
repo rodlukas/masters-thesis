@@ -1,9 +1,19 @@
 # Master's thesis: Extension of the web application for the project “Úspěšný prvňáček”
-This thesis is written in Czech language, so the following text won't be in English.
+## [EN] Assignment
+1. Gather and describe new requirements for the extension of the application for the project “Úspěšný prvňáček”.
+2. Analyze new requirements for the extension of the current solution.
+3. Design an updated structure of the database and additional related modifications.
+4. Implement all the requirements.
+5. Perform an application testing using an automatization UI and API testing tools.
+6. Deploy the final application.
+7. Publish the final application as open-source with instructions on how to start the app.
 
 Brief info (EN + CZ) and text (CZ) is also available at [Czech Technical University Digital Library (TBD)](http://hdl.handle.net/).
+
+**This thesis is written in Czech language, so the following text won't be in English.**
+
 ***
-## Téma a zadání diplomové práce
+## [CZ] Téma a zadání diplomové práce
 ### Rozšíření webové aplikace pro projekt „Úspěšný prvňáček“
 1. Proveďte sběr a popis nových požadavků na rozšíření aplikace pro projekt „Úspěšný prvňáček“.
 2. Proveďte analýzu nových požadavků na rozšíření stávajícího řešení.
@@ -14,7 +24,7 @@ Brief info (EN + CZ) and text (CZ) is also available at [Czech Technical Univers
 7. Výslednou aplikaci zveřejněte jako open-source spolu s instrukcemi pro spuštění aplikace.
 > Součástí tohoto repozitáře je také [oficiální PDF soubor se zadáním práce](https://github.com/rodlukas/masters-thesis/raw/master/zadani.pdf).
 ## Další informace o práci
-Práce navazuje na mou předešlou **[bakalářskou práci](https://github.com/rodlukas/masters-thesis)**.
+Práce navazuje na mou předešlou **[bakalářskou práci *Webová aplikace pro evidenci klientů projektu „Úspěšný prvňáček“*](https://github.com/rodlukas/bachelors-thesis)**.
 
 Práce byla vypracována v roce 2020 na **[Fakultě informačních technologií ČVUT v Praze](https://fit.cvut.cz/)**. Obor *Webové a softwarové inženýrství*, zaměření *Softwarové inženýrství* ([BI-WSI-SI](http://bk.fit.cvut.cz/cz/plany/pl30013758.html)).
 ## Jak si práci přečíst

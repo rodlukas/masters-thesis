@@ -1,1 +1,86 @@
-TODO
+%\section{Aktuální řešení}
+%\subsection{Nevýhody řešení}
+
+\chapter{Aktuální řešení}
+popis aktualniho reseni z bakalarky - co bylo udelano, jake funkce ma, jake technologie...
+
+\section{Použité technologie}
+...
+
+\section{Implementované funkce}
+...
+
+\section{Prostředí a nasazování}
+info o tom kolik je prostředí (dev a produkce jen), vyvoj tedy probihal na lokalu a pak probehl push na GH, travis provedl build a testy a nasadilo se na produkci, to znamená že jsem samozřejmě produkci mohl zbořit (a taky že párkrát zbořil..) 
+
+\section{Plán rozšíření z bakalářské práce}
+shrnuti toho, co se v bakalarce ocekavalo ze by se mohlo rozsirit - ze sekce mozna rozsireni v budoucnu
+
+\begin{itemize}
+\item \textbf{pointa je v resersi nize projit moznosti reseni zminenych moznych zlepseni}
+\end{itemize}
+
+\chapter{Možnosti testování}
+
+\begin{itemize}
+\item popsat ruzne možnosti testování - BDD, TDD...
+\end{itemize}
+\begin{itemize}
+\item ruzny scope - API, UI, unit.. vyhody, nevyhody...
+\end{itemize}
+\begin{itemize}
+\item popsat selenium a alternativy (capybara?...)
+\item niels. heur. analyza, ktera pomohla pak v implementaci prakticky zprovoznit UI testovani, protoze co nevi clovek, nevi ani selenium a tezko se neco testuje (nevi ze se nacita kdyz to nevidi ani clovek, nevi ze se ma cekat..)
+\item mozna zminit usability testovani - zejmena proto, ze prakticky na tom stoji dalsi vylepseni v analyze, kde jsem pozoroval lektorku pri bezne praci a na zaklade toho jsme resili, co by chtela zmenit/pridat/upravit; tady neni treba testovat pro jine uzivatele, je to zamerene na interni pouziti 1 clovekem, o to lepsi to ale musi byt:)
+\end{itemize}
+
+
+\chapter{Konfigurace více prostředí}
+obsah: Deployment environments a s tím související Release management
+
+
+\begin{itemize}
+\item přehled toho, jak se můžou řešit různý prostředí, např. staging, testing, produkce apod.
+\end{itemize}
+\begin{itemize}
+\item přehled toho jak s tím souvisí releasy, co kam může jít a k čemu je to dobrý, jak se to dá různě dělat a souvislosti (např. nemusí to dělat travis na základě releasu, ale třeba na základě podmínky proměnné prostředí nebo branch production apod.)
+\end{itemize}
+
+viz:
+
+\begin{itemize}
+\item https://en.wikipedia.org/wiki/Deployment\_environment
+\item https://docs.gitlab.com/ee/ci/environments.html
+\item https://cs.wikipedia.org/wiki/Release\_management
+\item https://docs.microsoft.com/cs-cz/aspnet/web-forms/overview/deployment/configuring-server-environments-for-web-deployment/scenario-configuring-a-staging-environment-for-web-deployment
+\item http://guides.beanstalkapp.com/deployments/best-practices.html
+\item ...
+\end{itemize}
+
+\chapter{Nástroje pro usnadnění vývoje a údržby}
+rešerše nástrojů pro:
+\begin{itemize}
+\item odchytavani chyb (sentry...)
+\item logovani (logentries...)
+\item staticka analyza a kontrola kodu, hledani chyb, zero-days zranitelnosti, hodnoceni kvality kodu (LGTM...)
+\item code formattery (prettier, black...) + souvislost s flake8 apod.
+\item analyza pruchodu aplikaci (google analytics)
+\item pokryti kodu (codecov, coverage.py...)
+\item pripadne nejake pokrocile veci z travisu co se pouzivaji
+\item lintery (ESlint.. + styly airbnb, standardjs, info o spouste pluginech, standardech, vyvoji ve spolupraci s TS)
+\item static type checking pro frontend i backend (python, js) - moznosti, ze python ma builtin, JS nema (uvest proc, viz ecma vyjadreni), jak se to v JS resi a srovnat: FlowJS, Typescript + jak jsou na tom ostatni jako coffeescript, dart, kotlin..; u TS zminit podporu babel
+\item + hledani dead code - python vulture
+\item nastroje pro vyvoj frontendu - bakalarka byla postavena na CRA (create-react-app), ktera byla ejectnuta (takze update reactu byl prakticky nemozny), z toho duvodu se nejprv preslo na nastroj nwb, ktery ale pozdeji nebyl udrzovany a doslo ke zkusebni migraci na neutrinojs (souvisi s mozillou) a na vlastni reseni pres webpack - tady bych teda prosel, co tyhle nastroje umoznuji, ze vlastne stavi nad webpackem, ze je to vlastne abstraktni vrstva nad nim, ktera vsechno zjednodusuje, ale nevyhoda je, kdyz ten nastroj neco neumoznuje (viz nwb), tak mas smulu.. takze pak nejdou lintery, nejde TS... zminit moznosti nastroju, jake nastroje jsou, vyhody a nevyhody; v ramci implementace pak zminim cely pribeh s nwb, neutrinojs a custom webpackem, na zaver uvedu proc jsem vse zmigroval na custom webpack ikdyz neutrinojs fungovalo taky
+\end{itemize}
+
+
+\chapter{Zvolené technologie}
+Na základě rešerše zvolím technologie, které pak zakomponuji v implementaci do appky - oargumentuji volbu..
+
+tzn:
+
+\begin{itemize}
+\item 1. cim testovat a jak
+\item 2. jaka prostredi a jak delat releasy, jak to vse bude fungovat (a fakt funguje)
+\item 3. zvolene nastroje pro usnadneni vyvoje a udrzby
+\end{itemize}

@@ -1,1 +1,153 @@
-TODO
+\chapter{Sběr požadavků a analýza}
+SI klasika - co všechno je potřeba v appce zlepšit, co chce lektorka, finální přehled funkčních a nefunkčních požadavků
+\cite{test}
+\section{Požadavky}
+\begin{itemize}
+\item sem bych dal i seznam toho, co bylo na konci BP navrhováno že by se dalo udělat a co z toho se nakonec uděla a neuděla a proč - toto už bude zmineno v teoretické části (v aktuálním řešení), kde uvedu, že pak v analýze vyhodnotím co je potřeba a co ne
+\item rozdělil bych to na dvě části - požadavky lektorky a pak zbytek požadavků doporučených z mé strany, které tak nějak vyplynuly z podstaty věci (jako např. dokumentace, refaktoring a mnoho dalšího, bez čeho se nedá moc hnout dál a rozšiřovat)
+\end{itemize}
+
+prehled hlavnich pozadavku lektorky (neco muze chybet):
+\begin{itemize}
+\item js zvyrazneni neaktivity skupin a klientu napric aplikaci https://github.com/rodlukas/UP-admin/issues/85
+\item dalsi supr featury https://github.com/rodlukas/UP-admin/issues/73
+\item JS Přidat vyhledávání https://github.com/rodlukas/UP-admin/issues/3
+\item !! JS efektivnější práce v aplikaci https://github.com/rodlukas/UP-admin/issues/37
+\item !! js automatická změna účastníků lekce při úpravě členů skupiny https://github.com/rodlukas/UP-admin/issues/86
+\item api+js moznost dat kurzu barvu, zobrazeni barvy napric aplikaci + redesign vsech stranek pro lepsi konzistenci, srozumitelnost a pochopeni (predelany diar, zajemci, lekce v karte...)
+\item js přidání nového klienta přímo při přidávání skupiny nebo zájemce
+\item zajemci o kurzy
+\item napojeni na banku (+cache), 
+\item pokročilejší evidence předplacených kurzů (skupiny - citac, indiv - vyber poctu), 
+\item kontrola konfliktu lekcí (čas datum)
+\item pokročilá validace duplicit apod.
+\item automatický odhad kurzu pro nově přidávané lekce,
+\item automatické přidání předplacené lekce při omluvě/zrušení lekce ze strany lektorky,
+\item kurzy mají nastavitelnou dobu trvání
+\item zavedení aktivních a neaktivních klientů a skupin
+\item kompletně přepracovaný formulář pro lekce
+\item ...
+\end{itemize}
+
+
+zbyle pozadavky (neco muze chybet, nebo patri k pozadavkum lektorky):
+
+\begin{itemize}
+\item frontend odolny proti padu diky ErrorBoundary
+\item Pro zrychlení načítání celé aplikace se používá lazy loading React.lazy + React Suspense
+\item chybejici dokumentace v kodu -> zavedeni dokumentace v kodu, dokumentace API (swagger), refaktoring
+\item mene pozadavku - react context api (attendancestates + nově také viditelné kurzy, aktivní klienti/skupiny - vše napříč aplikací) -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci na nový lifecycle reactu
+\item pomalé SQL dotazy- obri optimalizace dotazu na DB (>4x zrychleni) diky DJDT, pokrocile optimalizace
+\item osetreni vstupu (vcetne konecne plne funkcniho API)
+\item všude načítání, když jsou nějaké požadavky
+\item optimalizace frontendu - odstraneni komponent definovanych primo v render - mohlo zpusobit potize s vykonem i nechtenym prekreslovanim vnorenych komponent
+\item js vylepseni notifikaci - notifikace doplnene o nadpis a ikonu, sjednoceny font, komponenta pro obsah notifikace, delsi doba zobrazeni error notifikace
+\item js pozdrzeni requestu DashboardDay v diari pri preklikavani tydnu 
+\item api krestni jmeno klienta reprezentovane "firstname"
+\item zavedeni referrer-policy (same-origin), bezpecnejsi konfigurace lokalniho prostredi
+\item oprava zabezpeceni aplikace + automaticke presmerovani na https + HSTS
+\item opravy nevalidniho html a css (diky tomu lepsi zarovnani tlacitek)
+\item nova funkce: datum pridani zajemce o kurz
+\item template strings js
+\item opravy nekonzistentnich stavu
+\item oprava doporucovani kurzu, doporuceni data a casu (+ 7 dni)
+\item js plynule posouvani v modalnim okne v Safari (iOS)
+\item vylepseni responzivity
+\item kazda stranka ma svuj title
+\item pridani lazy loadingu a react suspense - umozni kratsi prvni nacteni appky, zalozene na react-routeru
+\item klikani na labely vsude funguje
+\item zavedeni prvnich hooku, drobna vylepseni komponent - prechod na funkcionalni komponenty, upravy komponent (napr. zbytecne pouzivaly stav nebo se zbytecne casto updatovaly, ikdyz to nebylo potreba) + **odstranění zbytečného stavu odstranilo i chybu, která byla už od počátku v aplikaci a způsobovala občasné nefungování komponenty s aktuálním stavem účasti - zobrazil se jiný stav, než byl skutečný, v závislosti na pořadí obdržení odpovědí od serveru, to se začalo víc projevovat při nedávných změnách architektury reactu**
+\item podrobnejsi chyby z api
+\item osetreni v api (IO...)
+\item mnoho promennych prostredi
+\item  procházení diářem šipkami na klávesnici + request až po sekundě
+\item js react-select escape zavře i modal okno https://github.com/rodlukas/UP-admin/issues/84
+\item js komponenta pro zobrazeni lekci https://github.com/rodlukas/UP-admin/issues/71
+\item chyby při práci s modálními okny https://github.com/rodlukas/UP-admin/issues/95 - issue reactstrapu, vyjde nova verze
+\item react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
+\item js upozornění na ztrátu dat formuláře https://github.com/rodlukas/UP-admin/issues/83
+\item DRF-JWT problémy, dotazy na SQL DB ikdyž nemají být - https://github.com/rodlukas/UP-admin/issues/51 - přechod na jinou knihovnu a zde PR na překlad do CZ
+\item python refaktoring https://github.com/rodlukas/UP-admin/issues/93
+\item js useEffect - exhaustive deps https://github.com/rodlukas/UP-admin/issues/96
+\item drf zpracovavat ProtectedError https://github.com/rodlukas/UP-admin/issues/70
+\item zvýšení usability/acessibility https://github.com/rodlukas/UP-admin/issues/27
+\item reseni Error: Loading chunk 11 failed. https://github.com/rodlukas/UP-admin/issues/92
+\item ...
+\end{itemize}
+
+\section{Procesy a entity}
+je treba zjistit a uvest informace k novym entitam a procesum, napr. jak funguji zajemci o kurz, jak evidovani predplacenych lekci.. aby se na zaklade toho mohl udelat navrh
+
+
+\chapter{Návrh}
+navrh upravene DB a API a pripadne dalsich veci
+
+\chapter{Implementace}
+součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
+
+\section{Implementace požadavků}
+IMPLEMENTACE POZADAVKU z analyzy vyse
+
+\section{Zavedení nástrojů pro usnadnění vývoje a údržby}
+podrobny popis jak probihalo zavedeni, co mi to umoznuje, treba i screenshoty, k cemu to bylo pouzito, jak se to osvedcilo - nastroje vychazi ze zvolenych nastroju z reserse
+ 
+\begin{itemize}
+\item ...
+\item code formatting - prettier, black
+\item python zavedeni vulture pro dead code
+\item napojeni na Sentry, Slack, logentries, GA
+\item zavedeni LGTM, opravy nalezenych problemu
+\item travis: zavedeni cache pro yarn a pipenv, zjednoduseni prace s .npmrc, na heroku se neprovadi build a collectstatic
+\item zmena react toolkitu (nejdrive nwb, pak test neutrinojs a nakonec custom webpack + porovnani size bundle), viz https://github.com/rodlukas/UP-admin/issues/67 a https://github.com/rodlukas/UP-admin/issues/65
+\item ...
+\end{itemize}
+
+
+\chapter{Testování}
+implementace samotneho testovani v behave, Selenium
+\begin{itemize}
+\item popis, jak jsem konkretne tvoril vsechny UI/API testy v behave a seleniu, co bylo za problemy (nacitani, viz heuristika), jak to funguje, jak jsem vsechno udelal
+\item coverage 86 \%
+\item popsat co vsechno se testuje, ze je to v jazyku gherkin
+\item popsat co se netestuje
+\item pripadne zminit ze bylo reseno v ramci MI-PYT
+\item popsat dalsi problemy s nehezkym API selenia, ktere je pro ruzne jazyky nejednoznacne a nesjednocene (mozna kvuli verzi 3, v4 uz asi bude lepsi...), hrozna dokumentace, ale zase to pouzivaj vsichni tak se vsechno vsude najde
+\item pripadne dodat akceptacni testovani
+\end{itemize}
+
+
+\chapter{Nasazení}
+popis toho jak jsem udelal novej zpusob nasazovani
+
+\section{Zavedení více prostředí}
+\begin{itemize}
+\item jak funguje stage, testing, produkce, demo co kam kdy jde v souvislosti s releasy, k cemu to je, jak se to osvedcilo - dohledavani problemu na stage kdyz se neco stane na produkci
+\item (zustava dev a produkce)
+\item pokročilé debugování na lokálním i vzdáleném prostředí díky Django Debug Toolbar 
+\item vyhoda testing a demo env je ze tam muze kdokoliv, neuvidi nic duverneho (ani pristup do banky tu neni povolen), takze do toho muze vedouci prace, oponent i bezny uzivatel, da se testovat vse na obdobnem prostredi jako pak bude staging, produkce (heroku)
+\item + samozrejme je zde moznost spustit na lokalu, ale todle je mnohem rychlejsi (viz GH)
+\end{itemize}
+
+\section{Další úpravy}
+\begin{itemize}
+\item automaticke zalohovani DB
+\item ...
+\end{itemize}
+
+
+
+\chapter{Možná rozšíření}
+klasika - co by se dalo delat dal, o co by se appka mohla rozsirit, dalsi technologie, fce
+
+\chapter{Zveřejnění jako open-source}
+repo na GH uz je pripravene: https://github.com/rodlukas/UP-admin - vcetne instrukci pro spusteni
+\begin{itemize}
+\item popsat proc zverejnit - moznost nahlednout na realnou aplikaci s nejnovejsimi technologiemi, jak je nakonfigurovana, inspirovat se + ma reference
+\item MIT licence
+\item popsat co bylo treba pro zverejneni udelat - priprava vsech casti, vyreseni tokenu, promennych prostredi... + problem: automaticky zverejneni buildu frontendu, aby ho clovek mohl pouzit pri spusteni u sebe na lokalu - protoze se pouziva placena knihovna, ke ktere mam pristup jen ja, takze si to nikdo jiny u sebe nezbuildi (resi to travis a nahraje build do assetu k release) - řešení: na travisu se provede build frontendu a ten se automaticky jako *zip* soubor nahraje k příslušnému github release 
+\item na GH  je popsání vlastností, požadavků, postupu instalace a spuštění, testování + připravená vzorová data pro DB (včetně návodu na jejich vložení)
+\item (? promenne prostredi mozna zminim i jinde)
+\end{itemize}
+
+
+

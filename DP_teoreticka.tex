@@ -1,26 +1,68 @@
-%\section{Aktuální řešení}
-%\subsection{Nevýhody řešení}
-
 \chapter{Aktuální řešení}
-popis aktualniho reseni z bakalarky - co bylo udelano, jake funkce ma, jake technologie...
+V této kapitole stručně popíši verzi aplikace, která byla vytvořena v rámci bakalářské práce \cite{bp} a kterou budu v praktické části rozšiřovat. Popíši implementované funkce, použité technologie a také konfiguraci prostředí a způsob nasazování.
 
-\section{Použité technologie}
-...
-
-\section{Implementované funkce}
-...
-
-\section{Prostředí a nasazování}
-info o tom kolik je prostředí (dev a produkce jen), vyvoj tedy probihal na lokalu a pak probehl push na GH, travis provedl build a testy a nasadilo se na produkci, to znamená že jsem samozřejmě produkci mohl zbořit (a taky že párkrát zbořil..) 
-
-\section{Plán rozšíření z bakalářské práce}
-shrnuti toho, co se v bakalarce ocekavalo ze by se mohlo rozsirit - ze sekce mozna rozsireni v budoucnu
-
+\section{Implementované požadavky}
+Nejprve shrnu implementované funkční, poté i nefunkční požadavky \cite{bp}:
+\subsection{Implementované funkční požadavky}
+%TODO odkaz na obrazek puvodniho datoveho modelu
 \begin{itemize}
-\item \textbf{pointa je v resersi nize projit moznosti reseni zminenych moznych zlepseni}
+    \item \textbf{evidence klientů},
+    \item \textbf{evidence lekcí klientů:} lekce patří k nějakým kurzům, jsou pro jednotlivce nebo pro skupiny,
+    \item \textbf{evidence údajů o lekci:} základní informace o lekci včetně stavů účasti všech účastníků a stavu jejich platby za danou lekci,
+    \item \textbf{evidence předplacených lekcí:} předplacená lekce je řešená jako lekce, která nemá datum a čas konání),
+    \item \textbf{evidence kurzů a stavů účasti na lekci},
+    \item \textbf{přehled lekcí pro aktuální den},
+    \item \textbf{karta klienta a skupiny}: obsahuje všechny informace o klientovi/skupině včetně všech lekcí,
+    \item \textbf{upozornění na platbu příště:} když už klient nemá žádné předplacené lekce,
+    \item \textbf{pořadové číslo lekce:} o kolikátou navštívenou lekci v pořadí se jedná,
+    \item \textbf{týdenní přehled:} zobrazení lekcí jako v diáři.
 \end{itemize}
 
-\chapter{Možnosti testování}
+\subsection{Implementované nefunkční požadavky}
+\begin{itemize}
+    \item \textbf{kompatibilita s běžnými webovými prohlížeči} v posledních verzích,
+    \item \textbf{podpora široké škály zařízeních:} aplikace ke responzivní a korektně se zobrazuje na všech zařízeních používaných lektorkou -- iPad s iOS~11.3 a 9,7palcovým displejem, Nokia~5 s Androidem~8.0 a 5,2palcovým~displejem, notebook s rozlišením 1920~×~1080 a 15,6palcovým~displejem,
+    \item \textbf{připravenost na rozšíření a údržbu}: kód tvořen s důrazem na budoucí možná rozšíření, použití konstant, respektování principu DRY,
+    \item \textbf{bezpečnost:} JWT autentizace a další konfigurace pro zabezpečení aplikace,
+    \item \textbf{srozumitelné a jednoduché rozhraní aplikace:} díky iterativnímu přístupu k návrhu UI a neustálé spolupráci s lektorkou.
+\end{itemize}
+
+\section{Použité technologie}
+Serverová část aplikace je napsána v Pythonu 3.6.5 s webovým frameworkem Django 2.0.5. Pro správu závislostí se používá holý soubor \verb|requirements.txt|. Aplikace vystavuje REST API postavené na frameworku Django REST framework 3.8.2. Na produkci se používá webový server \href{http://gunicorn.org/}{Gunicorn 19.8.1} spolu s knihovnou WhiteNoise 3.3.1 pro efektivní servírování zkomprimovaných souborů.
+
+% todo citace a lepsi popis technologii (napr webpack)
+Klientská část aplikace je postavena na knihovně React 16.3 spolu s UI frameworkem \href{https://getbootstrap.com}{Bootstrap 4.1} a související knihovnou Reactstrap 5.0. Pro asynchronní požadavky na REST API využívá knihovnu axios 0.18. Celá klientská část je postavená na nástroji Create React App 1, který umožňuje \cite{cra} vytvářet React aplikace bez počáteční konfigurace, vzhledem k použití Djanga bylo ale potřeba \cite{bp} pomocí příkazu \verb|eject| \enquote{vysunout} celou konfiguraci a pomocí knihoven \href{https://github.com/owais/webpack-bundle-tracker}{webpack-bundle-tracker} a  \href{https://github.com/owais/django-webpack-loader}{django-webpack-loader} propojit Django s nástrojem Webpack.
+
+V případě vývoje na lokálním stroji se používá pro serverovou část vývojový Django server a pro klientskou část WebpackDevServer, oba nabízejí podporu pro hot reloading a v tomto ohledu bylo vše i díky zmíněným knihovnám zprovozněno.
+
+\section{Prostředí, testování a nasazování}
+Aplikace je verzována v privátním repozitáři na serveru GitHub. Při každém nahrání nové revize na server (\verb|push|) se na integračním serveru Travis CI spustí sestavení aplikace, vytvoří se testovací databáze a spustí se základní testy (viz níže). Výsledné pokrytí kódu se poté nahraje na platformu \href{https://codecov.io/}{codecov.io} pro pokročilé statistiky o testování. Pokud vše na Travisu proběhne v pořádku, začne nasazení na produkční server běžící na Heroku. Nasazení na Heroku probíhá tak, že se zde opět spouští celé sestavení aplikace znovu, zmigruje se databáze a aplikace se nasadí. I tento průběh lze sledovat přímo z Travis terminálu.
+
+Spouštěné testy jsou základní a velmi jednoduché, otestují:
+\begin{itemize}
+    \item přidání klienta a uživatele do databáze přes Django modely,
+    \item zda Django uživateli zobrazí správnou stránku při příchodu do aplikace (neřeší se, zda se pak vůbec JS vyrenderuje),
+    \item funkčnost API požadavků -- proběhne autorizace (a tedy získání JWT tokenu) a pokus o vytvoření klienta přes API.
+\end{itemize}
+
+Jak je vidět, testy byly skutečně pouze velmi povrchní, dalo by se říci, že se jedná o smoke testy. Také je třeba zdůraznit, že provedení \verb|push| na repozitář mělo za následek okamžité nasazení na produkci, pokud sestavení a tyto základní testy prošly. To může být nedozírné následky. I proto se v dalších kapitolách této teoretické části budu zaobírat možnostmi zlepšení.
+
+\section{Plán rozšíření z bakalářské práce}
+Na závěr bakalářské práce bylo zmíněno několik možných rozšíření aplikace. Následuje jejich stručný přehled, v kapitole~\ref{pozadavkyanalyza} se mimo jiné na některá z nich také dostane.
+Přehled možných rozšíření \cite{bp}:
+\begin{itemize}
+    \item \textbf{vylepšení předplacených kurzů:} pohodlnější způsob předplacených lekcí pro skupiny (v aplikaci to sice možné bylo, ale velmi krkolomně a nepohodlně),
+    \item \textbf{kontrola časového konfliktu lekcí},
+    \item \textbf{vyhledávání v aplikaci},
+    \item \textbf{evidování zájemců o kurz:} pro plánování nových lekcí kurzů a skupin,
+    \item \textbf{evidence pomůcek a učebnic},
+    \item \textbf{testy:} doplnění dalších testů a vysoké pokrytí kódu,
+    \item \textbf{migrace na nový React:} k vydání došlo ke konci bakalářské práce, např. došlo ke změnám v API (životní cyklus komponent),
+    \item \textbf{React Context API:} analýza možností využití Context API v rámci nového Reactu, zejména by pravděpodobně pomohlo snížit např. počet přístupů do API z klientské části napříč aplikací,
+    \item \textbf{offline přístup:} analýza možností řešení offline přístupu, např. automatické ukládání do Google kalendáře, progresivní webové aplikace apod. a s tím související další oblasti jako SSR.
+\end{itemize}
+
+\chapter{Možnosti automatizovaného testování}
 
 \begin{itemize}
 \item popsat ruzne možnosti testování - BDD, TDD...
@@ -30,8 +72,6 @@ shrnuti toho, co se v bakalarce ocekavalo ze by se mohlo rozsirit - ze sekce moz
 \end{itemize}
 \begin{itemize}
 \item popsat selenium a alternativy (capybara?...)
-\item niels. heur. analyza, ktera pomohla pak v implementaci prakticky zprovoznit UI testovani, protoze co nevi clovek, nevi ani selenium a tezko se neco testuje (nevi ze se nacita kdyz to nevidi ani clovek, nevi ze se ma cekat..)
-\item mozna zminit usability testovani - zejmena proto, ze prakticky na tom stoji dalsi vylepseni v analyze, kde jsem pozoroval lektorku pri bezne praci a na zaklade toho jsme resili, co by chtela zmenit/pridat/upravit; tady neni treba testovat pro jine uzivatele, je to zamerene na interni pouziti 1 clovekem, o to lepsi to ale musi byt:)
 \end{itemize}
 
 

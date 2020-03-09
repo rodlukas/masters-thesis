@@ -1,6 +1,6 @@
-\chapter{Sběr požadavků a analýza}
+\chapter{Sběr požadavků a analýza}\label{pozadavkyanalyza}
 SI klasika - co všechno je potřeba v appce zlepšit, co chce lektorka, finální přehled funkčních a nefunkčních požadavků
-\cite{test}
+
 \section{Požadavky}
 \begin{itemize}
 \item sem bych dal i seznam toho, co bylo na konci BP navrhováno že by se dalo udělat a co z toho se nakonec uděla a neuděla a proč - toto už bude zmineno v teoretické části (v aktuálním řešení), kde uvedu, že pak v analýze vyhodnotím co je potřeba a co ne
@@ -113,6 +113,8 @@ implementace samotneho testovani v behave, Selenium
 \item pripadne zminit ze bylo reseno v ramci MI-PYT
 \item popsat dalsi problemy s nehezkym API selenia, ktere je pro ruzne jazyky nejednoznacne a nesjednocene (mozna kvuli verzi 3, v4 uz asi bude lepsi...), hrozna dokumentace, ale zase to pouzivaj vsichni tak se vsechno vsude najde
 \item pripadne dodat akceptacni testovani
+\item niels. heur. analyza, ktera pomohla pak v implementaci prakticky zprovoznit UI testovani, protoze co nevi clovek, nevi ani selenium a tezko se neco testuje (nevi ze se nacita kdyz to nevidi ani clovek, nevi ze se ma cekat..)
+\item mozna zminit usability testovani - zejmena proto, ze prakticky na tom stoji dalsi vylepseni v analyze, kde jsem pozoroval lektorku pri bezne praci a na zaklade toho jsme resili, co by chtela zmenit/pridat/upravit; tady neni treba testovat pro jine uzivatele, je to zamerene na interni pouziti 1 clovekem, o to lepsi to ale musi byt:)
 \end{itemize}
 
 
@@ -121,6 +123,7 @@ popis toho jak jsem udelal novej zpusob nasazovani
 
 \section{Zavedení více prostředí}
 \begin{itemize}
+\item vyvoj BP probihal na lokalu a pak probehl push na GH, travis provedl build a testy a nasadilo se na produkci, to znamená že jsem samozřejmě produkci mohl zbořit (a taky že párkrát zbořil..)
 \item jak funguje stage, testing, produkce, demo co kam kdy jde v souvislosti s releasy, k cemu to je, jak se to osvedcilo - dohledavani problemu na stage kdyz se neco stane na produkci
 \item (zustava dev a produkce)
 \item pokročilé debugování na lokálním i vzdáleném prostředí díky Django Debug Toolbar 

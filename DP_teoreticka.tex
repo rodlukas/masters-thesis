@@ -1,65 +1,85 @@
 \chapter{Aktuální řešení}
 % todo citace, odkazy, lepsi popisy technologii (napr webpack)
-V této kapitole stručně popíši verzi aplikace, která byla vytvořena v rámci bakalářské práce \cite{bp} a kterou budu v praktické části rozšiřovat. Popíši implementované funkce, použité technologie a také konfiguraci prostředí a způsob nasazování.
+V této kapitole stručně popíši verzi aplikace, která byla vytvořena v rámci bakalářské práce \cite{bp} a kterou budu v praktické části rozšiřovat. Popíši implementované funkční i nefunkční požadavky, použité technologie a také konfiguraci prostředí a způsob nasazování. Na závěr stručně shrnu, jaké možné plány na rozšíření byly v rámci bakalářské práce nastíněny.
 
 \section{Implementované požadavky}
-Nejprve shrnu implementované funkční, poté i nefunkční požadavky \cite{bp}:
+
 \subsection{Implementované funkční požadavky}
+
+Nejprve shrnu implementované funkční požadavky \cite{bp}:
 %TODO odkaz na obrazek puvodniho datoveho modelu
 \begin{itemize}
-    \item \textbf{evidence klientů},
-    \item \textbf{evidence lekcí klientů:} lekce patří k nějakým kurzům, jsou pro jednotlivce nebo pro skupiny,
-    \item \textbf{evidence údajů o lekci:} základní informace o lekci včetně stavů účasti všech účastníků a stavu jejich platby za danou lekci,
-    \item \textbf{evidence předplacených lekcí:} předplacená lekce je řešená jako lekce, která nemá datum a čas konání),
-    \item \textbf{evidence kurzů a stavů účasti na lekci},
-    \item \textbf{přehled lekcí pro aktuální den},
-    \item \textbf{karta klienta a skupiny}: obsahuje všechny informace o klientovi/skupině včetně všech lekcí,
-    \item \textbf{upozornění na platbu příště:} když už klient nemá žádné předplacené lekce,
-    \item \textbf{pořadové číslo lekce:} o kolikátou navštívenou lekci v pořadí se jedná,
+    \item \textbf{evidence klientů:} evidování základních informací o klientovi,
+    \item \textbf{evidence lekcí klientů:} evidování základních informací o lekcích (včetně stavů účasti všech účastníků a stavu jejich platby za danou lekci), lekce mohou být pro jednotlivce nebo pro skupiny, každá náleží nějakému kurzu,
+    \item \textbf{evidence předplacených lekcí:} předplacená lekce je řešená jako lekce, která nemá datum a čas konání,
+    \item \textbf{evidence kurzů a stavů účasti:} pro použití při evidenci lekcí,
+    \item \textbf{přehled lekcí pro aktuální den:} zobrazení pro dnešní lekce (kromě zrušených),
+    \item \textbf{karta klienta a skupiny}: zobrazení všech informací o klientovi/skupině včetně všech lekcí,
+    \item \textbf{upozornění na platbu příště:} když už klient nemá žádné předplacené lekce, zobrazí se u poslední placené lekce upozornění na fakt, že má příště zaplatit,
+    \item \textbf{pořadové číslo lekce:} u lekce se zobrazí (automaticky vypočítáno), o kolikátou navštívenou lekci v pořadí se jedná,
     \item \textbf{týdenní přehled:} zobrazení lekcí jako v diáři.
 \end{itemize}
 
 \subsection{Implementované nefunkční požadavky}
+
+Následuje shrnutí nefunkčních požadavků \cite{bp}:
 \begin{itemize}
-    \item \textbf{kompatibilita s běžnými webovými prohlížeči} v posledních verzích,
-    \item \textbf{podpora široké škály zařízeních:} aplikace ke responzivní a korektně se zobrazuje na všech zařízeních používaných lektorkou -- iPad s iOS~11.3 a 9,7palcovým displejem, Nokia~5 s Androidem~8.0 a 5,2palcovým~displejem, notebook s rozlišením 1920~×~1080 a 15,6palcovým~displejem,
-    \item \textbf{připravenost na rozšíření a údržbu}: kód tvořen s důrazem na budoucí možná rozšíření, použití konstant, respektování principu DRY,
-    \item \textbf{bezpečnost:} JWT autentizace a další konfigurace pro zabezpečení aplikace,
-    \item \textbf{srozumitelné a jednoduché rozhraní aplikace:} díky iterativnímu přístupu k návrhu UI a neustálé spolupráci s lektorkou.
+    \item \textbf{kompatibilita s webovými prohlížeči:} aplikace je plně funkční a kompatibilní s běžnými webovými prohlížeči (Google Chrome, Mozilla Firefox, Microsoft Edge, Apple Safari) v posledních verzích, důraz ja především kladen na desktopový prohlížeč Mozilla Firefox, na kterém se aplikace používá primárně,
+    \item \textbf{podpora široké škály zařízeních:} aplikace je responzivní a korektně se zobrazuje na všech zařízeních používaných lektorkou -- iPad s iOS~13.3 a 9,7palcovým displejem, Nokia~5 s Androidem~9.0 a 5,2palcovým~displejem, notebook s Windows~10 s rozlišením 1920~×~1080 a 15,6palcovým~displejem,
+    \item \textbf{připravenost na rozšíření a údržbu}: kód byl tvořen s důrazem na budoucí možná rozšíření (např. použití konstant, respektování principu DRY (\enquote{Don\textquotesingle t repeat yourself}) ad.),
+    \item \textbf{bezpečnost:} JWT (JSON Web Token) autentizace a další produkční konfigurace pro zabezpečení aplikace,
+    \item \textbf{srozumitelné a jednoduché rozhraní aplikace:} iterativní návrh a implementace UI za neustálé spolupráce s lektorkou pro dosažení co nejlepší použitelnosti.
 \end{itemize}
 
+
 \section{Použité technologie}
-Serverová část aplikace je napsána v Pythonu 3.6.5 s webovým frameworkem Django 2.0.5. Pro správu závislostí se používá holý soubor \verb|requirements.txt|. Aplikace vystavuje REST API postavené na frameworku Django REST framework 3.8.2. Na produkci se používá webový server \href{http://gunicorn.org/}{Gunicorn 19.8.1} spolu s knihovnou WhiteNoise 3.3.1 pro efektivní servírování zkomprimovaných souborů.
+\subsection{Serverová část}
 
-Klientská část aplikace je napsána v JavaScriptu. Jedná se o SPA aplikaci postavenou na knihovně React 16.3 spolu s UI frameworkem \href{https://getbootstrap.com}{Bootstrap 4.1} a související knihovnou Reactstrap 5.0. Pro asynchronní požadavky na REST API využívá knihovnu axios 0.18. Celá klientská část je postavená na nástroji Create React App 1, který umožňuje \cite{cra} vytvářet React aplikace bez počáteční konfigurace, vzhledem k použití Djanga bylo ale potřeba \cite{bp} pomocí příkazu \verb|eject| \enquote{vysunout} celou konfiguraci a pomocí knihoven \href{https://github.com/owais/webpack-bundle-tracker}{webpack-bundle-tracker} a  \href{https://github.com/owais/django-webpack-loader}{django-webpack-loader} propojit Django s nástrojem Webpack.
+Serverová část aplikace \cite{bp} je napsána v Pythonu~3.6.5 s webovým frameworkem \href{https://www.djangoproject.com/}{Django~2.0.5}. Pro správu závislostí se používá pouze jednoduchý soubor \verb|requirements.txt| obsahující specifikace přesných verzí knihoven (bez povolení jakkoliv malých aktualizací). 
 
-V případě vývoje na lokálním stroji se používá pro serverovou část vývojový Django server a pro klientskou část WebpackDevServer, oba nabízejí podporu pro hot reloading a v tomto ohledu bylo vše i díky zmíněným knihovnám zprovozněno.
+Aplikace vystavuje REST~API postavené na frameworku \href{https://www.django-rest-framework.org/}{Django~REST~framework~3.8.2}. Na produkci se používá webový server \href{http://gunicorn.org/}{Gunicorn~19.8.1} spolu s knihovnou \href{http://whitenoise.evans.io/en/stable/}{WhiteNoise~3.3.1} pro efektivní servírování zkomprimovaných statických souborů \cite{whitenoise}.
+
+\subsection{Klientská část}
+
+Klientská část aplikace \cite{bp} je napsána v JS (JavaScript) ve standardu ECMAScript®~2018. Pro správu závislostí se používá soubor \verb|package.json|, v němž jsou verze přibližně poloviny knihoven definovány napevno (bez možnosti jakkoliv malé aktualizace), druhá polovina knihoven přijímá malé aktualizace. 
+
+Klientskou část aplikace lze klasifikovat jako: 
+\begin{itemize}
+    \item \textbf{SPA} (Single-Page Application), tedy aplikaci běžící přímo u klienta v prohlížeči nevyžadující znovunačítání při přecházení mezi stránkami \cite{spa1} a
+    \item \textbf{CSR} (Client-Side Rendering), tedy aplikaci, která je klientovi doručena jako jednoduchý HTML (Hypertext Markup Language) soubor s odkazy na JS/CSS (Cascading Style Sheets) soubory \cite{csr-ssr}.
+\end{itemize}
+
+Je postavena na knihovně \href{https://reactjs.org/}{React~16.3} spolu s UI frameworkem \href{https://getbootstrap.com}{Bootstrap~4.1} a související knihovnou \href{https://reactstrap.github.io/}{Reactstrap~5.0}, která umožňuje jednoduché použití Bootstrap komponent v Reactu \cite{reactstrap}. Pro asynchronní požadavky na REST API využívá knihovnu \href{https://github.com/axios/axios}{axios~0.18}. 
+
+Konfigurace celé klientské části stojí na nástroji \href{https://github.com/facebook/create-react-app}{create-react-app~1}, který umožňuje \cite{cra} vytvářet React aplikace bez počáteční konfigurace. Vzhledem k použití Djanga bylo ale potřeba \cite{bp} pomocí příkazu \verb|eject| \enquote{vysunout} celou konfiguraci klientské části a pomocí knihoven \href{https://github.com/owais/webpack-bundle-tracker}{webpack-bundle-tracker} a  \href{https://github.com/owais/django-webpack-loader}{django-webpack-loader} propojit Django s nástrojem Webpack. Webpack zde umožňuje mj. spouštět vývojový server pro klientskou část a vytvářet z jednotlivých modulů klientské části balíčky, které lze pak po zadaných transformacích servírovat na produkci pro běžné webové prohlížeče \cite{webpack-ackee}.
+
+V případě vývoje na lokálním stroji se používá \cite{bp} pro serverovou část vývojový Django server a pro klientskou část \href{https://github.com/webpack/webpack-dev-server}{webpack-dev-server}, oba nabízejí podporu pro \enquote{hot reloading} (tedy okamžité automatické projevení změn v kódu bez kompletního znovunačtení aplikace \cite{webpack-docs-hmr}) a v tomto ohledu bylo vše i díky zmíněným knihovnám zprovozněno.
 
 \section{Prostředí, testování a nasazování}
-Aplikace je verzována v privátním repozitáři na serveru GitHub. Při každém nahrání nové revize na server (\verb|push|) se na integračním serveru Travis CI spustí sestavení aplikace, vytvoří se testovací databáze a spustí se základní testy (viz níže). Výsledné pokrytí kódu se poté nahraje na platformu \href{https://codecov.io/}{codecov.io} pro pokročilé statistiky o testování. Pokud vše na Travisu proběhne v pořádku, začne nasazení na produkční server běžící na Heroku. Nasazení na Heroku probíhá tak, že se zde opět spouští celé sestavení aplikace znovu, zmigruje se databáze a aplikace se nasadí. I tento průběh lze sledovat přímo z Travis terminálu.
+Aplikace \cite{bp} je verzována v privátním repozitáři na serveru GitHub. Při každém nahrání nové revize na server (\verb|push|) se na integračním serveru \href{https://travis-ci.com/}{Travis~CI} spustí sestavení aplikace, vytvoří se testovací databáze a spustí se základní testy (viz níže). Výsledné pokrytí kódu se poté nahraje na platformu \href{https://codecov.io/}{codecov.io} pro pokročilé statistiky o testování \cite{codecov}. Pokud vše na Travisu proběhne v pořádku, začne nasazení na produkční server běžící na \href{https://www.heroku.com/}{Heroku}. Nasazení na Heroku probíhá tak, že se přímo na něm spouští celé sestavení aplikace znovu, zmigruje se databáze a aplikace se nasadí. I tento průběh lze sledovat přímo z Travis terminálu.
 
-Spouštěné testy jsou základní a velmi jednoduché, otestují:
+Spouštěné testy jsou základní a velmi jednoduché, otestují \cite{bp}:
 \begin{itemize}
     \item přidání klienta a uživatele do databáze přes Django modely,
-    \item zda Django uživateli zobrazí správnou stránku při příchodu do aplikace (neřeší se, zda se pak vůbec JS vyrenderuje),
-    \item funkčnost API požadavků -- proběhne autorizace (a tedy získání JWT tokenu) a pokus o vytvoření klienta přes API.
+    \item zda Django uživateli zobrazí správnou stránku při příchodu do aplikace (neřeší, zda se pak vůbec JS aplikace vyrenderuje),
+    \item funkčnost API požadavků -- proběhne autorizace (a tedy získání JWT tokenu) a pokus o vytvoření nového klienta přes API.
 \end{itemize}
 
 Jak je vidět, testy byly skutečně pouze velmi povrchní, dalo by se říci, že se jedná o smoke testy. Také je třeba zdůraznit, že provedení \verb|push| na repozitář mělo za následek okamžité nasazení na produkci, pokud sestavení a tyto základní testy prošly. To může být nedozírné následky. I proto se v dalších kapitolách této teoretické části budu zaobírat možnostmi zlepšení.
 
 \section{Plán rozšíření z bakalářské práce}
-Na závěr bakalářské práce bylo zmíněno několik možných rozšíření aplikace. Následuje jejich stručný přehled, v kapitole~\ref{pozadavkyanalyza} se mimo jiné na některá z nich také dostane.
+Na závěr bakalářské práce \cite{bp} bylo zmíněno několik možných rozšíření aplikace. Následuje jejich přehledný stručný přehled, v kapitole~\ref{pozadavkyanalyza} se mimo jiné na některá z nich také dostane.
 Přehled možných rozšíření \cite{bp}:
 \begin{itemize}
-    \item \textbf{vylepšení předplacených kurzů:} pohodlnější způsob předplacených lekcí pro skupiny (v aplikaci to sice možné bylo, ale velmi krkolomně a nepohodlně),
-    \item \textbf{kontrola časového konfliktu lekcí},
-    \item \textbf{vyhledávání v aplikaci},
-    \item \textbf{evidování zájemců o kurz:} pro plánování nových lekcí kurzů a skupin,
+    \item \textbf{vylepšení předplacených kurzů:} pohodlnější způsob zaznamenávání předplacených lekcí pro skupiny (v aplikaci to sice možné bylo, ale velmi krkolomně a nepohodlně),
+    \item \textbf{kontrola časového konfliktu lekcí:} aby se dvě nezrušené lekce vzhledem k datumu, času a délce trvání nijak nepřekrývaly,
+    \item \textbf{vyhledávání v aplikaci:} např. vyhledávání klientů,
+    \item \textbf{evidování zájemců o kurz:} pro plánování nových lekcí kurzů pro jednotlivce a skupiny,
     \item \textbf{evidence pomůcek a učebnic},
     \item \textbf{testy:} doplnění dalších testů a vysoké pokrytí kódu,
-    \item \textbf{migrace na nový React:} k vydání došlo ke konci bakalářské práce, např. došlo ke změnám v API (životní cyklus komponent),
-    \item \textbf{React Context API:} analýza možností využití Context API v rámci nového Reactu, zejména by pravděpodobně pomohlo snížit např. počet přístupů do API z klientské části napříč aplikací,
-    \item \textbf{offline přístup:} analýza možností řešení offline přístupu, např. automatické ukládání do Google kalendáře, progresivní webové aplikace apod. a s tím související další oblasti jako SSR.
+    \item \textbf{migrace na nový React:} k vydání verze 16.3 došlo na konci vývoje aplikace v rámci bakalářské práce, např. došlo ke změnám v API (životní cyklus komponent) \cite{react-blog-163},
+    \item \textbf{React Context API:} analýza možností využití Context API v rámci nového Reactu \cite{react-blog-163}, zejména by pravděpodobně pomohlo snížit např. počet přístupů do API z klientské části napříč aplikací,
+    \item \textbf{offline přístup:} analýza možností řešení offline přístupu, např. automatické ukládání do Google kalendáře, progresivní webové aplikace apod. a s tím související další oblasti jako SSR (Server-Side Rendering) -- tedy klient obdrží od serveru HTML dokument připravený k vyrenderování, oproti CSR, kde by klient pro vyrenderování aplikace musel čekat na stažení a spuštění JS souborů \cite{csr-ssr}.
 \end{itemize}
 
 \chapter{Možnosti automatizovaného testování}

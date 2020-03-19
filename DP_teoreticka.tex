@@ -204,21 +204,59 @@ viz:
 
 \chapter{Nástroje pro usnadnění vývoje a údržby}
 
+Postupem času v rámci dalšího vývoje a rozšiřování aplikace se ukázalo, že je třeba použít pokročilé nástroje pro usnadnění samotného vývoje a údržby. Cílem této sekce je nastínit způsob jejich výběru. Jedním z hlavních požadavků je, aby vše potřebné bylo zdarma, diskvalifikuji zde tedy všechny nástroje nenabízející alespoň nějakou formu bezplatného používání na dobu neurčitou (tedy nikoliv jen pro studenty).
+
+\section{Monitorování chyb}
+Pro každou aplikaci je důležité monitorovat chyby, díky tomu, nehledě na to, zda uživatel nahlásí problém a bude jakkoliv konkrétní, je možné pak chyby reprodukovat a opravit \cite{tools-exception}. Umožňují upozornit vývojáře na výskyt chyby, poskytnout mu kompletní informace o chybě a kontextu, ve kterém nastala  \cite{tools-exception}.
+
+Minimální požadavky jsou:
+\begin{itemize}
+    \item zdarma pro použití na neomezenou dobu jak na Heroku (tato diplomová práce), tak mimo Heroku (další aplikace např. v rámci ÚP) -- tedy (např. \href{https://airbrake.io/}{Airbrake} na Heroku nabízí plán zdarma \cite{airbrake-heroku}, ale ve svém ceníku jej nenabízí \cite{airbrake-pricing}, tedy ve výběru není),
+    \item SaaS (Software as a Service) -- tedy aplikace hostovaná provozovatelem služby,
+    \item možnost použití pro klientskou (JS s Reactem) i serverovou část (Python s Djangem).
+\end{itemize}
+
+Pro monitorování chyb existuje mnoho nástrojů, podle StackShare \cite{stackshare-exception} volím 4 nejpoužívanější, které splňují všechny požadavky. I přes mnoho dalších funkcionalit těchto nástrojů se zde zaměřuji na primární účel, tedy monitorování chyb -- nehledě na to, jaké další integrace a funkce jsou poskytnuty zdarma.
+
+Nejpoužívanější nástroje podle StackShare (řazeno od nejpoužívanějšího) \cite{stackshare-exception} splňující zmíněné požadavky:
+\begin{enumerate}
+    \item \href{https://sentry.io/}{\textbf{Sentry}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 7 dní historie logů \cite{sentry-pricing}, podporuje React i Django \cite{sentry-platforms},
+    \item \href{https://rollbar.com/}{\textbf{Rollbar}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 30 dní historie logů \cite{rollbar-pricing}, podporuje React i Django \cite{rollbar-platforms},
+    \item \href{https://www.bugsnag.com/}{\textbf{Bugsnag}}: zdarma nabízí 7~500 událostí/měsíc pro neomezený počet projektů, 7 dní historie logů \cite{bugsnag-pricing}, podporuje React i Django \cite{bugsnag-platforms},
+    \item \href{https://www.honeybadger.io/}{\textbf{Honeybadger}}: zdarma nabízí 12~000 událostí/měsíc pro neomezený počet projektů, 15 dní historie logů \cite{honeybadger-pricing}, podporuje React \cite{honeybadger-react} i Django \cite{honeybadger-django}.
+\end{enumerate}
+
+Jiný přístup k monitorování chyb na klientské části nabízí nástroje jako \href{https://logrocket.com/}{LogRocket}, který k zachyceným chybám přidá i nahrané video s kroky uživatele vedoucími k dané chybě (ve videu je obrazovka zachycující přesně to, co uživatel viděl) \cite{logrocket} -- nabízí zdarma 1~000 nahraných sezení uživatelů/měsíc (sezení je jedno kontinuální používání aplikace) \cite{logrocket-pricing}, 14 dní historie dat, podporuje React \cite{logrocket-react}.
+
+\section{Logování}
+logentries
+
+
+\section{Statické typování}
+moznosti, ze python ma builtin, JS nema (uvest proc, viz ecma vyjadreni), jak se to v JS resi a srovnat: FlowJS, Typescript + jak jsou na tom ostatni jako coffeescript, dart, kotlin..; u TS zminit podporu babel
+
+\subsection{Klientská část}
+
+
+\subsection{Serverová část}
+
+\section{Statická analýza kódu}
+staticka analyza a kontrola kodu, hledani chyb, zero-days zranitelnosti, hodnoceni kvality kodu (LGTM...)
+
+\section{Lintery}
+lintery (ESlint.. + styly airbnb, standardjs, info o spouste pluginech, standardech, vyvoji ve spolupraci s TS)
+
+
+
 rešerše nástrojů pro:
 \begin{itemize}
-\item odchytavani chyb (sentry...)
-\item logovani (logentries...)
-\item staticka analyza a kontrola kodu, hledani chyb, zero-days zranitelnosti, hodnoceni kvality kodu (LGTM...)
 \item code formattery (prettier, black...) + souvislost s flake8 apod.
 \item analyza pruchodu aplikaci (google analytics)
 \item pokryti kodu (codecov, coverage.py...)
 \item pripadne nejake pokrocile veci z travisu co se pouzivaji
-\item lintery (ESlint.. + styly airbnb, standardjs, info o spouste pluginech, standardech, vyvoji ve spolupraci s TS)
-\item static type checking pro frontend i backend (python, js) - moznosti, ze python ma builtin, JS nema (uvest proc, viz ecma vyjadreni), jak se to v JS resi a srovnat: FlowJS, Typescript + jak jsou na tom ostatni jako coffeescript, dart, kotlin..; u TS zminit podporu babel
 \item + hledani dead code - python vulture
 \item nastroje pro vyvoj frontendu - bakalarka byla postavena na CRA (create-react-app), ktera byla ejectnuta (takze update reactu byl prakticky nemozny), z toho duvodu se nejprv preslo na nastroj nwb, ktery ale pozdeji nebyl udrzovany a doslo ke zkusebni migraci na neutrinojs (souvisi s mozillou) a na vlastni reseni pres webpack - tady bych teda prosel, co tyhle nastroje umoznuji, ze vlastne stavi nad webpackem, ze je to vlastne abstraktni vrstva nad nim, ktera vsechno zjednodusuje, ale nevyhoda je, kdyz ten nastroj neco neumoznuje (viz nwb), tak mas smulu.. takze pak nejdou lintery, nejde TS... zminit moznosti nastroju, jake nastroje jsou, vyhody a nevyhody; v ramci implementace pak zminim cely pribeh s nwb, neutrinojs a custom webpackem, na zaver uvedu proc jsem vse zmigroval na custom webpack ikdyz neutrinojs fungovalo taky
 \end{itemize}
-
 
 \chapter{Zvolené technologie}
 

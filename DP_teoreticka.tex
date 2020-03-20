@@ -229,12 +229,13 @@ Nejpoužívanější nástroje podle StackShare (řazeno od nejpoužívanější
 Jiný přístup k monitorování chyb na klientské části nabízí nástroje jako \href{https://logrocket.com/}{LogRocket} -- ten k zachyceným chybám přidá i nahrané video s kroky uživatele vedoucími k dané chybě (ve videu je obrazovka zachycující přesně to, co uživatel viděl) \cite{logrocket}. LogRocket nabízí zdarma 1~000 nahraných sezení uživatelů/měsíc (sezení je jedno kontinuální používání aplikace daným uživatelem) \cite{logrocket-pricing}, 14~dní historie dat, podporuje React \cite{logrocket-react}.
 
 \section{Správa logů}
-Nasazené aplikace generují mnoho logů z různých procesů, v případě Heroku jsou všechny tyto logy agregovány do jednoho kanálu a nabízí možnost uchování posledních 1~500 logů nejdéle týden \cite{tools-logs1}. V případě, že chceme přístup k většímu počtu logů či ke starším, je třeba využít buď možnost napojení logů na některý z doplňků na Heroku, případně logy rovnou přímo přesměrovávat do jiné služby \cite{tools-logs1}. Tyto nástroje pro správu logů pak umožňují spravovat velké množství agregovaných logů generovaných z mnoha typů zařízení a serverů -- nad nimi provádět různé dotazy, vyhledávání, pohledy, případně i analýzy, upozornění na nějaké události ad. \cite{tools-logs2}.
+Nasazené aplikace generují mnoho logů z různých procesů, v případě Heroku jsou všechny tyto logy agregovány do jednoho kanálu a nabízí možnost uchování posledních 1~500 logů nejdéle 1~týden \cite{tools-logs1}. V případě, že chceme přístup k většímu počtu logů či ke starším, je třeba využít buď možnost napojení logů na některý z doplňků na Heroku, případně logy rovnou přímo přesměrovávat do jiné služby \cite{tools-logs1}. Tyto nástroje pro správu logů pak umožňují spravovat velké množství agregovaných logů generovaných z mnoha typů zařízení a serverů -- nad nimi provádět mj. různé dotazy, vyhledávání, pohledy, případně i analýzy či upozornění na nějaké události \cite{tools-logs2}.
 
 Minimální požadavky jsou:
 \begin{itemize}
     \item zdarma pro použití na neomezenou dobu pro logy z Heroku,
     \item SaaS -- tedy aplikace hostovaná provozovatelem služby,
+    \item upozorňování na události e-mailem,
     \item historie logů alespoň na 7 dnů.
 \end{itemize}
 
@@ -242,8 +243,8 @@ Pro správu logů existuje mnoho nástrojů, podle StackShare \cite{stackshare-l
 
 Nejpoužívanější nástroje podle StackShare (řazeno od nejpoužívanějšího) \cite{stackshare-log} splňující zmíněné požadavky:
 \begin{enumerate}
-    \item \href{https://www.papertrail.com/}{\textbf{Papertrail}}: zdarma nabízí 50~MB logů/měsíc pro neomezený počet projektů, 7 dní historie logů (2 dny vyhledávání), nastavitelná upozornění \cite{papertrail-pricing}, možnost použít Heroku doplněk pro jednoduché nastavení (nabízí dokonce více uložených logů -- 10~MB logů/den) \cite{heroku-papertrail},
-    \item \href{https://logentries.com/}{\textbf{Logentries}}: zdarma nabízí 5~GB logů/měsíc pro neomezený počet projektů, 7 dní historie logů \cite{logentries-pricing}, nastavitelná upozornění \cite{logentries-pricing2}, možnost použít Heroku doplněk pro jednoduché nastavení \cite{heroku-logentries}.
+    \item \href{https://www.papertrail.com/}{\textbf{Papertrail}}: zdarma nabízí 50~MB logů/měsíc, 7~dní historie logů (vyhledávání ale jen pro poslední 2~dny), nastavitelná upozornění \cite{papertrail-pricing}, možnost použít Heroku doplněk pro jednoduché nastavení (nabízí dokonce více uložených logů -- 10~MB logů/den) \cite{heroku-papertrail},
+    \item \href{https://logentries.com/}{\textbf{Logentries}}: zdarma nabízí 5~GB logů/měsíc, 7~dní historie logů \cite{logentries-pricing}, nastavitelná upozornění \cite{logentries-pricing2}, možnost použít Heroku doplněk pro jednoduché nastavení \cite{heroku-logentries}.
 \end{enumerate}
 
 

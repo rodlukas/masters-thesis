@@ -207,12 +207,12 @@ viz:
 Postupem času v rámci dalšího vývoje a rozšiřování aplikace se ukázalo, že je třeba použít pokročilé nástroje pro usnadnění samotného vývoje a údržby. Cílem této sekce je nastínit způsob jejich výběru. Jedním z hlavních požadavků je, aby vše potřebné bylo zdarma, neuvažuji zde tedy nástroje nenabízející alespoň nějakou formu bezplatného používání na dobu neurčitou (tedy nikoliv jen pro studenty). Při volbě nástrojů pro daný účel budou případně specifikovány další požadavky. Na základě průzkumu pak uvedu nalezené nástroje, jejich vlastnosti a seřadím je orientačně podle popularity na základě stránky \href{https://stackshare.io/}{StackShare}, která poskytuje \cite{stackshare} možnost sdílet používané nástroje a technologie firem a jednotlivců pro jejich projekty, nástroje a technologie srovnávat, hodnotit, řadit dle popularity apod.
 
 \section{Monitorování chyb}
-Pro každou aplikaci je důležité monitorovat chyby, díky tomu (nehledě na to, zda uživatel nahlásí problém a bude jakkoliv konkrétní) je možné pak chyby snadněji reprodukovat a opravit \cite{tools-exception}. Nástroje pro monitorování chyb umožňují upozornit vývojáře na výskyt chyby, poskytnout mu kompletní informace o chybě a kontextu, ve kterém nastala  \cite{tools-exception}.
+Pro každou aplikaci je důležité monitorovat chyby, díky tomu (nehledě na to, zda uživatel nahlásí problém a bude jakkoliv konkrétní) je možné pak chyby snadněji reprodukovat a opravit \cite{tools-exception}. Nástroje pro monitorování chyb umožňují upozornit vývojáře na výskyt chyby, poskytnout mu kompletní informace o chybě a kontextu, ve kterém nastala \cite{tools-exception}.
 
 Minimální požadavky jsou:
 \begin{itemize}
     \item zdarma pro použití na neomezenou dobu jak na Heroku (aplikace v rámci této práce), tak mimo Heroku (další aplikace např. v rámci ÚP) -- tento požadavek je zde kvůli existenci nástrojů jako např. \href{https://airbrake.io/}{Airbrake}, který na Heroku nabízí plán zdarma \cite{airbrake-heroku}, ale ve svém ceníku jej nenabízí \cite{airbrake-pricing}, tedy tyto nástroje neuvažuji,
-    \item SaaS (Software as a Service) -- tedy aplikace hostovaná provozovatelem služby,
+    \item SaaS (Software as a Service) -- tedy aplikace hostovaná provozovatelem služby \cite{oracle-saas},
     \item možnost použití pro klientskou (JS s Reactem) i serverovou část (Python s Djangem).
 \end{itemize}
 
@@ -234,7 +234,7 @@ Nasazené aplikace generují mnoho logů z různých procesů, v případě Hero
 Minimální požadavky jsou:
 \begin{itemize}
     \item zdarma pro použití na neomezenou dobu pro logy z Heroku,
-    \item SaaS -- tedy aplikace hostovaná provozovatelem služby,
+    \item SaaS -- tedy aplikace hostovaná provozovatelem služby \cite{oracle-saas},
     \item upozorňování na události e-mailem,
     \item historie logů alespoň na 7 dnů.
 \end{itemize}

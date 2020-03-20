@@ -220,16 +220,31 @@ Pro monitorování chyb existuje mnoho nástrojů, podle StackShare \cite{stacks
 
 Nejpoužívanější nástroje podle StackShare (řazeno od nejpoužívanějšího) \cite{stackshare-exception} splňující zmíněné požadavky:
 \begin{enumerate}
-    \item \href{https://sentry.io/}{\textbf{Sentry}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 7 dní historie logů \cite{sentry-pricing}, podporuje React i Django \cite{sentry-platforms},
-    \item \href{https://rollbar.com/}{\textbf{Rollbar}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 30 dní historie logů \cite{rollbar-pricing}, podporuje React i Django \cite{rollbar-platforms},
-    \item \href{https://www.bugsnag.com/}{\textbf{Bugsnag}}: zdarma nabízí 7~500 událostí/měsíc pro neomezený počet projektů, 7 dní historie logů \cite{bugsnag-pricing}, podporuje React i Django \cite{bugsnag-platforms},
-    \item \href{https://www.honeybadger.io/}{\textbf{Honeybadger}}: zdarma nabízí 12~000 událostí/měsíc pro neomezený počet projektů, 15 dní historie logů \cite{honeybadger-pricing}, podporuje React \cite{honeybadger-react} i Django \cite{honeybadger-django}.
+    \item \href{https://sentry.io/}{\textbf{Sentry}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 7 dní historie dat \cite{sentry-pricing}, podporuje React i Django \cite{sentry-platforms},
+    \item \href{https://rollbar.com/}{\textbf{Rollbar}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 30 dní historie dat \cite{rollbar-pricing}, podporuje React i Django \cite{rollbar-platforms},
+    \item \href{https://www.bugsnag.com/}{\textbf{Bugsnag}}: zdarma nabízí 7~500 událostí/měsíc pro neomezený počet projektů, 7 dní historie dat \cite{bugsnag-pricing}, podporuje React i Django \cite{bugsnag-platforms},
+    \item \href{https://www.honeybadger.io/}{\textbf{Honeybadger}}: zdarma nabízí 12~000 událostí/měsíc pro neomezený počet projektů, 15 dní historie dat \cite{honeybadger-pricing}, podporuje React \cite{honeybadger-react} i Django \cite{honeybadger-django}.
 \end{enumerate}
 
 Jiný přístup k monitorování chyb na klientské části nabízí nástroje jako \href{https://logrocket.com/}{LogRocket}, který k zachyceným chybám přidá i nahrané video s kroky uživatele vedoucími k dané chybě (ve videu je obrazovka zachycující přesně to, co uživatel viděl) \cite{logrocket} -- nabízí zdarma 1~000 nahraných sezení uživatelů/měsíc (sezení je jedno kontinuální používání aplikace) \cite{logrocket-pricing}, 14 dní historie dat, podporuje React \cite{logrocket-react}.
 
-\section{Logování}
-logentries
+\section{Správa logů}
+Nasazené aplikace generují mnoho logů z různých procesů, v případě Heroku jsou všechny tyto logy agregovány do jednoho kanálu a nabízí možnost uchování posledních 1~500 logů nejdéle týden \cite{tools-logs1}. V případě, že chceme přístup k většímu počtu logů či ke starším, je třeba využít buď možnost napojení logů na některý z doplňků na Heroku, případně logy rovnou přímo přesměrovávat do jiné služby \cite{tools-logs1}. Tyto nástroje pro správu logů pak umožňují spravovat velké množství agregovaných logů generovaných z mnoha typů zařízení a serverů -- nad nimi provádět různé dotazy, vyhledávání, pohledy, případně i analýzy, upozornění na nějaké události ad. \cite{tools-logs2}.
+
+Minimální požadavky jsou:
+\begin{itemize}
+    \item zdarma pro použití na neomezenou dobu pro logy z Heroku,
+    \item SaaS (Software as a Service) -- tedy aplikace hostovaná provozovatelem služby,
+    \item historie logů alespoň na 7 dnů.
+\end{itemize}
+
+Pro správu logů existuje mnoho nástrojů, podle StackShare \cite{stackshare-log} volím 2 nejpoužívanější, které splňují všechny požadavky. I přes mnoho dalších funkcionalit těchto nástrojů se zde zaměřuji na primární účel, tedy ukládání logů, vyhledávání a upozorňování -- nehledě na to, jaké další funkce jsou poskytnuty zdarma (během hledání se ukázalo, že právě požadavek upozorňování většina nástrojů zdarma neposkytuje, filtrem dle požadavků tedy nakonec prošly pouze 2 nástroje).
+
+Nejpoužívanější nástroje podle StackShare (řazeno od nejpoužívanějšího) \cite{stackshare-log} splňující zmíněné požadavky:
+\begin{enumerate}
+    \item \href{https://www.papertrail.com/}{\textbf{Papertrail}}: zdarma nabízí 50~MB logů/měsíc pro neomezený počet projektů, 7 dní historie logů (2 dny vyhledávání), nastavitelná upozornění \cite{papertrail-pricing}, možnost použít Heroku doplněk pro jednoduché nastavení (nabízí dokonce více uložených logů -- 10~MB logů/den) \cite{heroku-papertrail},
+    \item \href{https://logentries.com/}{\textbf{Logentries}}: zdarma nabízí 5~GB logů/měsíc pro neomezený počet projektů, 7 dní historie logů \cite{logentries-pricing}, nastavitelná upozornění \cite{logentries-pricing2}, možnost použít Heroku doplněk pro jednoduché nastavení \cite{heroku-logentries}.
+\end{enumerate}
 
 
 \section{Statické typování}

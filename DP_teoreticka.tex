@@ -204,14 +204,14 @@ viz:
 
 \chapter{Nástroje pro usnadnění vývoje a údržby}
 
-Postupem času v rámci dalšího vývoje a rozšiřování aplikace se ukázalo, že je třeba použít pokročilé nástroje pro usnadnění samotného vývoje a údržby. Cílem této sekce je nastínit způsob jejich výběru. Jedním z hlavních požadavků je, aby vše potřebné bylo zdarma, diskvalifikuji zde tedy všechny nástroje nenabízející alespoň nějakou formu bezplatného používání na dobu neurčitou (tedy nikoliv jen pro studenty).
+Postupem času v rámci dalšího vývoje a rozšiřování aplikace se ukázalo, že je třeba použít pokročilé nástroje pro usnadnění samotného vývoje a údržby. Cílem této sekce je nastínit způsob jejich výběru. Jedním z hlavních požadavků je, aby vše potřebné bylo zdarma, neuvažuji zde tedy nástroje nenabízející alespoň nějakou formu bezplatného používání na dobu neurčitou (tedy nikoliv jen pro studenty). Při volbě nástrojů pro daný účel budou případně specifikovány další požadavky. Na základě průzkumu pak uvedu nalezené nástroje, jejich vlastnosti a seřadím je orientačně podle popularity na základě stránky \href{https://stackshare.io/}{StackShare}, která poskytuje \cite{stackshare} možnost sdílet používané nástroje a technologie firem a jednotlivců pro jejich projekty, nástroje a technologie srovnávat, hodnotit, řadit dle popularity apod.
 
 \section{Monitorování chyb}
-Pro každou aplikaci je důležité monitorovat chyby, díky tomu, nehledě na to, zda uživatel nahlásí problém a bude jakkoliv konkrétní, je možné pak chyby reprodukovat a opravit \cite{tools-exception}. Umožňují upozornit vývojáře na výskyt chyby, poskytnout mu kompletní informace o chybě a kontextu, ve kterém nastala  \cite{tools-exception}.
+Pro každou aplikaci je důležité monitorovat chyby, díky tomu (nehledě na to, zda uživatel nahlásí problém a bude jakkoliv konkrétní) je možné pak chyby snadněji reprodukovat a opravit \cite{tools-exception}. Nástroje pro monitorování chyb umožňují upozornit vývojáře na výskyt chyby, poskytnout mu kompletní informace o chybě a kontextu, ve kterém nastala  \cite{tools-exception}.
 
 Minimální požadavky jsou:
 \begin{itemize}
-    \item zdarma pro použití na neomezenou dobu jak na Heroku (tato diplomová práce), tak mimo Heroku (další aplikace např. v rámci ÚP) -- tedy (např. \href{https://airbrake.io/}{Airbrake} na Heroku nabízí plán zdarma \cite{airbrake-heroku}, ale ve svém ceníku jej nenabízí \cite{airbrake-pricing}, tedy ve výběru není),
+    \item zdarma pro použití na neomezenou dobu jak na Heroku (aplikace v rámci této práce), tak mimo Heroku (další aplikace např. v rámci ÚP) -- tento požadavek je zde kvůli existenci nástrojů jako např. \href{https://airbrake.io/}{Airbrake}, který na Heroku nabízí plán zdarma \cite{airbrake-heroku}, ale ve svém ceníku jej nenabízí \cite{airbrake-pricing}, tedy tyto nástroje neuvažuji,
     \item SaaS (Software as a Service) -- tedy aplikace hostovaná provozovatelem služby,
     \item možnost použití pro klientskou (JS s Reactem) i serverovou část (Python s Djangem).
 \end{itemize}
@@ -220,13 +220,13 @@ Pro monitorování chyb existuje mnoho nástrojů, podle StackShare \cite{stacks
 
 Nejpoužívanější nástroje podle StackShare (řazeno od nejpoužívanějšího) \cite{stackshare-exception} splňující zmíněné požadavky:
 \begin{enumerate}
-    \item \href{https://sentry.io/}{\textbf{Sentry}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 7 dní historie dat \cite{sentry-pricing}, podporuje React i Django \cite{sentry-platforms},
-    \item \href{https://rollbar.com/}{\textbf{Rollbar}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 30 dní historie dat \cite{rollbar-pricing}, podporuje React i Django \cite{rollbar-platforms},
-    \item \href{https://www.bugsnag.com/}{\textbf{Bugsnag}}: zdarma nabízí 7~500 událostí/měsíc pro neomezený počet projektů, 7 dní historie dat \cite{bugsnag-pricing}, podporuje React i Django \cite{bugsnag-platforms},
-    \item \href{https://www.honeybadger.io/}{\textbf{Honeybadger}}: zdarma nabízí 12~000 událostí/měsíc pro neomezený počet projektů, 15 dní historie dat \cite{honeybadger-pricing}, podporuje React \cite{honeybadger-react} i Django \cite{honeybadger-django}.
+    \item \href{https://sentry.io/}{\textbf{Sentry}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 7~dní historie dat \cite{sentry-pricing}, podporuje React i Django \cite{sentry-platforms},
+    \item \href{https://rollbar.com/}{\textbf{Rollbar}}: zdarma nabízí 5~000 událostí/měsíc pro neomezený počet projektů, 30~dní historie dat \cite{rollbar-pricing}, podporuje React i Django \cite{rollbar-platforms},
+    \item \href{https://www.bugsnag.com/}{\textbf{Bugsnag}}: zdarma nabízí 7~500 událostí/měsíc pro neomezený počet projektů, 7~dní historie dat \cite{bugsnag-pricing}, podporuje React i Django \cite{bugsnag-platforms},
+    \item \href{https://www.honeybadger.io/}{\textbf{Honeybadger}}: zdarma nabízí 12~000 událostí/měsíc pro neomezený počet projektů, 15~dní historie dat \cite{honeybadger-pricing}, podporuje React \cite{honeybadger-react} i Django \cite{honeybadger-django}.
 \end{enumerate}
 
-Jiný přístup k monitorování chyb na klientské části nabízí nástroje jako \href{https://logrocket.com/}{LogRocket}, který k zachyceným chybám přidá i nahrané video s kroky uživatele vedoucími k dané chybě (ve videu je obrazovka zachycující přesně to, co uživatel viděl) \cite{logrocket} -- nabízí zdarma 1~000 nahraných sezení uživatelů/měsíc (sezení je jedno kontinuální používání aplikace) \cite{logrocket-pricing}, 14 dní historie dat, podporuje React \cite{logrocket-react}.
+Jiný přístup k monitorování chyb na klientské části nabízí nástroje jako \href{https://logrocket.com/}{LogRocket} -- ten k zachyceným chybám přidá i nahrané video s kroky uživatele vedoucími k dané chybě (ve videu je obrazovka zachycující přesně to, co uživatel viděl) \cite{logrocket}. LogRocket nabízí zdarma 1~000 nahraných sezení uživatelů/měsíc (sezení je jedno kontinuální používání aplikace daným uživatelem) \cite{logrocket-pricing}, 14~dní historie dat, podporuje React \cite{logrocket-react}.
 
 \section{Správa logů}
 Nasazené aplikace generují mnoho logů z různých procesů, v případě Heroku jsou všechny tyto logy agregovány do jednoho kanálu a nabízí možnost uchování posledních 1~500 logů nejdéle týden \cite{tools-logs1}. V případě, že chceme přístup k většímu počtu logů či ke starším, je třeba využít buď možnost napojení logů na některý z doplňků na Heroku, případně logy rovnou přímo přesměrovávat do jiné služby \cite{tools-logs1}. Tyto nástroje pro správu logů pak umožňují spravovat velké množství agregovaných logů generovaných z mnoha typů zařízení a serverů -- nad nimi provádět různé dotazy, vyhledávání, pohledy, případně i analýzy, upozornění na nějaké události ad. \cite{tools-logs2}.
@@ -234,7 +234,7 @@ Nasazené aplikace generují mnoho logů z různých procesů, v případě Hero
 Minimální požadavky jsou:
 \begin{itemize}
     \item zdarma pro použití na neomezenou dobu pro logy z Heroku,
-    \item SaaS (Software as a Service) -- tedy aplikace hostovaná provozovatelem služby,
+    \item SaaS -- tedy aplikace hostovaná provozovatelem služby,
     \item historie logů alespoň na 7 dnů.
 \end{itemize}
 

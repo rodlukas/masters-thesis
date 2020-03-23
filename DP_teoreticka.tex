@@ -64,7 +64,7 @@ V případě vývoje na lokálním stroji se používá \cite{bp} pro serverovou
 
 \section{Prostředí, testování a nasazování}
 
-Aplikace \cite{bp} je verzována v privátním repozitáři na serveru GitHub. Při každém nahrání nové revize na server (\verb|push|) se na integračním serveru \href{https://travis-ci.com/}{Travis~CI} spustí sestavení aplikace, vytvoří se testovací databáze a spustí se základní testy (viz níže). Výsledné pokrytí kódu se poté nahraje na platformu \href{https://codecov.io/}{codecov.io} pro pokročilé statistiky o testování \cite{codecov}. Pokud vše na Travisu proběhne v pořádku, začne nasazení na produkční server běžící na \href{https://www.heroku.com/}{Heroku}. Nasazení na Heroku probíhá tak, že se přímo na něm spouští celé sestavení aplikace znovu, zmigruje se databáze a aplikace se nasadí. I tento průběh lze sledovat přímo z Travis terminálu.
+Aplikace \cite{bp} je verzována v privátním repozitáři na serveru GitHub. Při každém nahrání nové revize na server (\verb|push|) se na integračním serveru \href{https://travis-ci.com/}{Travis~CI} spustí sestavení aplikace, vytvoří se testovací databáze a spustí se základní testy (viz níže). Výsledné pokrytí kódu spočítané pomocí nástroje \href{https://coverage.readthedocs.io/}{Coverage.py} se poté nahraje na platformu \href{https://codecov.io/}{codecov.io} pro pokročilé statistiky o testování \cite{codecov}. Pokud vše na Travisu proběhne v pořádku, začne nasazení na produkční server běžící na \href{https://www.heroku.com/}{Heroku}. Nasazení na Heroku probíhá tak, že se přímo na něm spouští celé sestavení aplikace znovu, zmigruje se databáze a aplikace se nasadí. I tento průběh lze sledovat přímo z Travis terminálu.
 
 Spouštěné testy jsou základní a velmi jednoduché, otestují \cite{bp}:
 \begin{itemize}
@@ -204,7 +204,7 @@ viz:
 
 \chapter{Nástroje pro usnadnění vývoje a údržby}
 
-Postupem času v rámci dalšího vývoje a rozšiřování aplikace se ukázalo, že je třeba použít pokročilé nástroje pro usnadnění samotného vývoje a údržby. Cílem této sekce je nastínit způsob jejich výběru. Jedním z hlavních požadavků je, aby vše potřebné bylo zdarma, neuvažuji zde tedy nástroje nenabízející alespoň nějakou formu bezplatného používání na dobu neurčitou (tedy nikoliv jen pro studenty). Při volbě nástrojů pro daný účel budou případně specifikovány další požadavky. Na základě průzkumu pak uvedu nalezené nástroje, jejich vlastnosti a seřadím je orientačně podle popularity na základě stránky \href{https://stackshare.io/}{StackShare}, která poskytuje \cite{stackshare} možnost sdílet používané nástroje a technologie firem a jednotlivců pro jejich projekty, nástroje a technologie srovnávat, hodnotit, řadit dle popularity apod.
+Postupem času v rámci dalšího vývoje a rozšiřování aplikace se ukázalo, že je třeba použít pokročilé nástroje pro usnadnění samotného vývoje a údržby. Cílem této sekce je nastínit způsob jejich výběru. Jedním z hlavních požadavků je, aby vše potřebné bylo zdarma, neuvažuji zde tedy nástroje nenabízející alespoň nějakou formu bezplatného používání na dobu neurčitou (tedy nikoliv jen pro studenty). Při procházení ceníků budu brát také v úvahu fakt, že repozitář s projektem je open-source (to je jeden z cílů této práce). Při volbě nástrojů pro daný účel budou případně specifikovány další požadavky. Na základě průzkumu pak uvedu nalezené nástroje, jejich vlastnosti a seřadím je orientačně podle popularity na základě stránky \href{https://stackshare.io/}{StackShare}, která poskytuje \cite{stackshare} možnost sdílet používané nástroje a technologie firem a jednotlivců pro jejich projekty, nástroje a technologie srovnávat, hodnotit, řadit dle popularity apod.
 
 \section{Monitorování chyb}
 Pro každou aplikaci je důležité monitorovat chyby, díky tomu (nehledě na to, zda uživatel nahlásí problém a bude jakkoliv konkrétní) je možné pak chyby snadněji reprodukovat a opravit \cite{tools-exception}. Nástroje pro monitorování chyb umožňují upozornit vývojáře na výskyt chyby, poskytnout mu kompletní informace o chybě a kontextu, ve kterém nastala \cite{tools-exception}.
@@ -229,6 +229,7 @@ Nejpoužívanější nástroje podle StackShare (řazeno od nejpoužívanější
 Jiný přístup k monitorování chyb na klientské části nabízí nástroje jako \href{https://logrocket.com/}{LogRocket} -- ten k zachyceným chybám přidá i nahrané video s kroky uživatele vedoucími k dané chybě (ve videu je obrazovka zachycující přesně to, co uživatel viděl) \cite{logrocket}. LogRocket nabízí zdarma 1~000 nahraných sezení uživatelů/měsíc (sezení je jedno kontinuální používání aplikace daným uživatelem) \cite{logrocket-pricing}, 14~dní historie dat, podporuje React \cite{logrocket-react}.
 
 \section{Správa logů}
+% todo pravidlo https://12factor.net/logs
 Nasazené aplikace generují mnoho logů z různých procesů, v případě Heroku jsou všechny tyto logy agregovány do jednoho kanálu a nabízí možnost uchování posledních 1~500 logů nejdéle 1~týden \cite{tools-logs1}. V případě, že chceme přístup k většímu počtu logů či ke starším, je třeba využít buď možnost napojení logů na některý z doplňků na Heroku, případně logy rovnou přímo přesměrovávat do jiné služby \cite{tools-logs1}. Tyto nástroje pro správu logů pak umožňují spravovat velké množství agregovaných logů generovaných z mnoha typů zařízení a serverů -- nad nimi provádět mj. různé dotazy, vyhledávání, pohledy, případně i analýzy či upozornění na nějaké události \cite{tools-logs2}.
 
 Minimální požadavky jsou:
@@ -257,18 +258,66 @@ moznosti, ze python ma builtin, JS nema (uvest proc, viz ecma vyjadreni), jak se
 \subsection{Serverová část}
 
 \section{Statická analýza kódu}
-staticka analyza a kontrola kodu, hledani chyb, zero-days zranitelnosti, hodnoceni kvality kodu (LGTM...)
+Statická analýza kódu je efektivní nástroj pro posouzení kvality kódu (např. konzistence, čitelnost, zranitelnosti, výkon, pokrytí testy) projektu a předvídání potenciálně vznikajících problémů (tzv. \enquote{code smells}) bez spuštění samotného kódu \cite{medium-devgurus, static-overops}. Samotný kód je analyzován vůči sadě pravidel a standardů \cite{static-overops}
 
-\section{Lintery}
+Na základě průzkumu nástrojů zde zavádím vlastní dělení na nástroje představující vyšší a nižší vrstvu analýzy kódu, vysvětlení důvodů vedoucích k tomuto dělení následuje vzápětí.
+
+V první podsekci se zaměřím na rešerši nástrojů na vyšší vrstvě, které umožňují průběžnou kontrolu kvality kódu. Jak je vidět z \cite{guru-codereview, gh-awesomecodereview, medium-devgurus,stackshare-codereview, gh-awesomecodereview2}, v této oblasti není úplně jednoznačná terminologie -- těmto nástrojům se často též říká nástroje pro posuzování kvality kódu, zaměřují se třeba i na pokročilou práci s manuálním posuzováním kódu ad., někdy se též nazývají nástroje pro \textit{automatické} posuzování kvality kódu, což už je k této sekci bližší. V této první podsekci se tedy zaměřím na ty nástroje, které poskytují právě automatickou průběžnou kontrolu kvality kódu a dávají poté zpětnou vazbu pro kód aplikace.
+
+Ve druhé podsekci se zaměřím na nástroje z nižší vrstvy (tzv. lintery), na kterých často nástroje z vyšší vrstvy stavějí (proto také dělení na vyšší a nižší vrstvu pro lepší orientaci). Tyto nástroje se používají při samotném vývoji na lokálním zařízení a poté se mohou spouštět např. na integračním serveru.
+
+\subsection{Průběžná kontrola kvality kódu}
+
+Na zmíněné vyšší vrstvě se nalézají nástroje, které jsou provozované jako služby automaticky kontrolující kvalitu kódu. Obvykle jsou to služby typu SaaS, případně On-Premise (tedy opak SaaS \cite{globema-onpremise}) \cite{codebeat-engines}. Tyto nástroje lze do procesu vývoje zapojit a zlepšovat tak kvalitu kódu už od počátku -- např. nastavit hranice pro kvalitu kódu vzhledem k pokrytí kódu testy a nulovému počtu nalezených problémů, na základě toho se pak může třeba PR (Pull Request) změn automaticky označit jako úspěšný nebo nikoliv \cite{medium-devgurus}. To pak snižuje množství diskuzí mezi vývojáři, protože je zavedeno objektivní hodnocení kódu \cite{medium-devgurus}. Nejprve uvedu minimální požadavky na nástroje pro zúžení výběru:
+\begin{itemize}
+    \item zdarma pro použití na neomezenou dobu,
+    \item integrace s GitHub,
+    \item podpora JS, TS (TypeScript) a Python (ne nutně všech naráz),
+    \item SaaS -- tedy aplikace hostovaná provozovatelem služby \cite{oracle-saas}.
+\end{itemize}
+
+Při průzkumu těchto nástrojů jsem zjistil, že se prakticky dají dále rozdělit do dvou typů:
+\begin{enumerate}
+    \item Nástroje založené z valné většiny především na integraci mnoha různých nástrojů z nižší vrstvy (lintery), případně pouze na základních pravidlech pro kontrolu kódu jako např. délka metod, počet řádků souboru, složitost metod, duplikace apod. Jak uvádí \cite{globema-onpremise}, některé nástroje upřednostňují vytvoření vlastních pravidel místo integrace nástrojů kvůli lepší rozšířitelnosti a správě pravidel, ve výsledku pak tedy nabízejí alternativu ke službám integrující všechny standardní nástroje. Možná je také kombinace obou přístupů nebo funkce pro vytváření vlastních jednoduchých pravidel na míru projektu.
+    \item Nástroje založené na pokročilé hloubkové analýze kódu různými způsoby. Ty mohou být doplněné o možnost vytváření vlastních stejně pokročilých pravidel na míru projektu. Také mohou nabízet volitelnou integraci nástrojů z nižší vrstvy.
+\end{enumerate}
+
+Zde je na místě okomentovat, proč je toto rozdělení důležité. Nástroje prvního typu prakticky jen sdružují mnoho různých nástrojů na jednom místě, jejichž výsledky agregují a třídí přehledně na jednom místě. Právě toto sjednocení různých nástrojů do jedné služby je jejich přidaná hodnota oproti tomu, kdy by vývojář tyto nástroje spouštěl jednotlivě. Nástroje druhého typu nabízejí pokročilou hloubkovou kontrolu kódu způsobem, jakým to běžné lintery, na kterých stojí nástroje prvního typu, nezvládnou \cite{deepscan-lintercompare}. Díky tomu umožňují vyhledat velmi závažné problémy, chyby či zranitelnosti, které by jinak mohly být opomenuty \cite{deepscan-lintercompare, deepsource2}. To zvládnou díky vlastním pokročilým pravidlům a analýzám založených např. na umělé inteligenci \cite{deepsource2} apod. Jejich výhodou také je, že obvykle najdou reálné problémy místo mnoha nedůležitých, které mohou poskytnout nástroje prvního typu -- tuto myšlenku vystihují autoři DeepSource \cite{deepsource2}: \enquote{\textit{DeepSource is designed to understand the context of your code and filter out the noise from the results. This prevents warning blindness and encourages developers to take action on issues that matter.}}
+
+Nástroje prvního typu splňující minimální požadavky:
+\begin{itemize}
+    \item \href{https://www.codacy.com}{\textbf{Codacy}}: zdarma \cite{codacy-pricing}, podporuje JS, TS i Python \cite{codacy-langs}, GitHub integrace pro PR i commity \cite{codacy-gh}, založeno na integraci mnoha nástrojů do jedné služby \cite{codacy-engines},
+    \item \href{https://codeclimate.com}{\textbf{Code Climate}}: zdarma \cite{codeclimate-pricing}, podporuje JS, TS i Python \cite{codeclimate}, GitHub integrace pro PR i commity \cite{codeclimate-gh}, založeno na integraci mnoha nástrojů do jedné služby a dalších základních pravidel \cite{codeclimate-engines},
+    \item \href{https://www.codefactor.io}{\textbf{CodeFactor}}: zdarma \cite{codefactor-pricing}, podporuje JS, TS i Python \cite{codefactor}, GitHub integrace pro PR i commity \cite{codefactor}, založeno na integraci mnoha nástrojů do jedné služby a dalších základních pravidel \cite{codefactor-engines},
+    \item \href{https://www.code-inspector.com}{\textbf{Code Inspector}}: zdarma \cite{codeinspector-pricing}, podporuje JS, TS i Python \cite{codeinspector}, GitHub integrace pro PR i commity \cite{codeinspector}, založeno pouze na základních pravidlech \cite{codeinspector, codeinspector-engines},
+    \item \href{https://codebeat.co}{\textbf{codebeat}}: zdarma \cite{codebeat-pricing}, podporuje JS, TS i Python \cite{codebeat}, GitHub integrace pro PR i commity \cite{codebeat}, založeno pouze na základních pravidlech \cite{codebeat-engines},
+    \item \href{https://houndci.com}{\textbf{HoundCI}}: zdarma \cite{houndci}, podporuje JS, TS i Python \cite{houndci}, GitHub integrace jen pro PR \cite{houndci}, založeno na integraci mnoha nástrojů do jedné služby \cite{houndci-engines},
+    \item \href{https://sider.review}{\textbf{Sider}}: zdarma \cite{sider-pricing}, podporuje JS, TS i Python \cite{sider-engines}, GitHub integrace jen pro PR \cite{sider}, založeno na integraci mnoha nástrojů do jedné služby a vytváření vlastních pravidel na míru projektu \cite{sider-engines}.
+\end{itemize}
+
+Nástroje druhého typu splňující minimální požadavky:
+\begin{itemize}
+    \item \href{https://deepsource.io/}{\textbf{DeepSource}}: zdarma \cite{deepsource}, podporuje jen Python \cite{deepsource}, GitHub integrace pro PR i commity \cite{deepsource-docs}, založeno na pokročilé hloubkové analýze kódu \cite{deepsource2},
+    \item \href{https://deepscan.io}{\textbf{DeepScan}}: zdarma \cite{deepscan-pricing}, podporuje jen JS a TS (podporuje i React) \cite{deepscan}, GitHub integrace pro PR i commity \cite{deepscan}, založeno na pokročilé hloubkové analýze kódu \cite{deepscan}, možnost integrace ESLint \cite{deepscan-eslint},
+    \item \href{https://lgtm.com}{\textbf{LGTM}}: zdarma \cite{lgtm}, podporuje JS, TS i Python \cite{lgtm-faq}, GitHub integrace pro PR i commity (PR analyzuje vždy okamžitě, commity analyzuje jednou denně) \cite{lgtm-faq}, založeno na pokročilé hloubkové analýze kódu, možnost vytváření pokročilých pravidel na míru projektu \cite{lgtm},
+    \item \href{https://sonarcloud.io/}{\textbf{SonarCloud}}: zdarma \cite{sonarcloud}, podporuje JS, TS (podporuje i React \cite{sonarcloud-js}) i Python \cite{sonarcloud}, GitHub integrace pro PR i commity \cite{sonarcloud-gh}, založeno na pokročilé hloubkové analýze kódu \cite{sonarcloud2}, možnost připojit i vygenerované reporty z externích nástrojů (linterů) \cite{sonarcloud-engines},
+    \item \href{https://www.deepcode.ai/}{\textbf{DeepCode}}: zdarma \cite{deepcode}, nezávislé na jazyku \cite{deepsource2}, GitHub integrace pro PR i commity \cite{deepcode}, založeno na pokročilé hloubkové analýze kódu (používá rozsáhlé strojové učení) \cite{deepcode2}.
+\end{itemize}
+
+\subsection{Lintery}
+
+V předchozí sekci jsem uváděl, že některé nástroje (z vyšší vrstvy) z valné většiny staví na integraci mnoha drobnějších nástrojů (z nižší vrstvy), tzv. linterů. Smyslem této sekce je vysvětlit jejich vlastnosti a fungování a poté prozkoumat možnosti linterů pro aplikaci ÚP. 
+
 lintery (ESlint.. + styly airbnb, standardjs, info o spouste pluginech, standardech, vyvoji ve spolupraci s TS)
 
 
+\section{Formátování kódu}
+code formattery (prettier, black...) + souvislost s flake8 apod.
 
-rešerše nástrojů pro:
+
+další možné rešerše nástrojů pro:
 \begin{itemize}
-\item code formattery (prettier, black...) + souvislost s flake8 apod.
 \item analyza pruchodu aplikaci (google analytics)
-\item pokryti kodu (codecov, coverage.py...)
 \item pripadne nejake pokrocile veci z travisu co se pouzivaji
 \item + hledani dead code - python vulture
 \item nastroje pro vyvoj frontendu - bakalarka byla postavena na CRA (create-react-app), ktera byla ejectnuta (takze update reactu byl prakticky nemozny), z toho duvodu se nejprv preslo na nastroj nwb, ktery ale pozdeji nebyl udrzovany a doslo ke zkusebni migraci na neutrinojs (souvisi s mozillou) a na vlastni reseni pres webpack - tady bych teda prosel, co tyhle nastroje umoznuji, ze vlastne stavi nad webpackem, ze je to vlastne abstraktni vrstva nad nim, ktera vsechno zjednodusuje, ale nevyhoda je, kdyz ten nastroj neco neumoznuje (viz nwb), tak mas smulu.. takze pak nejdou lintery, nejde TS... zminit moznosti nastroju, jake nastroje jsou, vyhody a nevyhody; v ramci implementace pak zminim cely pribeh s nwb, neutrinojs a custom webpackem, na zaver uvedu proc jsem vse zmigroval na custom webpack ikdyz neutrinojs fungovalo taky

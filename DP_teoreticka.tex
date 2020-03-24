@@ -48,7 +48,7 @@ Aplikace vystavuje REST~API postavené na frameworku \href{https://www.django-re
 
 \subsection{Klientská část}
 
-Klientská část aplikace \cite{bp} je napsána v JS (JavaScript) ve standardu ECMAScript®~2018. Pro správu závislostí se používá soubor \verb|package.json|, v němž jsou verze přibližně poloviny knihoven definovány napevno (bez možnosti jakkoliv malé aktualizace), druhá polovina knihoven přijímá malé aktualizace. 
+Klientská část aplikace \cite{bp} je napsána v JS (JavaScript) ve standardu ECMAScript®~2018 a čistém CSS (Cascading Style Sheets). Pro správu závislostí se používá soubor \verb|package.json|, v němž jsou verze přibližně poloviny knihoven definovány napevno (bez možnosti jakkoliv malé aktualizace), druhá polovina knihoven přijímá malé aktualizace. 
 
 Klientskou část aplikace lze klasifikovat jako: 
 \begin{itemize}
@@ -178,6 +178,8 @@ Selenium je mocný nástroj, nevýhodou je ale poměrně zdlouhavý zápis skrip
 
 Selenium se postupem času stalo průmyslovým standardem pro UI testování, a to zejména díky jednoduchosti použití, kompatibilitě (s mnoha prohlížeči, možnost použití s mnoha programovacími jazyky) a popularitě \cite{test-selenium1}. Jak ale uvádí \cite{test-cypress1}, v případě asynchronních aplikací je Selenium složitější používat vzhledem k principu jeho fungování, protože je třeba vždy explicitně čekat na objevení elementu na stránce, problémem ale je, že nevíme, jak dlouho čekat. I z toho důvodu zde autor nabízí alternativu v podobě novějšího \href{https://www.cypress.io/}{Cypress}, který nabízí mnohem lepší práci s asynchronními aplikacemi, problémem ale je možnost použití pouze s JS, malá komunita a popularita, méně návodů \cite{test-cypress1}. Další nevýhodou Cypress byla podpora výhradně prohlížeče Google Chrome, to se ale v únoru 2020 změnilo \cite{test-cypress2}, naopak výhodou uváděnou např. v \cite{test-cypress3} byla lepší dokumentace oproti Seleniu, dokumentace Selenia ale byla kompletně přepsána a na podzim 2019 nasazena \cite{test-selenium2}.
 
+\begin{comment}
+% TODO?
 \chapter{Konfigurace více prostředí}
 
 tudle kapitolu možná nezařadím a rovnou popíšu způsob řešení v praktické části
@@ -191,7 +193,6 @@ obsah: Deployment environments a s tím související Release management
 \end{itemize}
 
 viz:
-
 \begin{itemize}
 \item https://continuousdelivery.com/implementing/patterns/\#the-deployment-pipeline
 \item https://en.wikipedia.org/wiki/Deployment\_environment
@@ -201,6 +202,8 @@ viz:
 \item http://guides.beanstalkapp.com/deployments/best-practices.html
 \item ...
 \end{itemize}
+
+\end{comment}
 
 \chapter{Nástroje pro usnadnění vývoje a údržby}
 
@@ -304,24 +307,44 @@ Nástroje druhého typu splňující minimální požadavky:
     \item \href{https://www.deepcode.ai/}{\textbf{DeepCode}}: zdarma \cite{deepcode}, nezávislé na jazyku \cite{deepsource2}, GitHub integrace pro PR i commity \cite{deepcode}, založeno na pokročilé hloubkové analýze kódu (používá rozsáhlé strojové učení) \cite{deepcode2}.
 \end{itemize}
 
-\subsection{Lintery}
+\subsection{Lintery}\label{lintery}
 
 V předchozí sekci jsem uváděl, že některé nástroje (z vyšší vrstvy) z valné většiny staví na integraci mnoha drobnějších nástrojů (z nižší vrstvy), tzv. linterů. Smyslem této sekce je vysvětlit jejich vlastnosti a fungování a poté prozkoumat možnosti linterů pro aplikaci ÚP. 
 
-lintery (ESlint.. + styly airbnb, standardjs, info o spouste pluginech, standardech, vyvoji ve spolupraci s TS)
+Lintery jsou nástroje provádějící statickou analýzu kódu \cite{linter-medium1}. V případě dynamicky typovaných jazyků můžeme říci, že z hlediska samotné statické analýzy nahrazují kompilátor staticky typovaných jazyků \cite{linter-medium1}. Lintery pomohou vyvarovat se mnoha (samozřejmě ne všech) chyb, které se mohou projevit až při běhu aplikace \cite{linter-medium1}.
+
+Lintery pracují s množinou uživatelem definovaných pravidel a dohlíží na jejich splnění, pravidla jsou jak obecná, tak vytvořená na míru některým frameworkům/knihovnám (např. Reactu) \cite{linter-medium1}. Některá z pravidel umožňují lintery automaticky opravit bez manuálního zásahu programátora, některá pravidla opravit nelze (např. komplexní problémy jako použití zastaralého API ad.) a programátor musí kód opravit manuálně \cite{linter-medium1}. Pravidla lze rozdělit do dvou skupin -- logická (chyby v kódu, potenciální problémy, špatné vzory v kódu) a stylistická (kód podle konvencí) -- lintery pak podporují pravidla z jedné či obou skupin \cite{linter-realpython}.
+
+Nástroje pro statickou analýzu kódu obvykle stojí na konceptu AST (Abstract Syntax Tree) -- ten reprezentuje zdrojový kód jako stromovou strukturu, kořen stromu je tvořen samotným souborem, jeho potomci jsou konstrukty z nejvyšší úrovně tohoto souboru atd. V případě linterů je pak AST použit pro kontrolu splnění (případně pak i automatickou opravu přímo v daném místě) všech definovaných pravidel napříč stromem (nad jeho uzly) \cite{linter-medium1, linter-medium2}.
+
+Než uvedu nejběžnější lintery používané pro jazyky v aplikaci ÚP, je třeba říci, že některé lintery prakticky jen zaobalují několik linterů dohromady (např. Flake8) \cite{linter-realpython}.
+
+Pro \textbf{JS} je nejpopulárnější linter \href{https://eslint.org/}{ESLint}, je vysoce konfigurovatelný a nabízí integraci s mnoha různými nástroji, mnoho z pravidel lze automaticky opravit \cite{linter-medium1}. Mimo jiné nabízí možnost nakonfigurovat používání různých standardů (např. Airbnb) \cite{linter-restishistory} či doplňků pro různé knihovny (např. pro React) \cite{react-eslint}. Před vznikem ESLint byl populární také \href{https://jshint.com/}{JSHint}, který vzešel z \href{https://jslint.com/}{JSLint} \cite{linter-restishistory}.
+
+Pro \textbf{TS} byl používaný \href{https://palantir.github.io/tslint/}{TSLint}, ale v roce 2019 bylo oznámeno utlumení jeho vývoje ve prospěch rozvoje podpory TS pod jednou střechou v ESLint \cite{linter-eslintts}.
+
+Pro \textbf{CSS} je velmi populární \href{https://stylelint.io/}{stylelint} \cite{stylelint, linter-css}, alternativou je \href{http://csslint.net/}{CSSLint}, který se ale už dle \cite{linter-css} moc nepoužívá a není udržovaný.
+
+Pro \textbf{Python} je na výběr více linterů lišících se zaměřením definovaných pravidel -- na logická pravidla se zaměřuje \href{https://github.com/PyCQA/pyflakes}{Pyflakes} a \href{https://github.com/PyCQA/bandit}{Bandit}, na stylistická pravidla se zaměřuje \href{https://github.com/PyCQA/pycodestyle}{pycodestyle} a na obojí se zaměřuje \href{https://www.pylint.org/}{Pylint} (ten je používaný nejvíce \cite{linter-python}) \cite{linter-realpython}. Také se používají lintery, které zaobalují několik linterů dohromady -- \href{https://flake8.pycqa.org/en/latest/}{Flake8} (mj. Pyflakes, pycodestyle) a \href{https://github.com/klen/pylama}{Pylama} (mj. pycodestyle, Pyflakes, Pylint) \cite{linter-realpython}.
 
 
-\section{Formátování kódu}
-code formattery (prettier, black...) + souvislost s flake8 apod.
+\subsection{Formattery}
 
+Formattery jsou nástroje, které zajistí konzistentní formátování kódů  -- to umožní jednodušší čitelnost, srozumitelnost a vyšší efektivitu při práci v týmu \cite{linter-medium1}. Umožní zaměřit se na to nejdůležitější -- co kód dělá \cite{linter-restishistory}. Vzhledem k tomu, že také pracují nad samotným kódem a provádějí jeho analýzu, lze je též řadit do této kapitoly \cite{linter-medium1}. Stejně jako lintery pracují nad AST -- soubor převedou do AST, ignorují nedůležité informace související s původním formátováním a výsledný upravený AST zapíšou zpět do souboru, konzistentně \cite{linter-medium1}. Díky tomuto přegenerování AST jsou v oblasti formátování kódu mnohem mocnější než samotné lintery, které, jak již bylo zmíněno v \ref{lintery}, aplikují opravu v daném místě AST, AST nepřegenerovávají celý -- proto se vyplatí používat lintery i formattery zároveň a nechat je pracovat v oblastech, kde excelují, tedy formatter pro komplexní formátování kódu a linter pro pravidla týkající se syntaxe, problémů a nových vlastností  \cite{linter-medium2}. Tato kombinace umožní psát v týmu konzistentní kód, tedy kód, kde nelze prakticky poznat, kdo jej psal, s dobrými vzory a méně chybami \cite{linter-restishistory}.
 
+Pro \textbf{JS, TS a CSS} je nejpopulárnější formatter \href{https://prettier.io/}{Prettier} \cite{linter-medium1}. 
+
+Pro \textbf{Python} se používají 3 formattery: \href{https://github.com/psf/black}{Black}, \href{https://github.com/google/yapf}{YAPF}, \href{https://github.com/hhatto/autopep8}{autopep8} \cite{formatter-python, linter-realpython}. Liší se zejména konfigurovatelností a mírou splnění Python standardu PEP~8 \cite{linter-realpython}.
+
+\begin{comment}
+% TODO?
 další možné rešerše nástrojů pro:
 \begin{itemize}
-\item analyza pruchodu aplikaci (google analytics)
 \item pripadne nejake pokrocile veci z travisu co se pouzivaji
 \item + hledani dead code - python vulture
 \item nastroje pro vyvoj frontendu - bakalarka byla postavena na CRA (create-react-app), ktera byla ejectnuta (takze update reactu byl prakticky nemozny), z toho duvodu se nejprv preslo na nastroj nwb, ktery ale pozdeji nebyl udrzovany a doslo ke zkusebni migraci na neutrinojs (souvisi s mozillou) a na vlastni reseni pres webpack - tady bych teda prosel, co tyhle nastroje umoznuji, ze vlastne stavi nad webpackem, ze je to vlastne abstraktni vrstva nad nim, ktera vsechno zjednodusuje, ale nevyhoda je, kdyz ten nastroj neco neumoznuje (viz nwb), tak mas smulu.. takze pak nejdou lintery, nejde TS... zminit moznosti nastroju, jake nastroje jsou, vyhody a nevyhody; v ramci implementace pak zminim cely pribeh s nwb, neutrinojs a custom webpackem, na zaver uvedu proc jsem vse zmigroval na custom webpack ikdyz neutrinojs fungovalo taky
 \end{itemize}
+\end{comment}
 
 \chapter{Zvolené technologie}
 

@@ -62,7 +62,7 @@ Konfigurace celé klientské části stojí na nástroji \href{https://github.co
 
 V případě vývoje na lokálním stroji se používá \cite{bp} pro serverovou část vývojový Django server a pro klientskou část \href{https://github.com/webpack/webpack-dev-server}{webpack-dev-server}, oba nabízejí podporu pro \enquote{hot reloading} (tedy okamžité automatické projevení změn v kódu bez kompletního znovunačtení aplikace \cite{webpack-docs-hmr}) a v tomto ohledu bylo vše i díky zmíněným knihovnám zprovozněno.
 
-\section{Prostředí, testování a nasazování}
+\section{Prostředí, testování a nasazování}\label{sec:prostreditestovaninasazovani}
 
 Aplikace \cite{bp} je verzována v privátním repozitáři na serveru GitHub. Při každém nahrání nové revize na server (\verb|push|) se na integračním serveru \href{https://travis-ci.com/}{Travis~CI} spustí sestavení aplikace, vytvoří se testovací databáze a spustí se základní testy (viz níže). Výsledné pokrytí kódu spočítané pomocí nástroje \href{https://coverage.readthedocs.io/}{Coverage.py} se poté nahraje na platformu \href{https://codecov.io/}{codecov.io} pro pokročilé statistiky o testování \cite{codecov}. Pokud vše na Travisu proběhne v pořádku, začne nasazení na produkční server běžící na \href{https://www.heroku.com/}{Heroku}. Nasazení na Heroku probíhá tak, že se přímo na něm spouští celé sestavení aplikace znovu, zmigruje se databáze a aplikace se nasadí. I tento průběh lze sledovat přímo z Travis terminálu.
 
@@ -126,7 +126,7 @@ Díky vytvoření automatizovaných testů lze aplikaci průběžně testovat na
 
 Automatizované testování prostupuje více úrovněmi softwarového projektu \cite{test-kitner2} a je důležité na počátku tvorby testů stanovit, kde se bude automaticky testovat \cite{test-kitner}. Jednou z častých strategií zejména agilních týmů je strategie tzv. \enquote{testovací pyramidy} \cite{test-smartbear}. V této sekci tuto strategii představím a popíši, jak se dle různých zdrojů aplikuje, zaměřím se také na další alternativní přístupy.
 
-\subsection{Testovací pyramida}
+\subsection{Testovací pyramida}\label{subsec:testingpyramid}
 
 Testovací pyramida rozděluje automatizované testy do několika oblastí \cite{test-smartbear}, viz obrázek~\ref{fig:testing_pyramid}. Popis pyramidy vychází z \cite{test-kitner2, test-smartbear}. Obvykle by měly být jádrem automatizovaných testů unit testy, které ověřují, zda jednotlivé dílčí části kódu odpovídají požadavkům. Těchto testů by měla být většina. Následují testy komponent (např. přihlášení uživatele, tvorba účtu, objednávky) a integrační testy (ověří, že jednotlivé komponenty spolu interagují tak, jak bylo zamýšleno, např. data zákazníka jsou napříč celým procesem objednávky korektně přenášena). Jak je vidět na obrázku~\ref{fig:testing_pyramid}, vrstvy nejsou pevně definované a často některé splynou v jednu \cite{test-fowler}. Pod vrcholem pyramidy se nalézají API testy a na vrcholu jsou UI testy (někdy nazývané end-to-end, funkční či e2e), které by měly typicky mít nejmenší podíl ze všech automatizovaných testů vzhledem k jejich náročnosti na tvorbu a křehkosti při změnách UI. Mimo pyramidu, případně na úplný vrchol lze pak zařadit samotné manuální testy UI.
 
@@ -143,7 +143,7 @@ Při volbě správné části k testování je třeba řídit se tím, která č
 
 Strategie testovací pyramidy je často špatně interpretována a může například vyústit v napsání naprosto všech možných unit testů a poté přesunutí do vyšší vrstvy atd., což pro některé týmy může být vhodné, pro jiné ale zbytečně komplexní a drahé \cite{test-cucumber2}. Principem pyramidy je naznačit, že testů na vyšší vrstvě má být méně než na nižší \cite{test-cucumber2}. Ačkoliv se princip testovací pyramidy stává standardem pro agilní týmy, je třeba rozumět principům, se kterými tento přístup přichází a na základě zavést způsoby testování pro konkrétní projekt \cite{test-cucumber2}. Na závěr je třeba říci, že veškeré zmíněné termíny, názvy a definice nejsou rigorózní a často panují různé názory např. na rozdělení testovací pyramidy, definici UI testování (někdy synonymum end-to-end testování, někdo nikoliv z toho důvodu, že UI lze testovat i pomocí unit testů) a mnoho dalšího, při tvorbě testů v rámci softwarového produktu je tedy vždy třeba jasně vymezit a definovat rozsah testů, sjednotit terminologii a na všem se domluvit \cite{test-fowler}.
 
-\subsection{Alternativní přístupy}
+\subsection{Alternativní přístupy}\label{subsec:testingtrophy}
 
 Alternativním přístupem pro testování klientské části je strategie tzv. \enquote{testovací trofeje} \cite{test-trophy}, která se skládá ze 4 částí, od té nejnižší: statické testy (založené na statickém typování a linterech, viz sekce \ref{sec:statickaanalyzakodu} a \ref{sec:staticketypovani}), unit testy (cílené na kritické části aplikace), integrační testy (ověřující, že vše spolu korektně spolupracuje) a end-to-end funkční testy (simulace chování uživatele při důležitých průchodech aplikací prostřednictvím automatizovaného klikání -- tedy UI testy z testovací pyramidy). Jak ale uvádí \cite{test-roth}, tento přístup opět může pro některé týmy a aplikace být vhodný, pro některé nikoliv a bez dostatečné znalosti konkrétního kódu aplikace a problematiky může následování nejen tohoto vzoru vyústit ve slepou cestu.
 
@@ -213,7 +213,7 @@ Nejprve se zaměřím na nástroje pro monitorování chyb a správu logů. Při
 
 Poté se zaměřím na výhody a nevýhody statického a dynamického typování jazyků a možnosti zavedení anotací typů v projektu ÚP. V poslední kapitole se pak zaměřím na možnosti statické analýzy kódu projektu, rozdělení jednotlivých možných nástrojů a popsání jejich vlastností. Obě tyto kapitoly ukazují další možnosti usnadnění vývoje a údržby aplikace.
 
-\section{Monitorování chyb}
+\section{Monitorování chyb}\label{sec:monitorovanichyb}
 Pro každou aplikaci je důležité monitorovat chyby, díky tomu (nehledě na to, zda uživatel nahlásí problém a bude jakkoliv konkrétní) je možné pak chyby snadněji reprodukovat a opravit \cite{tools-exception}. Nástroje pro monitorování chyb umožňují upozornit vývojáře na výskyt chyby, poskytnout mu kompletní informace o chybě a kontextu, ve kterém nastala \cite{tools-exception}.
 
 Minimální požadavky na nástroje jsou:
@@ -235,7 +235,7 @@ Nejpoužívanější nástroje podle StackShare (řazeno od nejpoužívanější
 
 Jiný přístup k monitorování chyb na klientské části nabízí nástroje jako \href{https://logrocket.com/}{LogRocket} -- ten k zachyceným chybám přidá i nahrané video s kroky uživatele vedoucími k dané chybě (ve videu je obrazovka zachycující přesně to, co uživatel viděl) \cite{logrocket}. LogRocket nabízí zdarma 1~000 nahraných sezení uživatelů/měsíc (sezení je jedno kontinuální používání aplikace daným uživatelem) \cite{logrocket-pricing}, 14~dní historie dat, podporuje React \cite{logrocket-react}.
 
-\section{Správa logů}
+\section{Správa logů}\label{sec:spravalogu}
 % todo pravidlo https://12factor.net/logs
 Nasazené aplikace generují mnoho logů z různých procesů, v případě Heroku jsou všechny tyto logy agregovány do jednoho kanálu a nabízí možnost uchování posledních 1~500 logů nejdéle 1~týden \cite{tools-logs1}. V případě, že chceme přístup k většímu počtu logů či ke starším, je třeba využít buď možnost napojení logů na některý z doplňků na Heroku, případně logy rovnou přímo přesměrovávat do jiné služby \cite{tools-logs1}. Tyto nástroje pro správu logů pak umožňují spravovat velké množství agregovaných logů generovaných z mnoha typů zařízení a serverů -- nad nimi provádět mj. různé dotazy, vyhledávání, pohledy, případně i analýzy či upozornění na nějaké události \cite{tools-logs2}.
 
@@ -379,7 +379,6 @@ Pro \textbf{Python} se používají 3 formattery: \href{https://github.com/psf/b
 % TODO?
 další možné rešerše nástrojů pro:
 \begin{itemize}
-\item pripadne nejake pokrocile veci z travisu co se pouzivaji
 \item + hledani dead code - python vulture
 \item nastroje pro vyvoj frontendu - bakalarka byla postavena na CRA (create-react-app), ktera byla ejectnuta (takze update reactu byl prakticky nemozny), z toho duvodu se nejprv preslo na nastroj nwb, ktery ale pozdeji nebyl udrzovany a doslo ke zkusebni migraci na neutrinojs (souvisi s mozillou) a na vlastni reseni pres webpack - tady bych teda prosel, co tyhle nastroje umoznuji, ze vlastne stavi nad webpackem, ze je to vlastne abstraktni vrstva nad nim, ktera vsechno zjednodusuje, ale nevyhoda je, kdyz ten nastroj neco neumoznuje (viz nwb), tak mas smulu.. takze pak nejdou lintery, nejde TS... zminit moznosti nastroju, jake nastroje jsou, vyhody a nevyhody; v ramci implementace pak zminim cely pribeh s nwb, neutrinojs a custom webpackem, na zaver uvedu proc jsem vse zmigroval na custom webpack ikdyz neutrinojs fungovalo taky
 \end{itemize}
@@ -387,15 +386,42 @@ další možné rešerše nástrojů pro:
 
 \chapter{Zvolené technologie}
 
+V této kapitole uvedu, které nástroje a technologie zvolím pro použití a mj. je budu zavádět v následující praktické části. Volba bude obsahovat argumenty vycházející z provedených rešerší v rámci celé teoretické části.
 
+\section{Testování}
 
+V souladu se zadáním práce bude implementováno automatizované testování API a UI. Vzhledem k tomu, že v současné verzi aplikace chybělo testování úplně (resp. bylo zde několik jen velmi základních testů prakticky na smoke úrovni, viz sekce~\ref{sec:prostreditestovaninasazovani}), byl zvolen přístup orientace API a UI testů na klíčové funkce a průchody v aplikaci, aby bylo zajištěno, že obvykle používané části aplikace budou vždy za jakékoliv situace funkční. Vzhledem ke křehkosti UI testů bude při jejich implementaci kladen důraz na co nejvyšší nezávislost na detailech UI, aby při změnách nebylo třeba do testů zasahovat vůbec, nebo v co nejmenší míře. Výhodou zavedení testů API, které jsou v \enquote{testovací pyramidě} (viz sekce~\ref{fig:testing_pyramid}) na nižší úrovni než UI testy je právě větší stabilita API oproti UI a mnohem větší rychlost samotných testů -- pokud neprojdou API testy, není se třeba ani zatěžovat s UI testováním (klientská část totiž stojí na používání REST API). Ze strategie \enquote{testovací trofeje} (viz sekce~\ref{fig:testing_trophy}) bude vycházet použití nástrojů pro statické typování a statickou analýzu kódu (tedy nejnižší úroveň této strategie), jejichž volbu uvedu v následujících sekcích -- to umožní bez tvorby dalších testů na nižších úrovních testovací pyramidy kontrolovat problémy a kvalitu kódu.
 
-Na základě rešerše zvolím technologie, které pak zakomponuji v implementaci do appky - oargumentuji volbu..
+Manuální testování stále má své místo v akceptační části, testech použitelnosti a při samotném vývoji.
 
-tzn:
+Co se týče implementace samotného testování, bude kompletně provedeno v jazyce Python. Zde samozřejmě mohla padnout volba prakticky na jakýkoliv jazyk, smysl ale dává testování psát v jednom z již používaných jazyků v rámci projektu ÚP, tedy Python či JS. Python byl zvolen především z důvodu možnosti jednoduché integrace s Djangem a také proto, že celá část implementace testů byla vytvářena jako semestrální práce v rámci předmětu \textit{\href{https://courses.fit.cvut.cz/MI-PYT/}{MI-PYT}}. Pro testování bude využit nástroj behave založený na BDD -- tedy budou sepsány v prakticky přirozeném jazyce (Gherkin) scénáře, ke kterým budou implementovány testy. Kromě jasně definovaných scénářů tyto soubory díky zápisu v přirozeném jazyce poslouží jako dokumentace, což se hodí jak pro účely samotného projektu ÚP, tak i pro zmíněnou semestrální práci, kde tímto může být jednoduše splněn požadavek dokumentace bez jakékoliv práce navíc a vyučující pak má přehled o splnění úkolu. Pro UI testování bude využito Selenium, a to především díky faktu, že se jedná prakticky o standard v oblasti UI testování, je nejpoužívanější a rozšíří to i mé obzory v této mně dosud neznámé oblasti.
 
-\begin{itemize}
-\item 1. cim testovat a jak
-\item 2. jaka prostredi a jak delat releasy, jak to vse bude fungovat (a fakt funguje)
-\item 3. zvolene nastroje pro usnadneni vyvoje a udrzby
-\end{itemize}
+\section{Nástroje pro usnadnění vývoje a údržby}
+
+\subsection{Monitorování chyb}
+
+Jako nástroj, který bude mít na starost monitorování chyb na serverové i klientské části aplikace ÚP jsem zvolil Sentry. Dle zjištěných informací (v sekci~\ref{sec:monitorovanichyb}) se jedná o nejpoužívanější nástroj v této oblasti a splňuje všechny vytyčené požadavky. Dále bude otestována možnost použití LogRocket.
+
+\subsection{Správa logů}
+
+Pro správu logů, tedy nástroj, který bude z Heroku přebírat všechny logy a umožní v nich vyhledávat v historii a upozorňovat na zvolené událostí, byl zvolen nástroj Logentries. Dle zjištěných informací (v sekci~\ref{sec:spravalogu}) se sice jedná až o druhý nejpoužívanější nástroj v této oblasti splňující vytyčené požadavky, od prvního nástroje Papertrail, v porovnání s tímto nástrojem ale nabízí více prostoru pro logy a umožní vyhledávat v záznamech starších než 2 dny.
+
+\subsection{Statické typování}
+
+Vzhledem k výhodám typových anotací (viz sekce~\ref{sec:staticketypovani}) budou zavedeny na serverové části (Python) i na klientské části (JS).
+
+Na serverové části bude využita standardizovaná syntaxe zápisu anotací a pro kontrolu typů bude použit oficiální referenční nástroj mypy a také vestavěná typová kontrola IDE PyCharm. Volba nástrojů pro typovou kontrolu není nevratný krok a v případě zjištěných nedostatků je lze jednoduše nahradit za jiné nalezené alternativy.
+
+Na klientské části, která je psána v JS, který nenabízí standardizovanou syntaxi pro anotaci typů (viz podsekce~\ref{subsec:types-frontend}) se nabízí volba mezi Flow a TypeScript. Použití Flow dává smysl z hlediska architektury klientské části, která je postavena na Reactu -- oba nástroje pochází z dílen Facebooku -- Flow nabízí nativní podporu Reactu a je jednoduché jej začlenit do stávajícího projektu (nevyžaduje např. kompilátor apod.). Použití TypeScriptu naopak dává smysl z hlediska lepší podpory typových definicí knihoven třetích stran, lepší integraci s IDE a časté migraci i větších firem právě z Flow na TS. I přes poměrně rozsáhlou rešerši ale volbu mezi těmito dvěma nástroji neprovedu rovnou zde v teoretické části a přenechám ji do části praktické, kde provedu zkušební zavedení Flow i TS do projektu a až na základě vlastních zkušeností (a ověření pravdivosti výroků zjištěných v rešerši) a zvážení provedu finální volbu a kompletní migraci.
+
+\subsection{Statická analýza kódu}
+
+V rámci rešerše jsem zjistil, že se nástroje pro statickou analýzu dají rozdělit na několik částí. Lze na ně nahlížet podle vrstev -- na nástroje z vyšší vrstvy pro průběžnou kontrolu kvality kódu a z nižší vrstvy, což jsou prakticky lintery.
+
+Nástroje z vyšší vrstvy jsem dále dělil do dvou typů podle dalších nabízených možností -- vzhledem k velké podobnosti nástrojů na této vyšší vrstvě budou v praktické části otestovány všechny nalezené nástroje a na základě jejich funkčnosti, nalezených problémů, nabízených funkcí a přívětivosti pak budou zvoleny ty vhodné pro tento projekt.
+
+Linterem (nástroje z nižší vrstvy) pro klientskou část bude ESLint, který je v této oblasti nejpopulárnější. Pro CSS se použije též nejpoužívanější stylelint. Vzhledem k tomu, že kód serverové části oproti té klientské není tolik rozsáhlý, nebude prozatím zaváděn linter pro Python, využije se služeb pouze formatteru a nástrojů pro statickou analýzu kódu z vyšší vrstvy.
+
+Formatter pro JS (případně TS) a CSS bude Prettier, který je v této oblasti nejpopulárnější. Pro Python bude použit jeho ekvivalent Black (ekvivalent z hlediska faktu, že oba nabízejí minimální možnost konfigurace).
+
+% TODO jaka prostredi a jak delat releasy, jak to vse bude fungovat (a fakt funguje) ?

@@ -6,41 +6,42 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
 
 \subsection{Funkční požadavky}
 
-\begin{itemize}
-    \item \textbf{F1 -- evidování zájemců o kurz *:} vzhledem k plnému obsazení všech termínů během týdne je třeba evidovat zájemce o kurzy -- ať už jednotlivce, či zájemce o skupiny -- každý klient může mít zájem o daný kurz nejvýše jednou, je třeba také evidovat k tomuto zájmu text formou poznámky, datum přidání zájemce do evidence a kurz, o který má zájem,
-    \item \textbf{F2 -- kontrola časového konfliktu lekcí *:} současná verze aplikace nijak neřeší časové konflikty lekcí, je třeba zakázat možnost jakéhokoliv překryvu lekcí vzhledem k datu, času a jejich délce, toto se netýká zrušených lekcí, které budou pro řešení konfliktů ignorovány (je třeba zavést F19 pro korektní fungování konfliktů),
-    \item \textbf{F3 -- vylepšení předplacených lekcí *:} stávající způsob evidence předplacených lekcí není dostačující -- pro jednotlivce je třeba předplacené lekce přidávat po jednom (klienti si často předplácí více lekcí dopředu), pro skupiny je evidování ještě horší, protože každý člen obvykle platí jinak a na odlišné časové období (případně vždy jen jednu lekci) a prakticky se nedá tato evidence předplacených lekcí ručně udržovat, je to příliš složité,
-    \item \textbf{F4 -- vyhledávání klientů *:} v aplikaci je mnoho klientů a je časově náročně vždy v seznamu vyhledávat příslušného klienta, je třeba zavést možnost vyhledávání v klientech, a to z jakéhokoliv místa aplikace, také je třeba, aby vyhledávání bralo v potaz možné překlepy lektorky v zadávaném výrazu k vyhledávání a také možný překlep ve jménu uloženého klienta, vyhledávalo by se jen mezi aktivními klienty (viz požadavek F6),
-    \item \textbf{F5 -- přepracování formuláře pro lekce:} současný formulář není úplně přehledný, pokud má skupina více než 2 členy, je potřeba neustále posouvat obsahem, protože se nevejde na monitor, je třeba jej kompletně přepracovat dle konzultace s lektorkou, v závislosti na návrhu může souviset s F3,
-    \item \textbf{F6 -- zavedení aktivních a neaktivních klientů a skupin:} v evidenci je mnoho klientů a skupin, kteří aktuálně nechodí, ale např. za rok budou opět chodit, je tedy třeba umožnit skrytí všech klientů/skupin, kteří aktuálně na lekce nedochází a k těmto skrytým (neaktivním) klientům/skupinám umožnit přístup, ve výchozím zobrazení ale ukazovat jen aktivní,
-    \item \textbf{F7 -- nastavitelná délka kurzů:} současná verze aplikace automaticky předvyplní dobu trvání lekce v závislosti na tom, zda je skupinová (45~min.) či pro jednotlivce (30~min.) -- to není dostačující, protože např. lekce některých kurzů trvají vždy 45~min. nehledě na počet členů -- je tedy třeba umožnit u kurzu evidovat dobu trvání pro jednotlivce, a tu pak ve výchozím stavu jednotlivcům dávat, pro skupiny stále stačí jedna výchozí hodnota (45~min.),
-    \item \textbf{F8 -- zobrazit poslední transakce na bankovním účtu:} na hlavní stránce je třeba mimo dnešních lekcí třeba zobrazit aktuální zůstatek na bankovním účtu projektu (Fio banka) a transakce za poslední 3~týdny,
-    \item \textbf{F9 -- změny účastníků skupinových lekcí:} někdy se stává, že klient v průběhu kurzu opustí skupinu, v evidenci je již naplánováno několik lekcí dopředu a všech se účastní -- je třeba umožnit při úpravě lekce projevit tyto změny členů skupiny do účastníků dané lekce (v současné době nečlen skupiny zůstává účastníkem lekce a lektorka musí každou lekci ručně smazat a vytvořit znovu bez nečlenů, což je velmi nepohodlné),
-    \item \textbf{F10 -- automatické přidání předplacené lekce:} při omluvě klienta/zrušení ze strany lektorky je třeba automaticky u klienta/skupiny zaznamenat, že mají jeden předplacený termín navíc (v případě, že daný klient měl zaplaceno), v případě jednotlivců je třeba také automaticky zaevidovat, za který den je tato náhradní lekce vytvořena,
-    \item \textbf{F11 -- efektivnější práce v rámci aplikace:} v současné verzi aplikace musela lektorka pro často prováděné činnosti provádět zbytečně mnoho kroků navíc, což činilo příslušné činnosti náročnějšími a snadno se udělala chyba a ztrácel čas -- na základě dalších analýz byly zjištěny problémové oblasti, které vyžadují přepracování: umožnit úpravu lekce (pro jednotlivce i skupiny) z diáře a přehledu, umožnit úpravu klienta/skupiny přímo v kartě klienta/skupiny, umožnit přidání lekce (pro jednotlivce i skupiny) z diáře a přehledu (a to jak s příslušným datem, u kterého bude toto tlačítko, tak i obecně s jakýmkoliv datem), umožnit přidat klienta přímo při přidávání skupiny/zájemce (funkcionalita zájemce implementována v rámci F1),
-    \item \textbf{F12 -- evidování barev kurzů:} je třeba umožnit přiřazení barvy každému kurzu a tuto barvu použít pro rozlišení kurzů napříč celou aplikací, kdekoliv se vyskytuje název kurzu -- lektorka potřebuje okamžitě rozlišit kurzy a mít možnost na první pohled např. v diáři vidět díky barvě, kterého kurzu se barva týká (kurzy mají v rámci propagačních materiálů své ustálené barvy),
-    \item \textbf{F13 -- automatické předvyplnění údajů lekce:} pokud má klient/skupina nějakou historii v evidenci, při přidávání nové lekce je třeba na základě této historie předvyplnit vhodnými hodnotami datum, čas a kurz nové lekce -- je tedy třeba vhodně zvolit lekci klienta z jeho historie, podle které budou tyto údaje vypočteny  -- smyslem je těmito výchozími hodnotami vystihnout co nejvíce případu tak, aby lektorka musela tyto hodnoty co nejméně často upravovat,
-    \item \textbf{F14 -- upozornění na ztrátu dat formulářů:} při vyplňování formulářů lektorka občas omylem formulář zavře a přijde o úpravy, je třeba zavést ochranu, která tomuto zabrání (a zároveň ale nebude zbytečně upozorňovat na ztrátu dat, když k žádné změně nedošlo),
-    \item \textbf{F15 -- vylepšení chybových hlášení:} chybová hlášení jsou někdy málo podrobná, případně nezmiňují možnosti řešení, zobrazují se krátce, případně dojde k neošetřené chybě na serveru a klientská část pak nedokáže korektně uživateli popsat, kde je problém,
-    \item \textbf{F16 -- titulky stránek:} každá stránka by měla mít v prohlížeči svůj titulek, v současné době má každá stránka stejný titulek a lektorka tak nemá možnost jednoduše rozlišit, který panel má otevřenou kterou stránku aplikace,
-    \item \textbf{F17 -- nastavitelné vlastnosti stavů účasti:} některé stavy účasti mají pro některé výpočty v rámci aplikace speciální význam (např. omluvené lekce se nezapočítávají do počtu absolvovaných lekcí klienta, další stav znamená, že klient dorazí a tento stav je zároveň výchozí), toto svázání stavu účasti s významem je ale založeno na názvu stavu účasti (a pevně nadefinováno v kódu), lektorka si chce ale název příslušných stavů účasti sama měnit a je třeba pro to zavést příslušné možnosti,
-    \item \textbf{F18 -- omezení a validace hodnot:} je třeba provést revizi stávajících omezení na jednotlivé hodnoty v rámci aplikace (API a databáze) i klientské části, zavést nová omezení pro nové funkční požadavky a zdokumentovat všechna aktuální omezení a validace prováděná nad celou doménou,
-    \item \textbf{F19 -- automatické zrušení lekce:} pokud nikdo z účastníků nemá dorazit (všichni jsou omluveni), lekce má být automaticky zrušena,
-    \item \textbf{F20 -- zobrazení zrušených lekcí:} v přehledu na hlavní stránce a v diáři je třeba zobrazit i zrušené lekce, v současné verzi se nezobrazují (to byl původní požadavek, ale nakonec se ukázal jako nesprávný a lektorka lekce potřebuje vidět nejen v kartě klienta).
-\end{itemize}
+\begin{enumerate}[label=\textbf{F\arabic*}]
+    \item \label{F1} \textbf{evidování zájemců o kurz *:} vzhledem k plnému obsazení všech termínů během týdne je třeba evidovat zájemce o kurzy -- ať už jednotlivce, či zájemce o skupiny -- každý klient může mít zájem o daný kurz nejvýše jednou, je třeba také evidovat k tomuto zájmu text formou poznámky, datum přidání zájemce do evidence a kurz, o který má zájem,
+    \item \label{F2} \textbf{kontrola časového konfliktu lekcí *:} současná verze aplikace nijak neřeší časové konflikty lekcí, je třeba zakázat možnost jakéhokoliv překryvu lekcí vzhledem k datu, času a jejich délce, toto se netýká zrušených lekcí, které budou pro řešení konfliktů ignorovány (je třeba zavést~\ref{F19} pro korektní fungování konfliktů),
+    \item \label{F3} \textbf{vylepšení předplacených lekcí *:} stávající způsob evidence předplacených lekcí není dostačující -- pro jednotlivce je třeba předplacené lekce přidávat po jednom (klienti si často předplácí více lekcí dopředu), pro skupiny je evidování ještě horší, protože každý člen obvykle platí jinak a na odlišné časové období (případně vždy jen jednu lekci) a prakticky se nedá tato evidence předplacených lekcí ručně udržovat, je to příliš složité,
+    \item \label{F4} \textbf{vyhledávání klientů *:} v aplikaci je mnoho klientů a je časově náročně vždy v seznamu vyhledávat příslušného klienta, je třeba zavést možnost vyhledávání v klientech, a to z jakéhokoliv místa aplikace, také je třeba, aby vyhledávání bralo v potaz možné překlepy lektorky v zadávaném výrazu k vyhledávání a také možný překlep ve jménu uloženého klienta, vyhledávalo by se jen mezi aktivními klienty (viz požadavek~\ref{F6}),
+    \item \label{F5} \textbf{přepracování formuláře pro lekce:} současný formulář není úplně přehledný, pokud má skupina více než 2 členy, je potřeba neustále posouvat obsahem, protože se nevejde na monitor, je třeba jej kompletně přepracovat dle konzultace s lektorkou, v závislosti na návrhu může souviset s~\ref{F3},
+    \item \label{F6} \textbf{zavedení aktivních a neaktivních klientů a skupin:} v evidenci je mnoho klientů a skupin, kteří aktuálně nechodí, ale např. za rok budou opět chodit, je tedy třeba umožnit skrytí všech klientů/skupin, kteří aktuálně na lekce nedochází a k těmto skrytým (neaktivním) klientům/skupinám umožnit přístup, ve výchozím zobrazení ale ukazovat jen aktivní,
+    \item \label{F7} \textbf{nastavitelná délka kurzů:} současná verze aplikace automaticky předvyplní dobu trvání lekce v závislosti na tom, zda je skupinová (45~min.) či pro jednotlivce (30~min.) -- to není dostačující, protože např. lekce některých kurzů trvají vždy 45~min. nehledě na počet členů -- je tedy třeba umožnit u kurzu evidovat dobu trvání pro jednotlivce, a tu pak ve výchozím stavu jednotlivcům dávat, pro skupiny stále stačí jedna výchozí hodnota (45~min.),
+    \item \label{F8} \textbf{zobrazit poslední transakce na bankovním účtu:} na hlavní stránce je třeba mimo dnešních lekcí třeba zobrazit aktuální zůstatek na bankovním účtu projektu (Fio banka) a transakce za poslední 3~týdny,
+    \item \label{F9} \textbf{změny účastníků skupinových lekcí:} někdy se stává, že klient v průběhu kurzu opustí skupinu, v evidenci je již naplánováno několik lekcí dopředu a všech se účastní -- je třeba umožnit při úpravě lekce projevit tyto změny členů skupiny do účastníků dané lekce (v současné době nečlen skupiny zůstává účastníkem lekce a lektorka musí každou lekci ručně smazat a vytvořit znovu bez nečlenů, což je velmi nepohodlné),
+    \item \label{F10} \textbf{automatické přidání předplacené lekce:} při omluvě klienta/zrušení ze strany lektorky je třeba automaticky u klienta/skupiny zaznamenat, že mají jeden předplacený termín navíc (v případě, že daný klient měl zaplaceno), v případě jednotlivců je třeba také automaticky zaevidovat, za který den je tato náhradní lekce vytvořena,
+    \item \label{F11} \textbf{efektivnější práce v rámci aplikace:} v současné verzi aplikace musela lektorka pro často prováděné činnosti provádět zbytečně mnoho kroků navíc, což činilo příslušné činnosti náročnějšími a snadno se udělala chyba a ztrácel čas -- na základě dalších analýz byly zjištěny problémové oblasti, které vyžadují přepracování: umožnit úpravu lekce (pro jednotlivce i skupiny) z diáře a přehledu, umožnit úpravu klienta/skupiny přímo v kartě klienta/skupiny, umožnit přidání lekce (pro jednotlivce i skupiny) z diáře a přehledu (a to jak s příslušným datem, u kterého bude toto tlačítko, tak i obecně s jakýmkoliv datem), umožnit přidat klienta přímo při přidávání skupiny/zájemce (funkcionalita zájemce implementována v rámci~\ref{F1}),
+    \item \label{F12} \textbf{evidování barev kurzů:} je třeba umožnit přiřazení barvy každému kurzu a tuto barvu použít pro rozlišení kurzů napříč celou aplikací, kdekoliv se vyskytuje název kurzu -- lektorka potřebuje okamžitě rozlišit kurzy a mít možnost na první pohled např. v diáři vidět díky barvě, kterého kurzu se barva týká (kurzy mají v rámci propagačních materiálů své ustálené barvy),
+    \item \label{F13} \textbf{automatické předvyplnění údajů lekce:} pokud má klient/skupina nějakou historii v evidenci, při přidávání nové lekce je třeba na základě této historie předvyplnit vhodnými hodnotami datum, čas a kurz nové lekce -- je tedy třeba vhodně zvolit lekci klienta z jeho historie, podle které budou tyto údaje vypočteny  -- smyslem je těmito výchozími hodnotami vystihnout co nejvíce případu tak, aby lektorka musela tyto hodnoty co nejméně často upravovat,
+    \item \label{F14} \textbf{upozornění na ztrátu dat formulářů:} při vyplňování formulářů lektorka občas omylem formulář zavře a přijde o úpravy, je třeba zavést ochranu, která tomuto zabrání (a zároveň ale nebude zbytečně upozorňovat na ztrátu dat, když k žádné změně nedošlo),
+    \item \label{F15} \textbf{vylepšení chybových hlášení:} chybová hlášení jsou někdy málo podrobná, případně nezmiňují možnosti řešení, zobrazují se krátce, případně dojde k neošetřené chybě na serveru a klientská část pak nedokáže korektně uživateli popsat, kde je problém,
+    \item \label{F16} \textbf{titulky stránek:} každá stránka by měla mít v prohlížeči svůj titulek, v současné době má každá stránka stejný titulek a lektorka tak nemá možnost jednoduše rozlišit, který panel má otevřenou kterou stránku aplikace,
+    \item \label{F17} \textbf{nastavitelné vlastnosti stavů účasti:} některé stavy účasti mají pro některé výpočty v rámci aplikace speciální význam (např. omluvené lekce se nezapočítávají do počtu absolvovaných lekcí klienta, další stav znamená, že klient dorazí a tento stav je zároveň výchozí), toto svázání stavu účasti s významem je ale založeno na názvu stavu účasti (a pevně nadefinováno v kódu), lektorka si chce ale název příslušných stavů účasti sama měnit a je třeba pro to zavést příslušné možnosti,
+    \item \label{F18} \textbf{omezení a validace hodnot:} je třeba provést revizi stávajících omezení na jednotlivé hodnoty v rámci aplikace (API a databáze) i klientské části, zavést nová omezení pro nové funkční požadavky a zdokumentovat všechna aktuální omezení a validace prováděná nad celou doménou,
+    \item \label{F19} \textbf{automatické zrušení lekce:} pokud nikdo z účastníků nemá dorazit (všichni jsou omluveni), lekce má být automaticky zrušena,
+    \item \label{F20} \textbf{zobrazení zrušených lekcí:} v přehledu na hlavní stránce a v diáři je třeba zobrazit i zrušené lekce, v současné verzi se nezobrazují (to byl původní požadavek, ale nakonec se ukázal jako nesprávný a lektorka lekce potřebuje vidět nejen v kartě klienta),
+    \item \label{F21} \textbf{skupinové lekce bez účastníků:} lektorka potřebuje vytvářet lekce pro skupiny bez účastníků (plánuje dopředu termíny a členy přidá až když budou známí) -- současná aplikace na toto nebyla připravena, klientská část aplikace dokonce při přidání takové lekce spadne.
+\end{enumerate}
 
 \subsection{Nefunkční požadavky}
 
-\begin{itemize}
-    \item \textbf{N1 -- dokumentace:} dokumentace v kódu pro serverovou i klientskou část, dokumentace API,
-    \item \textbf{N2 -- testování *:} aplikace prakticky neobsahuje žádné testy (jen několik základních \enquote{smoke} testů), je třeba zavést API a UI (e2e) testy pro klíčové části aplikace a průchody v aplikaci,
-    \item \textbf{N3 -- zavedení nástrojů pro usnadnění vývoje a údržby:} je třeba zavést nástroje pro monitorování chyb v aplikaci, správu logů (vyhledávání, ukládání), statické typování a analýzu kódu -- k tomu byla provedena v teoretické části rešerše v kapitole~\ref{chap:nastrojeprousnadnenivyvojeaudrzby},
-    \item \textbf{N4 -- revize bezpečnosti:} je třeba provést kompletní revizi aplikace z hlediska bezpečnosti a opravit případné slabiny, problémy či zranitelnosti,
-    \item \textbf{N5 -- vylepšení použitelnosti:} z hlášení lektorky a také z vlastní analýzy vyplývá, že je třeba se zaměřit na opravení problémů s použitelností a její vylepšení,
-    \item \textbf{N6 -- rychlejší získání dat z API:} pokud klientská část má někde zobrazit více dat, požadavek někdy probíhá enormně dlouho a dokonce může být ze strany Heroku pro dlouhou prodlevu zastaven a lektorka si data nezobrazí -- je třeba nalézt úzké hrdlo aplikace, které toto zpomalení v jednotkách případů (když je hodně dat) zpomaluje a napravit.
-\end{itemize}
-
-% todo BP: migrace na novy react, react context
+\begin{enumerate}[label=\textbf{N\arabic*}]
+    \item \label{N1} \textbf{dokumentace:} dokumentace v kódu pro serverovou i klientskou část, dokumentace API,
+    \item \label{N2} \textbf{testování *:} aplikace prakticky neobsahuje žádné testy (jen několik základních \enquote{smoke} testů), je třeba zavést API a UI (e2e) testy pro klíčové části aplikace a průchody v aplikaci,
+    \item \label{N3} \textbf{zavedení nástrojů pro usnadnění vývoje a údržby:} je třeba zavést nástroje pro monitorování chyb v aplikaci, správu logů (vyhledávání, ukládání), statické typování a analýzu kódu -- k tomu byla provedena v teoretické části rešerše v kapitole~\ref{chap:nastrojeprousnadnenivyvojeaudrzby},
+    \item \label{N4} \textbf{revize bezpečnosti:} je třeba provést kompletní revizi aplikace z hlediska bezpečnosti a opravit případné slabiny, problémy či zranitelnosti, provést aktualizace závislostí apod.,
+    \item \label{N5} \textbf{vylepšení použitelnosti:} z hlášení lektorky a také z vlastní analýzy vyplývá, že je třeba se zaměřit na opravení problémů s použitelností a její vylepšení,
+    \item \label{N6} \textbf{rychlejší získání dat z API *:} pokud klientská část má někde zobrazit více dat, požadavek někdy probíhá enormně dlouho a dokonce může být ze strany Heroku pro dlouhou prodlevu zastaven a lektorka si data nezobrazí -- je třeba nalézt úzké hrdlo aplikace, které toto zpomalení v jednotkách případů (když je hodně dat) zpomaluje a toto vylepšit, také je třeba se zaměřit na optimalizaci počtu požadavků na API (zda některé nelze uložit a znovupoužít bez dalšího provádění (viz možné rozšíření o React Context API v sekci~\ref{sec:planrozsirenibp}),
+    \item \label{N7} \textbf{konfigurace více prostředí:} pokud se aplikace úspěšně sestaví na integračním serveru, nahraje se na produkci \cite{bp} -- to může v případě neodhalené chyby v aplikaci způsobit okamžitý pád produkce a případně i ztrátu dat -- toto souvisí s lepším pokrytím testy (viz \ref{N2}), ale je třeba také zavést další prostředí, do kterých se v různé fázi bude aplikace nasazovat, a to tak, aby bylo k dispozici jak prostředí naprosto totožné s produkcí (např. pro reprodukování chyb hlášených koncovým uživatelem), tak prostředí opět postavené na tom produkčním, ale s novější nasazenou verzí aplikace -- kompletní návrh bude popsán v sekci~\ref{sec:konfiguraceviceprostredi},
+    \item \label{N8} \textbf{zálohy databáze:} je třeba zavést pravidelné automatické zálohování databáze z produkce.
+\end{enumerate}
 
 \subsection{Vyřazené požadavky}\label{subsec:vyrazenepozadavky}
 \begin{itemize}
@@ -54,78 +55,121 @@ Některé požadavky nejsou úplně přesně definované a před dalším pokra�
 
 \subsection{F3 - vylepšení předplacených lekcí}
 
-V případě jednotlivců je problém s tím, že je předplacené lekce přidávat po jednom -- zde bude lektorce vyhovovat ve formuláři pro přidání lekce možnost uvést počet přidávaných předplacených lekcí, tedy bude zakomponováno v rámci F5.
+Detailní analýza požadavku~\ref{F3}.
+V případě jednotlivců je problém s tím, že je předplacené lekce přidávat po jednom -- zde bude lektorce vyhovovat ve formuláři pro přidání lekce možnost uvést počet přidávaných předplacených lekcí, tedy bude zakomponováno v rámci \ref{F5}.
 
 Předplacené lekce skupin jsou evidovány v současné verzi stejným způsobem, tedy lekce je označena jako předplacená, jen je možné zvolit, kteří ze členů skupiny ji skutečně mají předplacenou -- už zde začíná první problém, kdy lekce je předplacená, ale někteří klienti si ji nepředplatili, což je sice korektně zaznamenáno, ale situace začíná být nepřehledná. Při dalších předplacených lekcích, zejména když si jeden účastník zaplatí celou lekci dopředu pak všichni ostatní evidovanou platbu nemají a platí v jiném časovém horizontu, tato situace je už velmi nepřehledná a může vyústit v chyby lektorky kvůli nepřehlednosti. Zde by lektorce vyhovovaly počítadla předplacených lekcí každého klienta, což vyřeší všechny zmíněné problémy. Z počítadel by se při přidávání nové lekce automaticky odečítalo.
 
-Řešení pomocí počítadel vypadá jako ideální řešení i pro jednotlivce, zde by ale byl problém s faktem, že mohou chodit na více kurzů, tedy nelze mít centrální počítadlo pro všechny (na některé kurzy už nechodí, předplácí třeba jen některé, na které chodí apod.), bylo by třeba mít pro každý kurz počítadlo zvlášť, ale v tom případě by pak už nebylo možné evidovat v rámci F10, za který den daná předplacená lekce tvoří náhradu (resp. možné by to bylo, ale značně by to zkomplikovalo jak implementaci, tak i práci lektorky), proto je řešení předplacených lekcí pro jednotlivce a skupiny odlišné.
+Řešení pomocí počítadel vypadá jako ideální řešení i pro jednotlivce, zde by ale byl problém s faktem, že mohou chodit na více kurzů, tedy nelze mít centrální počítadlo pro všechny (na některé kurzy už nechodí, předplácí třeba jen některé, na které chodí apod.), bylo by třeba mít pro každý kurz počítadlo zvlášť, ale v tom případě by pak už nebylo možné evidovat v rámci \ref{F10}, za který den daná předplacená lekce tvoří náhradu (resp. možné by to bylo, ale značně by to zkomplikovalo jak implementaci, tak i práci lektorky), proto je řešení předplacených lekcí pro jednotlivce a skupiny odlišné.
 
 \subsection{F13 -- automatické předvyplnění údajů lekce}
 
-Smyslem tohoto požadavku je předvyplnit datum, čas a kurz nově přidávané lekce podle minulých lekcí, a to tak, aby muselo být do těchto hodnot co nejméně ze strany lektorky zasahováno. Lekce se nejčastěji konají jednou za týden a obvykle ve stejný čas a patří samozřejmě k téže kurzu. Stačí tedy vhodně zvolit referenční lekci a z ní tyto údaje odvodit.
+Detailní analýza požadavku~\ref{F13}.
+Smyslem tohoto požadavku je předvyplnit datum, čas a kurz nově přidávané lekce podle minulých lekcí, a to tak, aby muselo být do těchto hodnot co nejméně ze strany lektorky zasahováno. Lekce se nejčastěji konají jednou za týden a obvykle ve stejný čas a patří samozřejmě k téže kurzu. Stačí tedy vhodně zvolit referenční lekci a z ní tyto údaje odvodit. V závislosti na podobě historie klienta/skupiny je třeba pokrýt možné případy výběru lekce.
 
-V závislosti na podobě historie klienta/skupiny je třeba pokrýt všechny možné případy výběru lekce:
-\begin{itemize}
-    \item V případě, že klient na žádné lekci ještě nebyl, neodvodíme nic a údaje zůstanou nepředvyplněné. V případě skupiny bez lekcí datum a čas také v tomto případě neodvodíme, kurz je ale jasný z atributů skupiny.
-    \item V případě, že klient chodí na jeden jediný kurz, vyber tento kurz a datum a čas zvol o týden později oproti poslední lekci tohoto kurzu (poslední lekce může být jen předplacená, tedy z té odvoď pouze kurz). Pro skupiny platí totéž, jen datum a čas bude odvozen vždy, protože předplacené lekce budou v rámci F3 evidovány jinak než u jednotlivců.
-    \item V případě, že klient chodí/chodil na více kurzů, vyber ten kurz, jehož poslední lekce je nejpozději (a z té odvoď všechny údaje), navíc, pokud některý kurz má předplacené lekce, preferuj ten (a tedy odvoď jen kurz. Skupina v této situaci být nemůže, protože má vždy jen lekce k jednomu kurzu.
-\end{itemize}
+Případy výběru lekce:
+\begin{enumerate}
+    \item V případě, že klient na žádné lekci ještě nebyl, neodvodíme nic a údaje zůstanou nepředvyplněné.
+    
+    V případě skupiny bez lekcí datum a čas také v tomto případě neodvodíme, kurz je ale jasný z atributů skupiny.
+    \item V případě, že klient chodí na jeden jediný kurz, vyber tento kurz a datum a čas zvol o týden později oproti poslední lekci tohoto kurzu (poslední lekce může být jen předplacená, tedy z té odvoď pouze kurz).
+    
+    Pro skupiny platí totéž, jen datum a čas bude odvozen vždy, protože předplacené lekce budou v rámci F3 evidovány jinak než u jednotlivců.
+    \item V případě, že klient chodí/chodil na více kurzů, vyber ten kurz, jehož poslední lekce je nejpozději (a z té odvoď všechny údaje), navíc, pokud některý kurz má předplacené lekce, preferuj ten (a tedy odvoď jen kurz).
+    
+    Skupina v této situaci být nemůže, protože má vždy jen lekce k jednomu kurzu.
+\end{enumerate}
 
 \subsection{F18 -- omezení a validace hodnot}
 
-V rámci F18 bylo třeba vytvořit kompletní seznam všech omezení a validací, které v aplikaci mají být, a to i s ohledem na všechny nové funkční požadavky. Všechna tato omezení byla v rámci analýzy definována. Jejich seznam a rozdělení je vidět v obrázku~\ref{}.
+Detailní analýza požadavku~\ref{F18}.
+V rámci tohoto požadavku bylo třeba vytvořit kompletní seznam všech omezení a validací, které v aplikaci mají být, a to i s ohledem na všechny nové funkční požadavky. Všechna tato omezení byla v rámci analýzy definována. Jejich seznam a rozdělení je vidět v obrázku~\ref{fig:db-model} s návrhem aktualizovaného logického datového modelu.
 
 \subsection{N4 -- revize bezpečnosti}
 
-TODO
+Detailní analýza požadavku~\ref{N4}.
+V rámci tohoto požadavku je potřeba zjistit problémové oblasti a případně i konkrétní problémy, na které se zaměřit. Bylo tedy třeba projít např. konfiguraci aplikace, testovat chování aplikace a také použít nástroj \href{https://observatory.mozilla.org/}{Mozilla Observatory}, který skenuje webové stránky a kontroluje jejich zabezpečení \cite{mozillaobservatory}. Bylo zjištěno několik problémů níže, mají opět unikátní identifikátor, kde písmeno \enquote{B} značí problém s \textbf{b}ezpečností.
+
+Nalezené problémy:
+\begin{enumerate}[label=\textbf{B\arabic*}]
+    \item \label{B1} \textbf{aktualizace závislostí:} je třeba aktualizovat všechny závislosti (používané knihovny a nástroje) kvůli opravám chyb, zranitelností, ale i novým funkcím -- např. knihovny klientské části při použití příkazu \verb|yarn audit| (pro který musela být i upravena verze yarn, protože v požadované verzi v rámci projektu tento příkaz ani není) bylo nalezeno 36 zranitelností, také je třeba zohlednit u knihoven sémantické verzování a povolit zpětně kompatibilní aktualizace,
+    \item \label{B2} \textbf{sjednocení konfigurací:} v rámci produkční konfigurace je možné některá nastavení sloučit s konfigurací lokální verze -- kromě zvýšení bezpečnosti dojde především také ke zvýšení konzistence mezi těmito verzemi aplikace a tedy v budoucnu méně problémy kvůli odlišnostem,
+    \item \label{B3} \textbf{deaktivace DEBUG módu:} produkční konfigurace pro 
+    Django obsahuje nastavenou proměnnou \verb|DEBUG = True|, na produkci toto nastavení ale být nesmí -- jedná se jak o bezpečnostní (náhled útočníka do metadat aplikace, některých proměnných prostředí ad.), tak výkonnostní problém (zbytečné režijní náklady a vysoké nároky na paměť kvůli ukládání všech SQL dotazů) -- na produkci je tedy třeba nastavit \verb|DEBUG = False| \cite{django-debug},
+    \item \label{B4} \textbf{HTTP hlavičky:} díky nástroji Mozilla Observatory bylo zjištěno, že v aplikaci chybí nastavení některých HTTP (Hypertext Transfer Protocol) hlaviček -- Referrer Policy, CSP (Content Security Policy), HSTS (HTTP Strict Transport Security) -- podrobnému popisu významu se budu věnovat v TODO,
+    \item \label{B5} \textbf{sjednocení práce s tokeny:} je třeba sjednotit práci s citlivými tokeny a dalšími podobnými elementy -- těchto citlivých dat bude vzhledem k požadavkům přibývat (např. přístup do banky) a je třeba zavést centrální místo správy, kterým budou proměnné prostředí (nyní jsou některé tokeny zašifrované např. v rámci souboru s konfigurací Travisu, některé kvůli své povaze zašifrované nejsou apod.), nebude tak hrozit žádný únik např. ve verzovacím systému (který již nastal i v případě tohoto projektu, kdy kvůli bezpečnostnímu problému s FontAwesome PRO \cite{fontawesome-token} došlo k úniku tokenu pro přístup k placeným ikonám prostřednictvím souboru \verb|yarn.lock|, což by znamenalo problém právě při zveřejnění repozitáře, což je jeden z úkolů této práce), zavedení proměnných prostředí umožní také jednoduchou práci s více prostředími (viz \ref{N7}),
+    \item \label{B6} \textbf{zákaz robotů:} roboti mohou přistupovat na stránku s aplikací (např. indexovací robot Google) -- přístup robotům je třeba zakázat, indexace není potřeba a jediným výsledkem je zbytečná spotřeba výpočetního výkonu.
+\end{enumerate}
 
 
 \subsection{N5 -- vylepšení použitelnosti}
 
+Detailní analýza požadavku~\ref{N5}.
 Pro zjištění problémů v oblasti použitelnosti a přístupnosti bylo zvoleno několik metod -- Nielsenova heuristická analýza, WCAG~2.1 (Web Content Accessibility Guidelines) a uživatelské testování použitelnosti formou pozorování lektorky při každodenní práci v aplikaci. 
 
-Nielsenova heuristická analýza obsahuje 10 základních pravidel použitelnosti \cite{nielson}: viditelnost stavu systému, spojení mezi systémem a reálným světem, uživatelská kontrola a svoboda, konzistence a standardizace, prevence chyb, rozpoznání místo vzpomínání, flexibilní a efektivní použití, estetický a minimalistický design, pomoc uživatelům poznat, pochopit a vzpamatovat se z chyb, nápověda a návody. Tyto body jsou v rámci této heuristiky dále detailněji popsány \cite{nielson}.
+Nielsenova heuristická analýza obsahuje 10~základních pravidel použitelnosti \cite{nielson}: viditelnost stavu systému, spojení mezi systémem a reálným světem, uživatelská kontrola a svoboda, konzistence a standardizace, prevence chyb, rozpoznání místo vzpomínání, flexibilní a efektivní použití, estetický a minimalistický design, pomoc uživatelům poznat, pochopit a vzpamatovat se z chyb, nápověda a návody. Tyto body jsou v rámci této heuristiky dále detailněji popsány \cite{nielson}.
 
 Doporučení WCAG~2.1 vytvořené v rámci konsorcia W3C (World Wide Web Consortium) je v současnosti nejrozšířenější a celosvětově uznávaná metodika tvorby přístupného webového obsahu \cite{wcag-zdrojak}. Následování těchto doporučení učiní obsah přístupnější pro větší okruh uživatelů s různým zdravotním postižením \cite{wcag}. Díky aplikaci doporučení je často webový obsah také více použitelný obecně pro všechny uživatele \cite{wcag} -- a toto je důvod, proč se na tato doporučení zaměřuji v rámci vylepšení použitelnosti aktuální aplikace. Smyslem tedy bude na základě doporučení ověřit a případně napravit problémy s použitelností, které může pocítit i sama lektorka.
 
-Některé zjištěné problémy jsou již v požadavcích definovány, jiné jsou úplně nové. Proto zavádím dělení na nové (které opět opatřím unikátním identifikátorem (kde písmeno \enquote{P} značí problém s \textbf{p}oužitelností).
+Některé zjištěné problémy jsou již v požadavcích definovány, jiné jsou úplně nové. Podle toho problémy rozdělím a navíc ty nové opět opatřím unikátním identifikátorem, kde písmeno \enquote{P} značí problém s \textbf{p}oužitelností.
 
 Seznam nových zjištěných problémů:
-\begin{itemize}
-    \item \textbf{P1:} při delším načítání není uživatel nijak informován, že je vše v pořádku a aplikace stále pracuje -- je třeba při delším načítání uživatele upozornit, že je vše v pořádku a v případě, že načítání trvá přespříliš dlouho, nabídnout mu nějaké řešení,
-    \item \textbf{P2:} některé netextové prvky úplně postrádají popis (např. po najetí myší), případně jej obsahují, ale formou \verb|title|, tedy nelze zobrazit na mobilních zařízeních -- je třeba popisy zavést všude a umožnit zobrazení i na mobilních zařízeních,
-    \item \textbf{P3:} v záložce prohlížeče není ikona (favicon) -- dodat,
-    \item \textbf{P4:} v modálním okně se na iOS nedá plynule posouvat -- opravit,
-    \item \textbf{P5:} některé prvky pro výběr (\verb|select|) jsou řešeny uživatelsky přívětivým \verb|react-select| (výběr členů skupiny), některé (výběr kurzu) ale ne a nedá se v nich tak např. vyhledávat či jednotlivé položky odlišit barvou -- všude použít \verb|react-select| (kromě stavu účasti, kde je pohodlnější jednodušší \verb|select|),
-    \item \textbf{P6:} na některé popisy formulářových polí (\verb|label|) nelze kliknout pro psaní do pole -- opravit,
-    \item \textbf{P7:} nejsou nijak indikována povinná pole ve formulářích -- doplnit indikaci povinných polí,
-    \item \textbf{P8:} ve polích pro poznámky nefunguje kontrola pravopisu -- opravit,
-    \item \textbf{P9:} uživatelské jméno na iOS začíná velkým písmenem -- opravit a používat malé písmeno,
-    \item \textbf{P10:} některé formuláře automaticky nevyberou první pole pro psaní (\verb|autofocus|) nebo neumožní pohyb pomocí klávesy TAB mezi prvky formuláře -- opravit,
-    \item \textbf{P11:} zobrazení načítání v mnoha případech nekoresponduje s tím, zda je už skutečně vše načteno a obsah komponent se zobrazí až později (ačkoliv načítání už není zobrazeno), tento fakt by také komplikoval zavedení automatizovaných testů UI (testovací nástroj nepozná, stejně jako uživatel, zda už je načteno), uživatel také není informován po odeslání formuláře, po kliknutí na uložení celá aplikace nic nedělá a až po dokončení požadavku se najednou formulář bez jakéhokoliv upozornění na načítání zavře -- uživatel musí být korektně informován o konci načítání až ve chvíli, kdy úplně všechny komponenty získají odpověď z API a vše zpracují, po uložení formuláře je třeba taktéž zobrazit načítání,
-    \item \textbf{P12:} některá pole nejsou dostatečně popsaná, např. chybí jednotky pro příslušnou hodnotu, chybí vysvětlení např. automaticky zaškrtnutých polí při zaškrtnutí jiného, na macOS se pro datum a čas nezobrazí žádná nápověda formátu (Safari oproti jiným prohlížečům nenabízí uživatelsky přívětivý nativní prvek pro jednoduchý výběr) -- doplnit lepší popisy, vysvětlení a nápovědu pro formáty (\verb|placeholder|),
-    \item \textbf{P13:} pokud lektorka listuje rychle diářem mezi týdny, aplikace je pomalá a tlačítka pro pohyb odskakují podle délky zobrazeného data a mění tak svou pozici, také je nepohodlný pohyb mezi předcházejícím a nadcházejícím týdnem -- opravit pozici tlačítek tak, aby nezávisela na počtu znaků data, nastavit prodlevu na požadavky při rychlém procházení diářem (jinak zbytečně probíhá komunikace s API a stahování dat pro každý den, ačkoliv uživatel na daný den už vůbec nekouká, protože rychle proklikl na jiný týden), umožnit procházení diáře šipkami na klávesnici,
-    \item \textbf{P14:} některé texty na stránkách se nevhodně zalamují (např. telefonní čísla ad.) -- opravit a nezalamovat,
-    \item \textbf{P15:} při stisku ESC u některých prvků formuláře (\verb|select|, \verb|react-select|) se zavře nečekaně celé modální okno namísto zavření příslušné nabídky -- opravit tak, aby se zavřel pouze výběr možností, nikoliv celé modální okno s formulářem,
-    \item \textbf{P16:} některé komponenty v aplikaci při zobrazení na jiné než obvyklé velikosti obrazovky činí použití aplikace a srozumitelnost dat značně náročnější, případně se dokonce některé údaje mohou skrývat -- opravit responzivitu napříč všemi různými velikostmi displeje,
-    \item \textbf{P17:} řazení podle abecedy nepodporuje znaky s diakritikou, dojde např. ke smíchání příjmení začínajících na \enquote{S} a \enquote{Š} a lektorka se špatně orientuje -- opravit podporu pro české znaky,
-    \item \textbf{P17:} některé nadpisy v rámci aplikace nejsou úplně výstižné a konzistentní -- projít napříč aplikací a opravit.
-\end{itemize}
+\begin{enumerate}[label=\textbf{P\arabic*}]
+    \item \label{P1} \textbf{délka načítání:} při delším načítání není uživatel nijak informován, že je vše v pořádku a aplikace stále pracuje -- je třeba při delším načítání uživatele upozornit, že je vše v pořádku a v případě, že načítání trvá přespříliš dlouho, nabídnout mu nějaké řešení,
+    \item \label{P2} \textbf{popis netextových prvků:} některé netextové prvky úplně postrádají popis (např. po najetí myší), případně jej obsahují, ale formou \verb|title|, tedy nelze zobrazit na mobilních zařízeních -- je třeba popisy zavést všude a umožnit zobrazení i na mobilních zařízeních,
+    \item \label{P3} \textbf{favicon:} v záložce prohlížeče není ikona (favicon) -- dodat,
+    \item \label{P4} \textbf{posouvání modálního okna:} v modálním okně se na iOS nedá plynule posouvat -- opravit,
+    \item \label{P5} \textbf{react-select:} některé prvky pro výběr (\verb|select|) jsou řešeny uživatelsky přívětivým \verb|react-select| (výběr členů skupiny), některé (výběr kurzu) ale ne a nedá se v nich tak např. vyhledávat či jednotlivé položky odlišit barvou -- všude použít \verb|react-select| (kromě stavu účasti, kde je pohodlnější jednodušší \verb|select|),
+    \item \label{P6} \textbf{nefunkční label:} na některé popisy formulářových polí (\verb|label|) nelze kliknout pro psaní do pole -- opravit,
+    \item \label{P7} \textbf{povinná pole:} nejsou nijak indikována povinná pole ve formulářích -- doplnit indikaci povinných polí,
+    \item \label{P8} \textbf{kontrola pravopisu:} ve polích pro poznámky nefunguje kontrola pravopisu -- opravit,
+    \item \label{P9} \textbf{už. jméno:} uživatelské jméno na iOS začíná velkým písmenem -- opravit a používat malé písmeno,
+    \item \label{P10} \textbf{autofocus ve formulářích:} některé formuláře automaticky nevyberou první pole pro psaní (\verb|autofocus|) nebo neumožní pohyb pomocí klávesy TAB mezi prvky formuláře -- opravit,
+    \item \label{P11} \textbf{indikace načítání:} zobrazení načítání v mnoha případech nekoresponduje s tím, zda je už skutečně vše načteno a obsah komponent se zobrazí až později (ačkoliv načítání už není zobrazeno), tento fakt by také komplikoval zavedení automatizovaných testů UI (testovací nástroj nepozná, stejně jako uživatel, zda už je načteno), uživatel také není informován po odeslání formuláře, po kliknutí na uložení celá aplikace nic nedělá a až po dokončení požadavku se najednou formulář bez jakéhokoliv upozornění na načítání zavře -- uživatel musí být korektně informován o konci načítání až ve chvíli, kdy úplně všechny komponenty získají odpověď z API a vše zpracují, po uložení formuláře je třeba taktéž zobrazit načítání,
+    \item \label{P12} \textbf{lepší popisy polí:} některá pole nejsou dostatečně popsaná, např. chybí jednotky pro příslušnou hodnotu, chybí vysvětlení např. automaticky zaškrtnutých polí při zaškrtnutí jiného, na macOS se pro datum a čas nezobrazí žádná nápověda formátu (Safari oproti jiným prohlížečům nenabízí uživatelsky přívětivý nativní prvek pro jednoduchý výběr) -- doplnit lepší popisy, vysvětlení a nápovědu pro formáty (\verb|placeholder|),
+    \item \label{P13} \textbf{listování diářem:} pokud lektorka listuje rychle diářem mezi týdny, aplikace je pomalá a tlačítka pro pohyb odskakují podle délky zobrazeného data a mění tak svou pozici, také je nepohodlný pohyb mezi předcházejícím a nadcházejícím týdnem -- opravit pozici tlačítek tak, aby nezávisela na počtu znaků data, nastavit prodlevu na požadavky při rychlém procházení diářem (jinak zbytečně probíhá komunikace s API a stahování dat pro každý den, ačkoliv uživatel na daný den už vůbec nekouká, protože rychle proklikl na jiný týden), umožnit procházení diáře šipkami na klávesnici,
+    \item \label{P14} \textbf{zalamování textů:} některé texty na stránkách se nevhodně zalamují (např. telefonní čísla ad.) -- opravit a nezalamovat,
+    \item \label{P15} \textbf{ESC u select:} při stisku ESC u některých prvků formuláře (\verb|select|, \verb|react-select|) se zavře nečekaně celé modální okno namísto zavření příslušné nabídky -- opravit tak, aby se zavřel pouze výběr možností, nikoliv celé modální okno s formulářem,
+    \item \label{P16} \textbf{responzivita:} některé komponenty v aplikaci při zobrazení na jiné než obvyklé velikosti obrazovky činí použití aplikace a srozumitelnost dat značně náročnější, případně se dokonce některé údaje mohou skrývat -- opravit responzivitu napříč všemi různými velikostmi displeje,
+    \item \label{P17} \textbf{abecední řazení:} řazení podle abecedy nepodporuje znaky s diakritikou, dojde např. ke smíchání příjmení začínajících na \enquote{S} a \enquote{Š} a lektorka se špatně orientuje -- opravit podporu pro české znaky,
+    \item \label{P18} \textbf{výstižné nadpisy:} některé nadpisy v rámci aplikace nejsou úplně výstižné a konzistentní -- projít napříč aplikací a opravit,
+    \item \label{P19} \textbf{obnovení přihlašovacího tokenu:} pokud lektorka zůstane na jedné stránce, kde provádí nějaké změny (např. má otevřenou kartu klienta a zde provádí změny a nepřechází jinam), vyprší mezitím platnost tokenu a následně při přechodu na jinou stránku je z aplikace odhlášena -- je potřeba provádět automatickou obnovu platnosti tokenu kdekoliv v aplikaci (v současné době se provádí jen při přechodu mezi stránkami).
+\end{enumerate}
 
 Seznam problémů, které již jsou součástí požadavků:
 \begin{itemize}
-    \item titulky stránek v prohlížeči nejsou odlišné -- řeší F16,
-    \item chybová hlášení někdy nezmiňují možnosti řešení a nejsou úplně srozumitelná, jsou dlouhá a lektorka je nestihne přečíst -- řeší F15,
-    \item pokud lektorka omylem zavře rozpracovaný formulář, není cesty zpět, to je velmi stresující -- řeší F14,
-    \item mnoho kroků v rámci aplikace by šlo dělat efektivněji, pokud by to aplikace umožňovala, zbytečně se ztrácí čas -- řeší F11, F4, F3,
-    \item formulář pro lekce je nepřehledný, nevyužívá nijak ani barev ani jiných prvků k lepší orientaci, v případě mnoha klientů je moc dlouhý a nevejde se na obrazovku -- řeší F5.
+    \item titulky stránek v prohlížeči nejsou odlišné -- řeší \ref{F16},
+    \item chybová hlášení někdy nezmiňují možnosti řešení a nejsou úplně srozumitelná, jsou dlouhá a lektorka je nestihne přečíst -- řeší \ref{F15},
+    \item pokud lektorka omylem zavře rozpracovaný formulář, není cesty zpět, to je velmi stresující -- řeší \ref{F14},
+    \item mnoho kroků v rámci aplikace by šlo dělat efektivněji, pokud by to aplikace umožňovala, zbytečně se ztrácí čas -- řeší \ref{F11}, \ref{F4}, \ref{F3},
+    \item formulář pro lekce je nepřehledný, nevyužívá nijak ani barev ani jiných prvků k lepší orientaci, v případě mnoha klientů je moc dlouhý a nevejde se na obrazovku -- řeší \ref{F5}.
 \end{itemize}
 
 \chapter{Návrh}
-navrh upravene DB a API a pripadne dalsich veci
 
-* pokročilejší evidence předplacených kurzů (skupiny - citac, indiv - vyber poctu), 
+
+\section{Datový model}
+
+TODO
+    
+\begin{figure}\centering
+	\includegraphics[width=1\textwidth]{img/db-model}
+	\caption[Aktualizovaný logický datový model]{Aktualizovaný logický datový model}\label{fig:db-model}
+\end{figure}
+
+\section{Komunikační rozhraní}
+
+TODO
+
+\section{Konfigurace více prostředí}\label{sec:konfiguraceviceprostredi}
+
+TODO
+
+
+
+
 * api krestni jmeno klienta reprezentovane "firstname"
+* pokročilejší evidence předplacených kurzů (skupiny - citac, indiv - vyber poctu), 
 * vice default hodnot, upravy diagramu
 * [api] poradove cislo lekce ma rozumnejsi nazev number (byl count)
 
@@ -160,14 +204,6 @@ F15:
 * podrobnější chybové hlášky (např. při ProtectedError, když se uživatel pokouší mazat instanci, na které závisí jiné instance s chráněným příslušným FK; podrobnější info o časovém konfliktu...)
 
 N4:
-* zavedeni referrer-policy (same-origin), bezpecnejsi konfigurace lokalniho prostredi
-* oprava zabezpeceni aplikace + automaticke presmerovani na https + HSTS
-* mnoho promennych prostredi → ve všech prostředích se pracuje stejným způsobem s příslušnými proměnnými prostředí, je čistější nastavení Djanga a umožňuje díky .env souboru (je v .gitignore) použít i lokální proměnné prostředí (jinak těžko univerzálně nastavitelné i v rámci IDE) + odstranění zašifrovaných proměnných v konfiguráku travisu a přesun přímo do repo
-* robots.txt, pak nahrazeni robots.txt meta tagem pro uplny zakaz cehokoliv robotum
-* oprava zacykleni aplikace pri expirovanem tokenu (pri otevreni aplikace se zacyklila a zpusobila velke vytizeni CPU)
-* "noopener noreferrer" z důvodu bezpečnosti
-* nastavení DEBUG = False pro Django produkci, opravuje \#23 
-* úprava práce s tokeny, zašifrování, refresh FontAwesome tokenu, opravuje mj. \#28
 * contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 
 F17:
@@ -189,7 +225,6 @@ N3:
 
 
 LGTM: 
-
 [js] odstraneni unused promenne v Applications
 [js] oprava spatneho nazvu promenne v inicializaci ErrorBoundary
 [js] oprava potencialnich chyb zpusobenych nespravnou aktualizaci stavu
@@ -211,6 +246,9 @@ N6:
 \chapter{Implementace}
 součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
 
+
+% todo migrace na novy react
+
 PR:
 * chyby při práci s modálními okny https://github.com/rodlukas/UP-admin/issues/95 - issue reactstrapu, vyjde nova verze
 * react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
@@ -219,8 +257,10 @@ PR:
 \section{Implementace požadavků}
 IMPLEMENTACE POZADAVKU z analyzy vyse
 
-* zavedeni yarn kvuli rychlosti
+* "noopener noreferrer" z důvodu bezpečnosti
+* robots.txt, pak nahrazeni robots.txt meta tagem pro uplny zakaz cehokoliv robotum
 * pipfile
+* mnoho promennych prostredi → ve všech prostředích se pracuje stejným způsobem s příslušnými proměnnými prostředí, je čistější nastavení Djanga a umožňuje díky .env souboru (je v .gitignore) použít i lokální proměnné prostředí (jinak těžko univerzálně nastavitelné i v rámci IDE) + odstranění zašifrovaných proměnných v konfiguráku travisu a přesun přímo do repo
 * zobrazení tel. čísel klientů v zájemcích o kurz (\#61)
 * oprava logiky výpočtu "příště platit" - nebral v úvahu předplacené lekce (https://github.com/rodlukas/UP-admin/commit/e84aa4eec9bb93323a097830dd1416204658c87a)
 * lekce je automaticky zrušená na frontendu i backendu když jsou všichni účastníci omluveni, na to je příslušně uživatel upozorněn ve formuláři (a zároveň zrušení nejde měnit, protože by backend lekci stejně tak či tak zrušil)

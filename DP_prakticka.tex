@@ -38,7 +38,7 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
     \item \label{N3} \textbf{zavedení nástrojů pro usnadnění vývoje a údržby:} je třeba zavést nástroje pro monitorování chyb v aplikaci, správu logů (vyhledávání, ukládání), statické typování a analýzu kódu -- k tomu byla provedena v teoretické části rešerše v kapitole~\ref{chap:nastrojeprousnadnenivyvojeaudrzby},
     \item \label{N4} \textbf{revize bezpečnosti:} je třeba provést kompletní revizi aplikace z hlediska bezpečnosti a opravit případné slabiny, problémy či zranitelnosti, provést aktualizace závislostí apod.,
     \item \label{N5} \textbf{vylepšení použitelnosti:} z hlášení lektorky a také z vlastní analýzy vyplývá, že je třeba se zaměřit na opravení problémů s použitelností a její vylepšení,
-    \item \label{N6} \textbf{rychlejší získání dat z API *:} pokud klientská část má někde zobrazit více dat, požadavek někdy probíhá enormně dlouho a dokonce může být ze strany Heroku pro dlouhou prodlevu zastaven a lektorka si data nezobrazí -- je třeba nalézt úzké hrdlo aplikace, které toto zpomalení v jednotkách případů (když je hodně dat) zpomaluje a toto vylepšit, také je třeba se zaměřit na optimalizaci počtu požadavků na API (zda některé nelze uložit a znovupoužít bez dalšího provádění (viz možné rozšíření o React Context API v sekci~\ref{sec:planrozsirenibp}),
+    \item \label{N6} \textbf{rychlejší získání dat z API *:} pokud klientská část má někde zobrazit více dat, požadavek někdy probíhá enormně dlouho a dokonce může být ze strany Heroku pro dlouhou prodlevu zastaven a lektorka si data nezobrazí -- je třeba nalézt úzké hrdlo aplikace, které toto zpomalení v jednotkách případů (když je hodně dat) zpomaluje a toto vylepšit, také je třeba se zaměřit na optimalizaci počtu požadavků na API (zda některé nelze uložit a znovupoužít bez dalšího provádění, viz možné rozšíření o React Context API v sekci~\ref{sec:planrozsirenibp}) a případně zjednodušení obsahu odpovědí díky znovupoužívání,
     \item \label{N7} \textbf{konfigurace více prostředí:} pokud se aplikace úspěšně sestaví na integračním serveru, nahraje se na produkci \cite{bp} -- to může v případě neodhalené chyby v aplikaci způsobit okamžitý pád produkce a případně i ztrátu dat -- toto souvisí s lepším pokrytím testy (viz \ref{N2}), ale je třeba také zavést další prostředí, do kterých se v různé fázi bude aplikace nasazovat, a to tak, aby bylo k dispozici jak prostředí naprosto totožné s produkcí (např. pro reprodukování chyb hlášených koncovým uživatelem), tak prostředí opět postavené na tom produkčním, ale s novější nasazenou verzí aplikace -- kompletní návrh bude popsán v sekci~\ref{sec:konfiguraceviceprostredi},
     \item \label{N8} \textbf{zálohy databáze:} je třeba zavést pravidelné automatické zálohování databáze z produkce.
 \end{enumerate}
@@ -147,19 +147,67 @@ Seznam problémů, které již jsou součástí požadavků:
 
 \chapter{Návrh}
 
+V této kapitole se budu věnovat návrhu aktualizovaného logického datového modelu aplikace, aktualizovaného komunikačního rozhraní a také navrhnu novou konfiguraci více prostředí pro nasazování.
+
 
 \section{Datový model}
 
-TODO
-    
+Do datového modelu bylo potřeba projevit všechny nové funkční požadavky. Původní logický datový model je na obrázku~\ref{fig:db-model-bp}. Finální návrh nového logického datového modelu je na obrázku~\ref{fig:db-model}.
+
+Nejprve shrnu obecné úpravy a vylepšení tohoto modelu. Během práce se ukázalo velmi vhodné obarvit jednotlivé entity dvěma barvami v závislosti na tom, zda obsahují cizí klíče (oranžová) nebo nikoliv (červená). Popisy vztahů nyní v závorce obsahují i atribut pro přístup k cílové entitě z entity zdrojové, který se fyzicky v rámci aplikace používá. Napříč celým diagramem jsou pak vypsaná všechna omezení v rámci domény, která je v kódu třeba řešit -- mají unikátní identifikátory, které budou i jako komentáře v kódu, který tato omezení implementuje, aby byla omezení jednoduše v kódu trasovatelná v případě úprav (ke kterým v průběhu iteračního vývoje docházelo, ale diagram je ve finální verzi). V legendě je též uveden celkový počet omezení, aby se identifikátory nových omezení snadno vytvářely. Atributy jsou pro přehlednost nyní řazeny dle abecedy.
+
+Taktéž se ukázalo jako výhodné dodefinovat význam povinnosti atributu typu text, jak totiž uvádí \cite{django-docs-model}, je obvykle nesmyslné povolit na textovém atributu jak prázdný string, tak \verb|NULL|, protože pak dvě hodnoty mají stejný význam (žádná data) -- proto je v legendě uvedeno, že znak \verb|*| u atributu znamená, že pole nikdy nebude \verb|NULL| a zároveň ani prázdný string (tato druhá podmínka je řešena validací ze strany Djanga oproti \verb|NOT NULL| podmínce, která je směřovaná na databázi. Jedinou výjimkou (též uvedeno v legendě) je atribut \verb|start| lekce, kde \verb|NULL| znamená předplacenou lekci jednotlivce. Tato povinnost atributů byla napříč entitami revidována a doplněna, stejně jako byly u některých atributů doplněny i výchozí hodnoty a řešení duplicit dle požadavků lektorky (např. klient může mít zájem o daný kurz jen jednou ad.).
+
+Součástí změn uvedených v následujících podsekcích je i zavedení mnoha souvisejících omezení, explicitně je ale uvádět nebudu, protože v přehlednější podobě jsou zapsána v obrázku\ref{fig:db-model}.
+
+\subsection{Předplacené lekce}
+
+V předchozím odstavci jsem se dotkl hodnoty \verb|NULL| pro \verb|start| lekce -- zde nastává změna oproti původnímu modelu, protože nyní jsou takto, jak již bylo zmíněno, vedeny pouze předplacené lekce jednotlivců. Díky tomu pak může být u každé předplacené lekce, která se automaticky vytvoří jako náhrada při omluvě/zrušení lekce (viz požadavek~\ref{F10}).
+
+Předplacené lekce skupin jsou pro umožnění jednoduché evidence (viz požadavek~\ref{F3}) nyní součástí členství klientů ve skupině (Membership), tato entita původně byla dekompozicí vztahu M:N bez dalších atributů, prapůvodní záměr v rámci bakalářské práce byl evidování počátku a konce členství klienta ve skupině, což se pak ukázalo jako zbytečné, ale dekompozice byla pro případné jiné budoucí využití ponechána. Nyní tedy konečně dostála svému řádnému využití a umožní tak evidovat počet předplacených lekcí každého klienta v rámci dané skupiny -- když je klient ze skupiny smazán, smaže se samozřejmě i jeho členství a s tím i předplacené skupiny.
+
+\subsection{Zájemci o kurzy}
+
+Dalším funkčním požadavkem~\ref{F1}, který je třeba projevit do datového modelu, jsou zájemci o kurzy. Zde se dá s výhodou jednoduše rozšířit původní datový model o entitu navázanou na klienta a kurz -- tím docílím evidování zájmu klienta o daný kurz (entita Application). Zájem klienta o kurz obsahuje poznámku a také datum přidání, který bude jednoduše automaticky přidávaný, aby lektorka nemusela nic vyplňovat.
+
+\subsection{Vlastnosti stavů účasti}
+
+Požadavek~\ref{F17} uvádí, že je třeba některým stavům přiřadit speciální úlohu -- jeden označit jako výchozí (a zároveň ten, který znamená, že uživatel má přijít/přišel) a druhý jako stav s významem \enquote{klient omluven}. Původní řešení, jak též uvádí \ref{F17}, bylo toto zadefinovat napevno v kódu podle názvu stavu účasti, což je ale nedostačující, protože je samozřejmě třeba tento název umožnit upravit. Nabízelo se několik možností -- zavést nový atribut stavu účasti, který bude označovat typ stavu účasti (jako tomu bývá např. při evidování úrovně oprávnění uživatelů v rámci aplikací). Samotné typy by pak musely být evidovány jako další nová entita. Vzhledem k tomu, že se nepočítá s přidáním dalších typů v budoucnu (stavů účasti také ne, ale ty klidně být přidány mohou, jen nebudou mít speciální typ, protože ten je zde zaveden kvůli dalším speciálním výpočtům jako např. počet absolvovaných lekcí v rámci kurzu), toto řešení nebylo zvoleno z důvodu zbytečné komplexity. Byl zvolen jednodušší způsob, kdy stav účasti má dva boolean atributy \verb|default| a \verb|excused|, kde serverová část obstará, že právě jedna instance stavu účasti bude mít příslušný atribut aktivní. Toto řešení není tak dobře škálovatelné, ale jak jsem uvedl, není to třeba -- je jednoduché a nevyžaduje oproti druhému řešení mnoho změn na úrovni API a klientské části.
+
+\subsection{Další změny}
+
+Aktivita klientů a skupin (viz požadavek~\ref{F6}) se vzhledem k návrhu dá vyřešit jednoduchým atributem \verb|active| u obou těchto entit.
+
+V případě kurzu bylo třeba pro evidování délky trvání kurzu (viz požadavek~\ref{F7}) pro jednotlivce přidat příslušný atribut \verb|duration|. Dalším přidaným atributem je pak \verb|color|, který umožní u kurzu evidovat jeho barvu (viz požadavek~\ref{F12}).
+
+Další změnou, která byla provedena navíc oproti požadavkům bylo přejmenování atributu \verb|name| u klienta na \verb|firstname|. Kromě více vystihujícího názvu (jedná se skutečně o křestní jméno) se zde během vývoje vyskytl problém s nejednoznačností, kde se v rámci klientské části někde pracovalo s \verb|name| jakožto celým jménem klienta, kdežto jinde jako s křestním jménem. 
+
 \begin{figure}\centering
 	\includegraphics[width=1\textwidth]{img/db-model}
 	\caption[Aktualizovaný logický datový model]{Aktualizovaný logický datový model}\label{fig:db-model}
+\vspace{-15pt}
 \end{figure}
 
 \section{Komunikační rozhraní}
 
-TODO
+Ukázalo se, že původní komunikační rozhraní (REST API) z bakalářské práce mělo velmi dobrý návrh, bylo třeba provést pouze drobnější úpravy a především začlenit všechny potřebné změny z požadavků a datového modelu. Nejprve se zaměřím na drobnější změny a poté na začlenění změn z požadavků a datového modelu.
+
+\subsection{Opravy a úpravy stávajícího rozhraní}
+
+Pro odpověď na GET požadavek na lekce (GET \verb|lectures/|) byl u každé účasti klienta klíč \verb|count| pro označení pořadového čísla lekce. Zde jsou dva problémy. Prvním je fakt, že název klíče není úplně přesně vypovídající název vzhledem k dané situaci a při práci v kódu nastávaly nedorozumění, proto došlo k přejmenování na \verb|number|, což lépe odpovídá tomu, že se jedná a pořadové číslo lekce. Druhý problém je, že se z neznámého důvodu tento klíč vyskytoval u každé účasti v rámci lekce, což v případě lekce jednotlivce není důležité, ale v případě skupiny je pak totéž číslo u každé účasti (protože se řeší celkový počet lekcí, nikoliv zda konkrétní klient na nějaké lekci byl) -- tedy zbytečně se informace duplikuje a na klientské části se vezme její první výskyt -- toto bylo opraveno a pořadové číslo lekce se nyní vyskytuje přímo u lekce, nikoliv u každé účasti.
+
+Součástí odpovědi GET \verb|lectures/|, jak již bylo zmíněno, je také přehled účastí jednotlivých klientů, zde bylo rozhodnuto také o odstranění vnořených informací o stavech účasti jednotlivých klientů -- v praxi zde byl poslán vždy název účasti, ID (a nově vzhledem k novému datovému modelu by byly poslány i informace \verb|default| a \verb|excused|), vzhledem k plánovaným změnám v rámci požadavku~\ref{N6} tyto vnořené informace byly odstraněny a nahrazeny pouze ID stavu účasti, protože si klientská část aplikace bude stavy účasti pamatovat (implementace viz TODO).
+
+
+\subsection{Rozšíření rozhraní}
+
+Rozhraní je třeba rozšířit o nové požadavky a úpravy datového modelu. 
+
+TODO - atributy z modelu
+
+TODO - entity z modelu
+
+TODO - banka
 
 \section{Konfigurace více prostředí}\label{sec:konfiguraceviceprostredi}
 
@@ -168,19 +216,7 @@ TODO
 
 
 
-* api krestni jmeno klienta reprezentovane "firstname"
-* pokročilejší evidence předplacených kurzů (skupiny - citac, indiv - vyber poctu), 
-* vice default hodnot, upravy diagramu
-* [api] poradove cislo lekce ma rozumnejsi nazev number (byl count)
 
-N2: 
-* vylepseni vsech testu - neprobihala kontrola zobrazenych dat ve formulari pred upravou
-* zrychleni testu upravy klientu
-* vylepseni potvrzovani formulare pro lepsi zachyceni chyb
-* oprava náhodně občas nefungujících testů na CI (po každém scénáři je smazána localstorage) (\#64)
-
-F6: 
-* pri uprave/pridani skupiny/klienta dojde automaticky k prepnuti na zalozku aktivni/neaktivni podle toho, do ceho jsme pridavali
 
 F8:
 * zobrazují se transakce za posledních 14 dnů, FIO omezuje dotazy na API na 30 s, takže server cachuje odpověď banky rovnou 60 s, zobrazuje se i aktuální zůstatek + barva je podle toho, zda je na účtu dostatek peněz na zaplacení nájmu (zelená, resp. červená s upozorňujícím vykřičníkem s dalšími informacemi), po 60 s možnost výpis obnovit, případně lze jít do bankovnictví, opravuje \#50
@@ -203,11 +239,6 @@ F15:
 * js vylepseni notifikaci - notifikace doplnene o nadpis a ikonu, sjednoceny font, komponenta pro obsah notifikace, delsi doba zobrazeni error notifikace
 * podrobnější chybové hlášky (např. při ProtectedError, když se uživatel pokouší mazat instanci, na které závisí jiné instance s chráněným příslušným FK; podrobnější info o časovém konfliktu...)
 
-N4:
-* contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
-
-F17:
-* stav omluven a zruseno uz neni napevno
 
 N3:
 * refaktoring
@@ -224,24 +255,6 @@ N3:
 * oprava práce se setState - zbytečně se přes const state = this.state nastavoval pak ve setState celý nový stav, což je zbytečné a navíc to může způsobovat problémy při dalším volání setState (které když proběhne před tímto, může přijít v niveč, protože jej nahradí tato kompletní změna stavu, ačkoliv se má měnit jen malá část stavu komponenty) 
 
 
-LGTM: 
-[js] odstraneni unused promenne v Applications
-[js] oprava spatneho nazvu promenne v inicializaci ErrorBoundary
-[js] oprava potencialnich chyb zpusobenych nespravnou aktualizaci stavu
-[python] odstraneni vsech import *
-[python] optimalizace importu
-[js] optimalizace importu
-[js] oprava primeho zapisovani do stavu v Card
-[js] konzistentni stav PrepaidCounters
-[js] konzistentni stav at\_state ve FormLecture
-
-
-
-N6:
-* DRF-JWT problémy, dotazy na SQL DB ikdyž nemají být - https://github.com/rodlukas/UP-admin/issues/51 - přechod na jinou knihovnu a zde PR na překlad do CZ
-* pomalé SQL dotazy- obri optimalizace dotazu na DB (>4x zrychleni) diky DJDT, pokrocile optimalizace
-* odstraneni zbytecne prace s DB napric api - zrychleni - commit https://github.com/rodlukas/UP-admin/commit/ba12eea6be642d0c56629ac607fb1f8ffab267f7
-* vice info viz https://github.com/rodlukas/UP-admin/releases/tag/0.9.0
 
 \chapter{Implementace}
 součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
@@ -285,8 +298,34 @@ IMPLEMENTACE POZADAVKU z analyzy vyse
 * občas se využívají skupinové lekce bez definovaných účastníků (ještě nejsou známí), taková lekce se ale ukazuje jako zrušená a u skupiny chybí info, že nejsou žádní účastníci - potřeba vylepšit zobrazení
 
 
+N4:
+* contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
+
+N6:
+* DRF-JWT problémy, dotazy na SQL DB ikdyž nemají být - https://github.com/rodlukas/UP-admin/issues/51 - přechod na jinou knihovnu a zde PR na překlad do CZ
+* pomalé SQL dotazy- obri optimalizace dotazu na DB (>4x zrychleni) diky DJDT, pokrocile optimalizace
+* odstraneni zbytecne prace s DB napric api - zrychleni - commit https://github.com/rodlukas/UP-admin/commit/ba12eea6be642d0c56629ac607fb1f8ffab267f7
+* vice info viz https://github.com/rodlukas/UP-admin/releases/tag/0.9.0
+
+F6: 
+* pri uprave/pridani skupiny/klienta dojde automaticky k prepnuti na zalozku aktivni/neaktivni podle toho, do ceho jsme pridavali
+
 \section{Zavedení nástrojů pro usnadnění vývoje a údržby}
 podrobny popis jak probihalo zavedeni, co mi to umoznuje, treba i screenshoty, k cemu to bylo pouzito, jak se to osvedcilo - nastroje vychazi ze zvolenych nastroju z reserse
+
+
+LGTM: 
+[js] odstraneni unused promenne v Applications
+[js] oprava spatneho nazvu promenne v inicializaci ErrorBoundary
+[js] oprava potencialnich chyb zpusobenych nespravnou aktualizaci stavu
+[python] odstraneni vsech import *
+[python] optimalizace importu
+[js] optimalizace importu
+[js] oprava primeho zapisovani do stavu v Card
+[js] konzistentni stav PrepaidCounters
+[js] konzistentni stav at\_state ve FormLecture
+
+sonarcloud viz commity koment
  
 \begin{itemize}
 \item ...
@@ -302,6 +341,15 @@ podrobny popis jak probihalo zavedeni, co mi to umoznuje, treba i screenshoty, k
 
 \chapter{Testování}
 implementace samotneho testovani v behave, Selenium
+
+
+
+N2: 
+* vylepseni vsech testu - neprobihala kontrola zobrazenych dat ve formulari pred upravou
+* zrychleni testu upravy klientu
+* vylepseni potvrzovani formulare pro lepsi zachyceni chyb
+* oprava náhodně občas nefungujících testů na CI (po každém scénáři je smazána localstorage) (\#64)
+
 \begin{itemize}
 \item popis, jak jsem konkretne tvoril vsechny UI/API testy v behave a seleniu, co bylo za problemy (nacitani, viz heuristika), jak to funguje, jak jsem vsechno udelal
 \item coverage 86 \%

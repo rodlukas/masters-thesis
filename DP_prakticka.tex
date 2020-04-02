@@ -202,6 +202,7 @@ Součástí odpovědi GET \verb|lectures/|, jak již bylo zmíněno, je také p�
 \subsection{Rozšíření rozhraní}
 
 Rozhraní je třeba rozšířit o nové požadavky a úpravy datového modelu. 
++ pocty lekci a dalsi, filtry??
 
 TODO - atributy z modelu
 
@@ -213,21 +214,48 @@ TODO - banka
 
 TODO
 
+\section{Uživatelské prostředí}
 
+Do klientské části bylo třeba navrhnout několik prvků z požadavků. Drobnější změny zde ukázány nebudou, zaměřím se jen na nejdůležitější změny v uživatelském rozhraní. Návrhy obvykle probíhaly na papír, ale pro lepší čitelnost je zde uvádím překreslené v aplikaci \href{https://pencil.evolus.vn/}{Pencil}.
 
+\begin{figure}[h]\centering
+    \includegraphics[width=1\textwidth]{img/ui-zajemci}
+    \caption{Návrh zájemců o kurzy}\label{fig:ui-zajemci}
+\end{figure}
 
+Nejvýraznější změnou v klientské části je přidání nové stránky se zájemci kurzu (viz požadavek~\ref{F1}). Návrh je na obrázku~\ref{fig:ui-zajemci}, jak lze vidět, jsou barevně odlišeny kurzy -- zde již počítám se zavedením požadavku~\ref{F12} pro evidování barev kurzů (změny budou v implementaci učiněny napříč celou aplikací). Návrh splňuje všechny požadavky lektorky, kromě jednoduše dostupné úpravy je také dostupné tlačítko pro smazání -- to je obvykle napříč aplikací dostupné až v modálním okně s úpravou (protože se obvykle stejně nepoužívá a díky tomu, že není přímo na příslušné hlavní stránce, nemůže být ani omylem stisknuto a potvrzeno smazání ve vyskakovacím okně), zde je přímo u každého zájemce, protože oproti ostatním případům zde frekvence mazání bude vysoká vzhledem k postupnému obsluhování všech zájmů o kurzy.
 
+\begin{figure}\centering
+    \includegraphics[width=1\textwidth]{img/ui-lekce-skupina}
+    \caption{Návrh nového formuláře pro skupinové lekce}\label{fig:ui-lekce-skupina}
+\end{figure}
 
-F8:
-* zobrazují se transakce za posledních 14 dnů, FIO omezuje dotazy na API na 30 s, takže server cachuje odpověď banky rovnou 60 s, zobrazuje se i aktuální zůstatek + barva je podle toho, zda je na účtu dostatek peněz na zaplacení nájmu (zelená, resp. červená s upozorňujícím vykřičníkem s dalšími informacemi), po 60 s možnost výpis obnovit, případně lze jít do bankovnictví, opravuje \#50
-* cache, upozorneni na najem
+\begin{figure}\centering
+    \includegraphics[width=1\textwidth]{img/ui-lekce-klient}
+    \caption{Návrh nového formuláře pro lekce jednotlivců}\label{fig:ui-lekce-klient}
+\end{figure}
 
-F18:
-* pokročilá validace duplicit apod.
-* zruseni noveho omezeni "neaktivní klienty nelze přiřadit do skupin (UI je ani nezobrazí ve výběru)" - neaktivní klienti již mohou být členové skupiny
-* velka pocatecni pismena jmena klienta i pro api, presun transformaci field z modelu do serializeru
-* viz EA docs
-* js zvyrazneni neaktivity skupin a klientu napric aplikaci https://github.com/rodlukas/UP-admin/issues/85
+Na obrázcích~\ref{fig:ui-lekce-skupina} a \ref{fig:ui-lekce-klient} jsou kompletně přepracované návrhy formulářů pro přidání (a potažmo i úpravu) lekce skupiny, resp. klienta. V rámci příslušného požadavku~\ref{F5} bylo třeba postupnými iteracemi dojít k návrhu, který umožní jednoduší práci s tímto formulářem, který je nejpoužívanější v rámci celé aplikace. V rámci detailní analýzy požadavku~\ref{F3} bylo zjištěno, že je třeba usnadnit přidávání více předplacených lekcí pro jednotlivce, tento požadavek v rámci tohoto přepracování formuláře pro lekce byl též začleněn -- pro klienty je v levém horním rohu dostupné pole pro zapsání počtu předplacených lekcí. Toto pole bude možné upravit při zaškrtnutí volby \enquote{Předplaceno}. Znaky \enquote{XX} u polí naznačují přítomnost ikony vysvětlující význam příslušného pole (místo textů, alternativní text se samozřejmě zobrazí po najetí na ikonu).
+
+\begin{figure}\centering
+    \includegraphics[width=0.52\textwidth]{img/ui-screen-lekce-skupina.png}
+    \caption{Původní formulář pro lekce skupin}\label{fig:ui-screen-lekce-skupina}
+\end{figure}
+
+Díky větší šířce formuláře bylo možné vměstnat více polí na méně řádků, díky tomu a také ikonám došlo k ušetření místa, díky nově zobrazeným účastem klientů též ve formě řádků, navíc s odlišenou barvou platby je umožněna přehlednější a jednoduší evidence. Jak bylo uvedeno v požadavku~\ref{F5}, jedním z hlavních problémů bylo, že ve skupině může být např. 6 dětí a formulář má pak výšku několika obrazovek a je prakticky nepoužitelný -- zjednodušený názorný příklad původního formuláře (pouze se dvěma účastníky pro jednoduchost, ale účastníků je obvykle mnohem více) je na obrázku~\ref{fig:ui-screen-lekce-skupina}. Formuláře pro skupiny a jednotlivce (klienty) se liší jak počítadlem pro předplacené lekce (u skupin tato možnost není, protože bude řešena počítadly v rámci karty skupiny, viz požadavek\ref{F3}). Druhou odlišností je pak zobrazení jména účastníka, které v případě jednotlivce je samozřejmě zbytečné (je v horní části formuláře), v případě skupin je toto jméno klienta současně odkazem do jeho karty pro rychlý přechod v případě potřeby.
+
+\chapter{Implementace}
+součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
+
+% todo migrace na novy react
+
+PR:
+* chyby při práci s modálními okny https://github.com/rodlukas/UP-admin/issues/95 - issue reactstrapu, vyjde nova verze
+* react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
+* reactstrap tooltip ios fix
+
+\section{Implementace požadavků}
+IMPLEMENTACE POZADAVKU z analyzy vyse
 
 F15:
 * frontend odolny proti padu diky ErrorBoundary
@@ -239,6 +267,12 @@ F15:
 * js vylepseni notifikaci - notifikace doplnene o nadpis a ikonu, sjednoceny font, komponenta pro obsah notifikace, delsi doba zobrazeni error notifikace
 * podrobnější chybové hlášky (např. při ProtectedError, když se uživatel pokouší mazat instanci, na které závisí jiné instance s chráněným příslušným FK; podrobnější info o časovém konfliktu...)
 
+F18:
+* pokročilá validace duplicit apod.
+* zruseni noveho omezeni "neaktivní klienty nelze přiřadit do skupin (UI je ani nezobrazí ve výběru)" - neaktivní klienti již mohou být členové skupiny
+* velka pocatecni pismena jmena klienta i pro api, presun transformaci field z modelu do serializeru
+* viz EA docs
+* js zvyrazneni neaktivity skupin a klientu napric aplikaci https://github.com/rodlukas/UP-admin/issues/85
 
 N3:
 * refaktoring
@@ -254,21 +288,9 @@ N3:
 * Minifikace HTML
 * oprava práce se setState - zbytečně se přes const state = this.state nastavoval pak ve setState celý nový stav, což je zbytečné a navíc to může způsobovat problémy při dalším volání setState (které když proběhne před tímto, může přijít v niveč, protože jej nahradí tato kompletní změna stavu, ačkoliv se má měnit jen malá část stavu komponenty) 
 
-
-
-\chapter{Implementace}
-součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
-
-
-% todo migrace na novy react
-
-PR:
-* chyby při práci s modálními okny https://github.com/rodlukas/UP-admin/issues/95 - issue reactstrapu, vyjde nova verze
-* react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
-* reactstrap tooltip ios fix
-
-\section{Implementace požadavků}
-IMPLEMENTACE POZADAVKU z analyzy vyse
+F8:
+* zobrazují se transakce za posledních 14 dnů, FIO omezuje dotazy na API na 30 s, takže server cachuje odpověď banky rovnou 60 s, zobrazuje se i aktuální zůstatek + barva je podle toho, zda je na účtu dostatek peněz na zaplacení nájmu (zelená, resp. červená s upozorňujícím vykřičníkem s dalšími informacemi), po 60 s možnost výpis obnovit, případně lze jít do bankovnictví, opravuje \#50
+* cache, upozorneni na najem
 
 * "noopener noreferrer" z důvodu bezpečnosti
 * robots.txt, pak nahrazeni robots.txt meta tagem pro uplny zakaz cehokoliv robotum
@@ -326,6 +348,20 @@ LGTM:
 [js] konzistentni stav at\_state ve FormLecture
 
 sonarcloud viz commity koment
+
+
+sider PR
+houndCI PR
+codefactor nefunkcni dependence stylelint, eslint config js nepodporuje
+code-inspector - katastrofalni UI, naprosto nefunkcni parsovani, importy nefunguji... (v UI nefunguje ani tlacitko zpet a vse je rozpadle...)
+
+
+deepcode
+deepscan, sonarcloud, lgtm
+deepsource
+codebeat
+codeclimate
+codacy
  
 \begin{itemize}
 \item ...

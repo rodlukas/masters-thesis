@@ -184,7 +184,7 @@ Další změnou, která byla provedena navíc oproti požadavkům bylo přejmeno
 
 \begin{figure}\centering
 	\includegraphics[width=1\textwidth]{img/db-model}
-	\caption[Aktualizovaný logický datový model]{Aktualizovaný logický datový model}\label{fig:db-model}
+	\caption[Aktualizovaný logický datový model, rozšiřuje a vylepšuje původní model z~\cite{bp}]{Aktualizovaný logický datový model}\label{fig:db-model}
 \vspace{-15pt}
 \end{figure}
 
@@ -214,7 +214,7 @@ TODO - banka
     
 \begin{figure}\centering
 	\includegraphics[width=1\textwidth]{img/deployment-diagram}
-	\caption[Diagram nasazení]{Diagram nasazení}\label{fig:deployment-diagram}
+	\caption[Aktualizovaný diagram nasazení, vychází z~\cite{bp}]{Aktualizovaný diagram nasazení}\label{fig:deployment-diagram}
 \end{figure}
 
 Aktualizovaný diagram nasazení na obrázku~\ref{fig:deployment-diagram} vychází z původního diagramu \cite{bp}. Jádro zůstává stejné a kromě drobnějších vylepšení pro zlepšení přehlednosti je v něm pouze jedna důležitá změna. V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem uvedeno HTTP/S. Vzhledem k požadavku na revizi bezpečnosti~\ref{N4} a jeho následné detailní analýze~\ref{subsec:N4detail} je v problému~\ref{B4} zmíněno zavedení HSTS. Podrobnému popisu se budu věnovat v TODO, důležitý je ale dopad na návrh architektury, kde díky zavedení HSTS a korektní konfiguraci aplikace všechna komunikace bude probíhat z důvodu bezpečnosti pouze přes HTTPS (Hypertext Transfer Protocol Secure).

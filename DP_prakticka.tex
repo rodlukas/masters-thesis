@@ -85,7 +85,7 @@ Případy výběru lekce:
 Detailní analýza požadavku~\ref{F18}.
 V rámci tohoto požadavku bylo třeba vytvořit kompletní seznam všech omezení a validací, které v aplikaci mají být, a to i s ohledem na všechny nové funkční požadavky. Všechna tato omezení byla v rámci analýzy definována. Jejich seznam a rozdělení je vidět v obrázku~\ref{fig:db-model} s návrhem aktualizovaného logického datového modelu.
 
-\subsection{N4 -- revize bezpečnosti}
+\subsection{N4 -- revize bezpečnosti}\label{subsec:N4detail}
 
 Detailní analýza požadavku~\ref{N4}.
 V rámci tohoto požadavku je potřeba zjistit problémové oblasti a případně i konkrétní problémy, na které se zaměřit. Bylo tedy třeba projít např. konfiguraci aplikace, testovat chování aplikace a také použít nástroj \href{https://observatory.mozilla.org/}{Mozilla Observatory}, který skenuje webové stránky a kontroluje jejich zabezpečení \cite{mozillaobservatory}. Bylo zjištěno několik problémů níže, mají opět unikátní identifikátor, kde písmeno \enquote{B} značí problém s \textbf{b}ezpečností.
@@ -145,7 +145,7 @@ Seznam problémů, které již jsou součástí požadavků:
     \item formulář pro lekce je nepřehledný, nevyužívá nijak ani barev ani jiných prvků k lepší orientaci, v případě mnoha klientů je moc dlouhý a nevejde se na obrazovku -- řeší \ref{F5}.
 \end{itemize}
 
-\chapter{Návrh}
+\chapter{Návrh}\label{chap:navrh}
 
 V této kapitole se budu věnovat návrhu aktualizovaného logického datového modelu aplikace, aktualizovaného komunikačního rozhraní a také navrhnu novou konfiguraci více prostředí pro nasazování.
 
@@ -210,6 +210,15 @@ TODO - entity z modelu
 
 TODO - banka
 
+\section{Architektura}
+    
+\begin{figure}\centering
+	\includegraphics[width=1\textwidth]{img/deployment-diagram}
+	\caption[Diagram nasazení]{Diagram nasazení}\label{fig:deployment-diagram}
+\end{figure}
+
+Aktualizovaný diagram nasazení na obrázku~\ref{fig:deployment-diagram} vychází z původního diagramu \cite{bp}. Jádro zůstává stejné a kromě drobnějších vylepšení pro zlepšení přehlednosti je v něm pouze jedna důležitá změna. V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem uvedeno HTTP/S. Vzhledem k požadavku na revizi bezpečnosti~\ref{N4} a jeho následné detailní analýze~\ref{subsec:N4detail} je v problému~\ref{B4} zmíněno zavedení HSTS. Podrobnému popisu se budu věnovat v TODO, důležitý je ale dopad na návrh architektury, kde díky zavedení HSTS a korektní konfiguraci aplikace všechna komunikace bude probíhat z důvodu bezpečnosti pouze přes HTTPS (Hypertext Transfer Protocol Secure).
+
 \section{Konfigurace více prostředí}\label{sec:konfiguraceviceprostredi}
 
 TODO
@@ -242,7 +251,7 @@ Na obrázcích~\ref{fig:ui-lekce-skupina} a \ref{fig:ui-lekce-klient} jsou kompl
     \caption{Původní formulář pro lekce skupin}\label{fig:ui-screen-lekce-skupina}
 \end{figure}
 
-Díky větší šířce formuláře bylo možné vměstnat více polí na méně řádků, díky tomu a také ikonám došlo k ušetření místa, díky nově zobrazeným účastem klientů též ve formě řádků, navíc s odlišenou barvou platby je umožněna přehlednější a jednoduší evidence. Jak bylo uvedeno v požadavku~\ref{F5}, jedním z hlavních problémů bylo, že ve skupině může být např. 6 dětí a formulář má pak výšku několika obrazovek a je prakticky nepoužitelný -- zjednodušený názorný příklad původního formuláře (pouze se dvěma účastníky pro jednoduchost, ale účastníků je obvykle mnohem více) je na obrázku~\ref{fig:ui-screen-lekce-skupina}. Formuláře pro skupiny a jednotlivce (klienty) se liší jak počítadlem pro předplacené lekce (u skupin tato možnost není, protože bude řešena počítadly v rámci karty skupiny, viz požadavek\ref{F3}). Druhou odlišností je pak zobrazení jména účastníka, které v případě jednotlivce je samozřejmě zbytečné (je v horní části formuláře), v případě skupin je toto jméno klienta současně odkazem do jeho karty pro rychlý přechod v případě potřeby.
+Díky větší šířce formuláře bylo možné vměstnat více polí na méně řádků, díky tomu a také ikonám došlo k ušetření místa, díky nově zobrazeným účastem klientů též ve formě řádků, navíc s odlišenou barvou platby je umožněna přehlednější a jednoduší evidence. Jak bylo uvedeno v požadavku~\ref{F5}, jedním z hlavních problémů bylo, že ve skupině může být např. 6 dětí a formulář má pak výšku několika obrazovek a je prakticky nepoužitelný -- zjednodušený názorný příklad původního formuláře (pouze se dvěma účastníky pro jednoduchost, ale účastníků je obvykle mnohem více) je na obrázku~\ref{fig:ui-screen-lekce-skupina}. Formuláře pro skupiny a jednotlivce (klienty) se liší jak počítadlem pro předplacené lekce (u skupin tato možnost není, protože bude řešena počítadly v rámci karty skupiny, viz požadavek~\ref{F3}). Druhou odlišností je pak zobrazení jména účastníka, které v případě jednotlivce je samozřejmě zbytečné (je v horní části formuláře), v případě skupin je toto jméno klienta současně odkazem do jeho karty pro rychlý přechod v případě potřeby.
 
 \chapter{Implementace}
 součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)

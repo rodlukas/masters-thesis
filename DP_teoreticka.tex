@@ -40,11 +40,15 @@ Následuje shrnutí nefunkčních požadavků \cite{bp}:
 
 \section{Použité technologie}
 
+V této sekci shrnu všechny podstatné použité technologie pro serverovou i klientskou část. Součástí bakalářské práce byl přehledný diagram nasazení pro lepší orientaci \cite{bp} -- vzhledem k tomu, že se jádro architektury nemění, původní diagram zde neuvádím, na obrázku~\ref{fig:deployment-diagram} z kapitoly návrhu~\ref{chap:navrh} v praktické části je ale k vidění jeho aktualizovaná verze.
+
 \subsection{Serverová část}
 
 Serverová část aplikace \cite{bp} je napsána v Pythonu~3.6.5 s webovým frameworkem \href{https://www.djangoproject.com/}{Django~2.0.5}. Pro správu závislostí se používá pouze jednoduchý soubor \verb|requirements.txt| obsahující specifikace přesných verzí knihoven (bez povolení jakkoliv malých aktualizací). 
 
 Aplikace vystavuje REST~API postavené na frameworku \href{https://www.django-rest-framework.org/}{Django~REST~framework~3.8.2}. Na produkci se používá webový server \href{http://gunicorn.org/}{Gunicorn~19.8.1} spolu s knihovnou \href{http://whitenoise.evans.io/en/stable/}{WhiteNoise~3.3.1} pro efektivní servírování zkomprimovaných statických souborů \cite{whitenoise}.
+
+Odděleně od aplikace běží také SQL (Structured Query Language) databáze \href{https://www.postgresql.org/}{PostgreSQL}~9, se kterou Django komunikuje přes adaptér \href{https://www.psycopg.org/}{psycopg2}.
 
 \subsection{Klientská část}
 

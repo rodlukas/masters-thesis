@@ -38,8 +38,8 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
     \item \label{N3} \textbf{zavedení nástrojů pro usnadnění vývoje a údržby:} je třeba zavést nástroje pro monitorování chyb v aplikaci, správu logů (vyhledávání, ukládání), statické typování a analýzu kódu -- k tomu byla provedena v teoretické části rešerše v kapitole~\ref{chap:nastrojeprousnadnenivyvojeaudrzby},
     \item \label{N4} \textbf{revize bezpečnosti:} je třeba provést kompletní revizi aplikace z hlediska bezpečnosti a opravit případné slabiny, problémy či zranitelnosti, provést aktualizace závislostí apod.,
     \item \label{N5} \textbf{vylepšení použitelnosti:} z hlášení lektorky a také z vlastní analýzy vyplývá, že je třeba se zaměřit na opravení problémů s použitelností a její vylepšení,
-    \item \label{N6} \textbf{rychlejší získání dat z API *:} pokud klientská část má někde zobrazit více dat, požadavek někdy probíhá enormně dlouho a dokonce může být ze strany Heroku pro dlouhou prodlevu zastaven a lektorka si data nezobrazí -- je třeba nalézt úzké hrdlo aplikace, které toto zpomalení v jednotkách případů (když je hodně dat) zpomaluje a toto vylepšit, také je třeba se zaměřit na optimalizaci počtu požadavků na API (zda některé nelze uložit a znovupoužít bez dalšího provádění, viz možné rozšíření o React Context API v sekci~\ref{sec:planrozsirenibp}) a případně zjednodušení obsahu odpovědí díky znovupoužívání,
-    \item \label{N7} \textbf{konfigurace více prostředí:} pokud se aplikace úspěšně sestaví na integračním serveru, nahraje se na produkci \cite{bp} -- to může v případě neodhalené chyby v aplikaci způsobit okamžitý pád produkce a případně i ztrátu dat -- toto souvisí s lepším pokrytím testy (viz \ref{N2}), ale je třeba také zavést další prostředí, do kterých se v různé fázi bude aplikace nasazovat, a to tak, aby bylo k dispozici jak prostředí naprosto totožné s produkcí (např. pro reprodukování chyb hlášených koncovým uživatelem), tak prostředí opět postavené na tom produkčním, ale s novější nasazenou verzí aplikace -- kompletní návrh bude popsán v sekci~\ref{sec:konfiguraceviceprostredi},
+    \item \label{N6} \textbf{optimalizace API *:} pokud klientská část má někde zobrazit více dat, požadavek někdy probíhá enormně dlouho a dokonce může být ze strany Heroku pro dlouhou prodlevu zastaven a lektorka si data nezobrazí -- je třeba nalézt úzké hrdlo aplikace, které toto zpomalení v jednotkách případů (když je hodně dat) zpomaluje a toto vylepšit, také je třeba se zaměřit na optimalizaci počtu požadavků na API (zda některé nelze uložit a znovupoužít bez dalšího provádění, viz možné rozšíření o React Context API v sekci~\ref{sec:planrozsirenibp}) a případně zjednodušení obsahu odpovědí díky znovupoužívání,
+    \item \label{N7} \textbf{konfigurace více prostředí:} pokud se aplikace úspěšně sestaví na integračním serveru, nahraje se na produkci \cite{bp} -- to může v případě neodhalené chyby v aplikaci způsobit okamžitý pád produkce a případně i ztrátu dat, toto souvisí s lepším pokrytím testy (viz \ref{N2}), ale je třeba se také zaměřit na vhodný návrh více prostředí pro nasazování -- tedy nejen na způsob nasazování na produkci, ale také na zavedení dalších prostředí a rozhodnutí, ve kterých fázích se do nich bude nasazovat -- a to tak, aby bylo k dispozici jak prostředí naprosto totožné s produkcí (např. pro reprodukování chyb hlášených koncovým uživatelem), tak prostředí opět postavené na tom produkčním, ale s novější nasazenou verzí aplikace -- kompletní návrh bude popsán v sekci~\ref{sec:konfiguraceviceprostredi}, součástí implementace v sekci TODO bude také zaveden jednotný způsob práce s proměnnými prostředí napříč všemi prostředími (toho bude využito i v požadavku~\ref{B5}),
     \item \label{N8} \textbf{zálohy databáze:} je třeba zavést pravidelné automatické zálohování databáze z produkce.
 \end{enumerate}
 
@@ -149,8 +149,7 @@ Seznam problémů, které již jsou součástí požadavků:
 
 V této kapitole se budu věnovat návrhu aktualizovaného logického datového modelu aplikace, aktualizovaného komunikačního rozhraní a také navrhnu novou konfiguraci více prostředí pro nasazování.
 
-
-\section{Datový model}
+\section{Datový model}\label{sec:datovymodel}
 
 Do datového modelu bylo potřeba projevit všechny nové funkční požadavky. Původní logický datový model je na obrázku~\ref{fig:db-model-bp}. Finální návrh nového logického datového modelu je na obrázku~\ref{fig:db-model}.
 
@@ -158,7 +157,13 @@ Nejprve shrnu obecné úpravy a vylepšení tohoto modelu. Během práce se uká
 
 Taktéž se ukázalo jako výhodné dodefinovat význam povinnosti atributu typu text, jak totiž uvádí \cite{django-docs-model}, je obvykle nesmyslné povolit na textovém atributu jak prázdný string, tak \verb|NULL|, protože pak dvě hodnoty mají stejný význam (žádná data) -- proto je v legendě uvedeno, že znak \verb|*| u atributu znamená, že pole nikdy nebude \verb|NULL| a zároveň ani prázdný string (tato druhá podmínka je řešena validací ze strany Djanga oproti \verb|NOT NULL| podmínce, která je směřovaná na databázi. Jedinou výjimkou (též uvedeno v legendě) je atribut \verb|start| lekce, kde \verb|NULL| znamená předplacenou lekci jednotlivce. Tato povinnost atributů byla napříč entitami revidována a doplněna, stejně jako byly u některých atributů doplněny i výchozí hodnoty a řešení duplicit dle požadavků lektorky (např. klient může mít zájem o daný kurz jen jednou ad.).
 
-Součástí změn uvedených v následujících podsekcích je i zavedení mnoha souvisejících omezení, explicitně je ale uvádět nebudu, protože v přehlednější podobě jsou zapsána v obrázku\ref{fig:db-model}.
+Součástí změn uvedených v následujících podsekcích je i zavedení mnoha souvisejících omezení, explicitně je ale uvádět nebudu, protože v přehlednější podobě jsou zapsána v obrázku~\ref{fig:db-model}.
+
+\begin{figure}\centering
+	\includegraphics[width=1\textwidth]{img/db-model}
+	\caption[Aktualizovaný logický datový model, rozšiřuje a vylepšuje původní model z~\cite{bp}]{Aktualizovaný logický datový model}\label{fig:db-model}
+\vspace{-15pt}
+\end{figure}
 
 \subsection{Předplacené lekce}
 
@@ -180,13 +185,7 @@ Aktivita klientů a skupin (viz požadavek~\ref{F6}) se vzhledem k návrhu dá v
 
 V případě kurzu bylo třeba pro evidování délky trvání kurzu (viz požadavek~\ref{F7}) pro jednotlivce přidat příslušný atribut \verb|duration|. Dalším přidaným atributem je pak \verb|color|, který umožní u kurzu evidovat jeho barvu (viz požadavek~\ref{F12}).
 
-Další změnou, která byla provedena navíc oproti požadavkům bylo přejmenování atributu \verb|name| u klienta na \verb|firstname|. Kromě více vystihujícího názvu (jedná se skutečně o křestní jméno) se zde během vývoje vyskytl problém s nejednoznačností, kde se v rámci klientské části někde pracovalo s \verb|name| jakožto celým jménem klienta, kdežto jinde jako s křestním jménem. 
-
-\begin{figure}\centering
-	\includegraphics[width=1\textwidth]{img/db-model}
-	\caption[Aktualizovaný logický datový model, rozšiřuje a vylepšuje původní model z~\cite{bp}]{Aktualizovaný logický datový model}\label{fig:db-model}
-\vspace{-15pt}
-\end{figure}
+Další změnou, která byla provedena navíc oproti požadavkům bylo přejmenování atributu \verb|name| u klienta na \verb|firstname|. Kromě více vystihujícího názvu (jedná se skutečně o křestní jméno) se zde během vývoje vyskytl problém s nejednoznačností, kde se v rámci klientské části někde pracovalo s \verb|name| jakožto celým jménem klienta, kdežto jinde jako s křestním jménem.
 
 \section{Komunikační rozhraní}
 
@@ -198,30 +197,84 @@ Pro odpověď na GET požadavek na lekce (GET \verb|lectures/|) byl u každé ú
 
 Součástí odpovědi GET \verb|lectures/|, jak již bylo zmíněno, je také přehled účastí jednotlivých klientů, zde bylo rozhodnuto také o odstranění vnořených informací o stavech účasti jednotlivých klientů -- v praxi zde byl poslán vždy název účasti, ID (a nově vzhledem k novému datovému modelu by byly poslány i informace \verb|default| a \verb|excused|), vzhledem k plánovaným změnám v rámci požadavku~\ref{N6} tyto vnořené informace byly odstraněny a nahrazeny pouze ID stavu účasti, protože si klientská část aplikace bude stavy účasti pamatovat (implementace viz TODO).
 
+U klientů, jak bylo uvedeno v datovém modelu v předchozí sekci~\ref{sec:datovymodel}, se přejmenoval klíč pro křestní jméno na \verb|firstname|.
+    
+\newcommand{\apiA}{0.33}
+\newcommand{\apiB}{0.14}
+\newcommand{\apiC}{0.43}
 
-\subsection{Rozšíření rozhraní}
+\subsection{Předplacené lekce}
 
-Rozhraní je třeba rozšířit o nové požadavky a úpravy datového modelu. 
-+ pocty lekci a dalsi, filtry??
+Pro lepší evidenci předplacených lekcí jednotlivce (viz požadavek~\ref{F3}) bylo třeba umožnit nějakým způsobem na API zaslat požadavek na přidání daného počtu předplacených lekcí. Nejprve byla zvážena možnost vytváření daného počtu lekcí pomocí zaslání POST požadavku na \verb|lectures/prepaid/| obsahujícím příslušný počet předplacených lekcí, vzhledem k jednodušší implementaci a větší univerzálnosti bylo místo toho umožněno zaslat POST požadavek obsahující více různých lekcí (tedy např. i více předplacených lekcí) na \verb|lectures/|.
 
-TODO - atributy z modelu
+Pro lepší evidenci předplacených lekcí skupin je na základě předchozí sekce~\ref{sec:datovymodel} zaveden nový bod \verb|memberhips|. V kódu již byl zaveden serializer pro Membership, ten ale nebude použit, protože by pak bod umožňoval upravovat i ID klienta, kterému členství náleží, což zde není třeba -- bude tedy vytvořen druhý serializer pro Membership, který umožní upravit pouze \verb|prepaid_cnt|. Bod pracuje s klíči \verb|id| a \verb|prepaid_cnt| a jeho podoba je následující:
 
-TODO - entity z modelu
+{\centering
+\begin{tabular}{p{\apiA\textwidth} p{\apiB\textwidth} p{\apiC\textwidth}}&&\\
+    \verb|memberhips/:id/|     & \textbf{PUT}      & úprava členství s \verb|id|\\
+    \verb|memberhips/:id/|     & \textbf{PATCH}    & částečná úprava členství s \verb|id|\\
+\end{tabular}}
 
-TODO - banka
+\subsection{Banka}
+
+Přidání úplně nového bodu nastalo kvůli požadavku~\ref{F8} na zobrazení transakcí z banky -- zde API bude nově umožňovat GET na \verb|bank/|, odpověď bude především obsahovat samotná data z banky, která budou dle potřeba transformována (upravena, doplněna, zjednodušena). Lektorka pro ÚP používá bankovní účet u Fio banky, která nabízí zdarma možnost zřízení přístupu k datům účtu přes API, pomocí získaného tokenu je možné každých 30 sekund zaslat na API požadavek \cite{fioapi}. Vzhledem k tomuto časovému omezení (kde by se jinak lektorka při dalším načtení stránky dočkala chybové hlášky) bylo zde rozhodnuto o cachování získaných dat z banky po dobu 60 sekund.
+
+\subsection{Zájemci o kurzy}
+
+Pro evidenci zájemců o klienty byl též vytvořen nový bod, který pracuje s klíči \verb|id|, \verb|note|, \verb|created_at| a dále obsahuje vnořené informace o kurzu (klíč \verb|course|) a klientovi (klíč \verb|client|). Po vzoru ostatních původních bodů se pro úpravy a vytváření zájemců místo vnořených informací zasílá pouze ID a klíč je ve tvaru \verb|klíč_id| -- tedy \verb|client_id| a \verb|course_id|). Podoba bodu je následující:
+
+{\centering
+\begin{tabular}{p{\apiA\textwidth}p{\apiB\textwidth}p{\apiC\textwidth}}&&\\
+    \verb|applications/|             & \textbf{GET}      & vrátí všechny zájemce\\
+    \verb|applications/|             & \textbf{POST}     & vytvoření nového zájemce\\
+    \verb|applications/:id/|         & \textbf{GET}      & vrátí zájemce s \verb|id|\\
+    \verb|applications/:id/|         & \textbf{PUT}      & úprava zájemce s \verb|id|\\
+    \verb|applications/:id/|         & \textbf{PATCH}    & částečná úprava zájemce s \verb|id|\\
+    \verb|applications/:id/|         & \textbf{DELETE}   & smazání zájemce s \verb|id|\\
+\end{tabular}}
+
+\subsection{Další rozšíření}
+
+Kvůli požadavku~\ref{F6} pro evidenci aktivních a neaktivních klientů byla pro klienty a lekce zavedena možnost filtrování pomocí query string:
+\begin{itemize}
+    \item \verb|groups/?active=:boolean|,
+    \item \verb|clients/?active=:boolean|.
+\end{itemize}
+
+V rámci požadavku~\ref{N6} pro optimalizaci API bylo také přidáno filtrování pro kurzy dle viditelnosti -- \verb|courses/?visible=:boolean|.
+
+Do API bylo také třeba projevit změny z datového modelu v předchozí sekci~\ref{sec:datovymodel}. Pro klienty a skupiny přibyl nový klíč \verb|active| znázorňující aktivitu klienta/skupiny. Pro kurzy byl přidán nový klíč \verb|duration| pro evidování délky trvání kurzu a \verb|color| pro evidování barvy kurzu. Stejně tak zde došlo k projevení změn povinných atributů, povolených hodnota ad., vzhledem k použití Django REST Framework ale není v této oblasti na API provádět v kódu žádné změny, protože se projeví automaticky z datové vrstvy (modelů).
+
+Dále, vzhledem ke zvolenému řešení evidování vlastností stavů účasti v předchozí sekci~\ref{sec:datovymodel} je třeba v bodu \verb|attendancestates/| umožnit pracovat nově i s klíči \verb|default| a \verb|excused|, to je velmi jednoduché (proto byl také tento přístup zvolen).
 
 \section{Architektura}
+
+Aktualizovaný diagram nasazení na obrázku~\ref{fig:deployment-diagram} vychází z původního diagramu \cite{bp}. Jádro zůstává stejné a kromě drobnějších vylepšení pro zlepšení přehlednosti je v něm pouze jedna důležitá změna.
+
+V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem uvedeno HTTP/S. Vzhledem k požadavku na revizi bezpečnosti~\ref{N4} a jeho následné detailní analýze~\ref{subsec:N4detail} je v problému~\ref{B4} zmíněno zavedení HSTS. Podrobnému popisu se budu věnovat v TODO, důležitý je ale dopad na návrh architektury, kde díky zavedení HSTS a korektní konfiguraci aplikace všechna komunikace bude probíhat z důvodu bezpečnosti pouze přes HTTPS (Hypertext Transfer Protocol Secure).
     
 \begin{figure}\centering
 	\includegraphics[width=1\textwidth]{img/deployment-diagram}
 	\caption[Aktualizovaný diagram nasazení, vychází z~\cite{bp}]{Aktualizovaný diagram nasazení}\label{fig:deployment-diagram}
 \end{figure}
 
-Aktualizovaný diagram nasazení na obrázku~\ref{fig:deployment-diagram} vychází z původního diagramu \cite{bp}. Jádro zůstává stejné a kromě drobnějších vylepšení pro zlepšení přehlednosti je v něm pouze jedna důležitá změna. V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem uvedeno HTTP/S. Vzhledem k požadavku na revizi bezpečnosti~\ref{N4} a jeho následné detailní analýze~\ref{subsec:N4detail} je v problému~\ref{B4} zmíněno zavedení HSTS. Podrobnému popisu se budu věnovat v TODO, důležitý je ale dopad na návrh architektury, kde díky zavedení HSTS a korektní konfiguraci aplikace všechna komunikace bude probíhat z důvodu bezpečnosti pouze přes HTTPS (Hypertext Transfer Protocol Secure).
-
 \section{Konfigurace více prostředí}\label{sec:konfiguraceviceprostredi}
 
-TODO
+V této sekci se budu zabývat návrhem více prostředí pro nasazování aplikace. Nejprve několik úvodních vět pro uvedení do problému. V současnosti je aplikace nasazena pouze v produkčním prostředí (viz popis aktuálního řešení v sekci~\ref{sec:prostreditestovaninasazovani}), kam se automaticky nasazuje při každém úspěchu na CI. V rámci požadavku~\ref{N7} je uvedeno, že je třeba prostředí totožné s produkcí (např. pro reprodukci chyb) a prostředí s aplikací sestavenou na základě poslední revize v repozitáři.
+
+Jak uvádí \cite{deployment-beanstalk}, více prostředí může jít ruku v ruce se vznikem příslušných větví v repozitáři, jejichž názvy odpovídají prostředím, do kterých se nasazují, probíhají zde slučování změn z jednotlivých větví do jiných a poté nasazování do příslušných prostředí. Vzhledem k tomu, že na aplikaci pracuji pouze já, jedná se o aplikaci na míru pro lektorku a nejedná se o obrovský projekt, tento, ač často užívaný postup, jsem se rozhodl zde nezavést. 
+
+Obvyklý vývoj v repozitáři probíhá pomocí vytvoření nové větve s danou novou funkcí, otestování a začlenění změn do hlavní vývojové větve. Některé menší změny jsou případně prováděny rovnou ve výchozí větvi. Na tomto pracovním postupu jsem tedy vytvořil způsob řešení více prostředí, který bude vhodný pro tento projekt na základě požadavku a všech dosavadních znalostech o projektu.
+
+Byl vytvořen návrh více prostředí bez využití příslušných větví:
+\begin{itemize}
+    \item \textbf{vývojové (lokální):} pro lokální vývoj,
+    \item \textbf{testing:} nasazení každé revize (nehledě na větev),
+    \item \textbf{staging:} nasazení pro otagované revize, stejná verze aplikace jako produkce,
+    \item \textbf{produkce:} nasazení pro otagované revize, aplikace používaná lektorkou.
+\end{itemize}
+
+Jakákoliv nová revize (nezávisle na větvi) v repozitáři bude sestavena a automaticky otestována na integračním serveru a nasazena do prostředí \enquote{testing}. Toto prostředí bude velmi podobné produkčnímu, až na verzi aplikace -- jakékoliv změny v aplikaci po provedení \verb|git push| budou tedy vidět nasazené v reálném prostředí -- bude je zde možné pak testovat manuálně jak mnou, tak lektorkou, řešit další úpravy apod. Zde podotknu, že samozřejmě stále zůstává vývojové (lokální prostředí). Až bude vše vyladěno a připraveno na nasazení do produkce, vydá se nová verze aplikace pomocí tagu v gitu (resp. release v GitHubu) -- pak, když tento otagovaný commit dorazí na CI, proběhnou opět též kroky jako v případě běžného commitu, výsledná aplikace bude ale nasazena nejen do prostředí \enquote{testing}, ale také na \enquote{staging} a produkci. Snažím se zde respektovat obecně známé názvy prostředí (jak třeba uvádí \cite{deployment-beanstalk, deployment-oroinc}). Prostředí \enquote{staging} je přesná kopie produkční verze odlišná pouze svou instancí databáze a slouží např. pro reprodukci problémů hlášených z produkce. Produkční prostředí je verze aplikace používaná lektorkou. Díky zmíněnému návrhu se může na produkci nasazovat až v případě, kdy máme vysokou jistotu hladkého běhu na produkci, tedy například po důkladném automatizovaném i manuálním otestování (v závislosti na změnách). Díky zavedení \enquote{staging} prostředí lze snadno reprodukovat problémy mimo produkci, díky \enquote{testing} prostředí lze okamžitě vidět aktuální změny nasazené v reálném prostředí. Navrženému způsobu dodávání nových verzí aplikace se říká průběžné dodávání (CD -- \enquote{Continuous delivery}) \cite{deployment-atlassian} a jak uvádí \cite{deployment-atlassian}, pro správné fungování CD je třeba mít dostatečně pokrytou aplikaci testy, což řeší požadavek~\ref{N2}.
 
 \section{Uživatelské prostředí}
 
@@ -234,22 +287,22 @@ Do klientské části bylo třeba navrhnout několik prvků z požadavků. Drobn
 
 Nejvýraznější změnou v klientské části je přidání nové stránky se zájemci kurzu (viz požadavek~\ref{F1}). Návrh je na obrázku~\ref{fig:ui-zajemci}, jak lze vidět, jsou barevně odlišeny kurzy -- zde již počítám se zavedením požadavku~\ref{F12} pro evidování barev kurzů (změny budou v implementaci učiněny napříč celou aplikací). Návrh splňuje všechny požadavky lektorky, kromě jednoduše dostupné úpravy je také dostupné tlačítko pro smazání -- to je obvykle napříč aplikací dostupné až v modálním okně s úpravou (protože se obvykle stejně nepoužívá a díky tomu, že není přímo na příslušné hlavní stránce, nemůže být ani omylem stisknuto a potvrzeno smazání ve vyskakovacím okně), zde je přímo u každého zájemce, protože oproti ostatním případům zde frekvence mazání bude vysoká vzhledem k postupnému obsluhování všech zájmů o kurzy.
 
-\begin{figure}\centering
+\begin{figure}[h]\centering
     \includegraphics[width=1\textwidth]{img/ui-lekce-skupina}
     \caption{Návrh nového formuláře pro skupinové lekce}\label{fig:ui-lekce-skupina}
 \end{figure}
 
-\begin{figure}\centering
+\begin{figure}[ht]\centering
     \includegraphics[width=1\textwidth]{img/ui-lekce-klient}
     \caption{Návrh nového formuláře pro lekce jednotlivců}\label{fig:ui-lekce-klient}
 \end{figure}
 
-Na obrázcích~\ref{fig:ui-lekce-skupina} a \ref{fig:ui-lekce-klient} jsou kompletně přepracované návrhy formulářů pro přidání (a potažmo i úpravu) lekce skupiny, resp. klienta. V rámci příslušného požadavku~\ref{F5} bylo třeba postupnými iteracemi dojít k návrhu, který umožní jednoduší práci s tímto formulářem, který je nejpoužívanější v rámci celé aplikace. V rámci detailní analýzy požadavku~\ref{F3} bylo zjištěno, že je třeba usnadnit přidávání více předplacených lekcí pro jednotlivce, tento požadavek v rámci tohoto přepracování formuláře pro lekce byl též začleněn -- pro klienty je v levém horním rohu dostupné pole pro zapsání počtu předplacených lekcí. Toto pole bude možné upravit při zaškrtnutí volby \enquote{Předplaceno}. Znaky \enquote{XX} u polí naznačují přítomnost ikony vysvětlující význam příslušného pole (místo textů, alternativní text se samozřejmě zobrazí po najetí na ikonu).
-
 \begin{figure}\centering
-    \includegraphics[width=0.52\textwidth]{img/ui-screen-lekce-skupina.png}
+    \includegraphics[width=0.55\textwidth]{img/ui-screen-lekce-skupina.png}
     \caption{Původní formulář pro lekce skupin}\label{fig:ui-screen-lekce-skupina}
 \end{figure}
+
+Na obrázcích~\ref{fig:ui-lekce-skupina} a \ref{fig:ui-lekce-klient} jsou kompletně přepracované návrhy formulářů pro přidání (a potažmo i úpravu) lekce skupiny, resp. klienta. V rámci příslušného požadavku~\ref{F5} bylo třeba postupnými iteracemi dojít k návrhu, který umožní jednoduší práci s tímto formulářem, který je nejpoužívanější v rámci celé aplikace. V rámci detailní analýzy požadavku~\ref{F3} bylo zjištěno, že je třeba usnadnit přidávání více předplacených lekcí pro jednotlivce, tento požadavek v rámci tohoto přepracování formuláře pro lekce byl též začleněn -- pro klienty je v levém horním rohu dostupné pole pro zapsání počtu předplacených lekcí. Toto pole bude možné upravit při zaškrtnutí volby \enquote{Předplaceno}. Znaky \enquote{XX} u polí naznačují přítomnost ikony vysvětlující význam příslušného pole (místo textů, alternativní text se samozřejmě zobrazí po najetí na ikonu).
 
 Díky větší šířce formuláře bylo možné vměstnat více polí na méně řádků, díky tomu a také ikonám došlo k ušetření místa, díky nově zobrazeným účastem klientů též ve formě řádků, navíc s odlišenou barvou platby je umožněna přehlednější a jednoduší evidence. Jak bylo uvedeno v požadavku~\ref{F5}, jedním z hlavních problémů bylo, že ve skupině může být např. 6 dětí a formulář má pak výšku několika obrazovek a je prakticky nepoužitelný -- zjednodušený názorný příklad původního formuláře (pouze se dvěma účastníky pro jednoduchost, ale účastníků je obvykle mnohem více) je na obrázku~\ref{fig:ui-screen-lekce-skupina}. Formuláře pro skupiny a jednotlivce (klienty) se liší jak počítadlem pro předplacené lekce (u skupin tato možnost není, protože bude řešena počítadly v rámci karty skupiny, viz požadavek~\ref{F3}). Druhou odlišností je pak zobrazení jména účastníka, které v případě jednotlivce je samozřejmě zbytečné (je v horní části formuláře), v případě skupin je toto jméno klienta současně odkazem do jeho karty pro rychlý přechod v případě potřeby.
 
@@ -334,6 +387,7 @@ N4:
 
 N6:
 * DRF-JWT problémy, dotazy na SQL DB ikdyž nemají být - https://github.com/rodlukas/UP-admin/issues/51 - přechod na jinou knihovnu a zde PR na překlad do CZ
+* viditelne kurzy api, dalsi filtrovani (aktivita)
 * pomalé SQL dotazy- obri optimalizace dotazu na DB (>4x zrychleni) diky DJDT, pokrocile optimalizace
 * odstraneni zbytecne prace s DB napric api - zrychleni - commit https://github.com/rodlukas/UP-admin/commit/ba12eea6be642d0c56629ac607fb1f8ffab267f7
 * vice info viz https://github.com/rodlukas/UP-admin/releases/tag/0.9.0

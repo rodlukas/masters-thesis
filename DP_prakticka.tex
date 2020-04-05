@@ -14,7 +14,7 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
     \item \label{F5} \textbf{přepracování formuláře pro lekce:} současný formulář není úplně přehledný, pokud má skupina více než 2 členy, je potřeba neustále posouvat obsahem, protože se nevejde na monitor, je třeba jej kompletně přepracovat dle konzultace s lektorkou, v závislosti na návrhu může souviset s~\ref{F3},
     \item \label{F6} \textbf{zavedení aktivních a neaktivních klientů a skupin:} v evidenci je mnoho klientů a skupin, kteří aktuálně nechodí, ale např. za rok budou opět chodit, je tedy třeba umožnit skrytí všech klientů/skupin, kteří aktuálně na lekce nedochází a k těmto skrytým (neaktivním) klientům/skupinám umožnit přístup, ve výchozím zobrazení ale ukazovat jen aktivní,
     \item \label{F7} \textbf{nastavitelná délka kurzů:} současná verze aplikace automaticky předvyplní dobu trvání lekce v závislosti na tom, zda je skupinová (45~min.) či pro jednotlivce (30~min.) -- to není dostačující, protože např. lekce některých kurzů trvají vždy 45~min. nehledě na počet členů -- je tedy třeba umožnit u kurzu evidovat dobu trvání pro jednotlivce, a tu pak ve výchozím stavu jednotlivcům dávat, pro skupiny stále stačí jedna výchozí hodnota (45~min.),
-    \item \label{F8} \textbf{zobrazit poslední transakce na bankovním účtu:} na hlavní stránce je třeba mimo dnešních lekcí třeba zobrazit aktuální zůstatek na bankovním účtu projektu (Fio banka) a transakce za poslední 3~týdny,
+    \item \label{F8} \textbf{propojení s bankou:} na hlavní stránce je třeba mimo dnešních lekcí třeba zobrazit aktuální zůstatek na bankovním účtu projektu (Fio banka) a transakce za poslední 3~týdny,
     \item \label{F9} \textbf{změny účastníků skupinových lekcí:} někdy se stává, že klient v průběhu kurzu opustí skupinu, v evidenci je již naplánováno několik lekcí dopředu a všech se účastní -- je třeba umožnit při úpravě lekce projevit tyto změny členů skupiny do účastníků dané lekce (v současné době nečlen skupiny zůstává účastníkem lekce a lektorka musí každou lekci ručně smazat a vytvořit znovu bez nečlenů, což je velmi nepohodlné),
     \item \label{F10} \textbf{automatické přidání předplacené lekce:} při omluvě klienta/zrušení ze strany lektorky je třeba automaticky u klienta/skupiny zaznamenat, že mají jeden předplacený termín navíc (v případě, že daný klient měl zaplaceno), v případě jednotlivců je třeba také automaticky zaevidovat, za který den je tato náhradní lekce vytvořena,
     \item \label{F11} \textbf{efektivnější práce v rámci aplikace:} v současné verzi aplikace musela lektorka pro často prováděné činnosti provádět zbytečně mnoho kroků navíc, což činilo příslušné činnosti náročnějšími a snadno se udělala chyba a ztrácel čas -- na základě dalších analýz byly zjištěny problémové oblasti, které vyžadují přepracování: umožnit úpravu lekce (pro jednotlivce i skupiny) z diáře a přehledu, umožnit úpravu klienta/skupiny přímo v kartě klienta/skupiny, umožnit přidání lekce (pro jednotlivce i skupiny) z diáře a přehledu (a to jak s příslušným datem, u kterého bude toto tlačítko, tak i obecně s jakýmkoliv datem), umožnit přidat klienta přímo při přidávání skupiny/zájemce (funkcionalita zájemce implementována v rámci~\ref{F1}),
@@ -161,8 +161,8 @@ Součástí změn uvedených v následujících podsekcích je i zavedení mnoha
 
 \begin{figure}\centering
 	\includegraphics[width=1\textwidth]{img/db-model}
-	\caption[Aktualizovaný logický datový model, rozšiřuje a vylepšuje původní model z~\cite{bp}]{Aktualizovaný logický datový model}\label{fig:db-model}
-\vspace{-15pt}
+	\caption[Aktualizovaný a rozšířený původní logický datový model]{Aktualizovaný a rozšířený původní logický datový model z~\cite{bp}}\label{fig:db-model}
+\vspace{-28pt}
 \end{figure}
 
 \subsection{Předplacené lekce}
@@ -189,7 +189,7 @@ Další změnou, která byla provedena navíc oproti požadavkům bylo přejmeno
 
 \section{Komunikační rozhraní}
 
-Ukázalo se, že původní komunikační rozhraní (REST API) z bakalářské práce mělo velmi dobrý návrh, bylo třeba provést pouze drobnější úpravy a především začlenit všechny potřebné změny z požadavků a datového modelu. Nejprve se zaměřím na drobnější změny a poté na začlenění změn z požadavků a datového modelu.
+Ukázalo se, že původní komunikační rozhraní (REST API) z bakalářské práce mělo velmi dobrý návrh, bylo třeba provést pouze drobnější úpravy a především začlenit všechny potřebné změny z požadavků a datového modelu. Nejprve se zaměřím na drobnější změny a poté na začlenění změn z požadavků a datového modelu. V rámci této kapitoly nebudu uvádět přesnou novou podobu API včetně původních bodů, ale pouze změny, v rámci požadavku~\ref{N1} totiž bude dostupná dokumentace celého API.
 
 \subsection{Opravy a úpravy stávajícího rozhraní}
 
@@ -250,13 +250,13 @@ Dále, vzhledem ke zvolenému řešení evidování vlastností stavů účasti 
 \section{Architektura}
 
 Aktualizovaný diagram nasazení na obrázku~\ref{fig:deployment-diagram} vychází z původního diagramu \cite{bp}. Jádro zůstává stejné a kromě drobnějších vylepšení pro zlepšení přehlednosti je v něm pouze jedna důležitá změna.
+    
+\begin{figure}[h]\centering
+	\includegraphics[width=1\textwidth]{img/deployment-diagram}
+	\caption[Aktualizovaný diagram nasazení]{Aktualizovaný diagram nasazení, vychází z~\cite{bp}}\label{fig:deployment-diagram}
+\end{figure}
 
 V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem uvedeno HTTP/S. Vzhledem k požadavku na revizi bezpečnosti~\ref{N4} a jeho následné detailní analýze~\ref{subsec:N4detail} je v problému~\ref{B4} zmíněno zavedení HSTS. Podrobnému popisu se budu věnovat v TODO, důležitý je ale dopad na návrh architektury, kde díky zavedení HSTS a korektní konfiguraci aplikace všechna komunikace bude probíhat z důvodu bezpečnosti pouze přes HTTPS (Hypertext Transfer Protocol Secure).
-    
-\begin{figure}\centering
-	\includegraphics[width=1\textwidth]{img/deployment-diagram}
-	\caption[Aktualizovaný diagram nasazení, vychází z~\cite{bp}]{Aktualizovaný diagram nasazení}\label{fig:deployment-diagram}
-\end{figure}
 
 \section{Konfigurace více prostředí}\label{sec:konfiguraceviceprostredi}
 
@@ -274,7 +274,7 @@ Byl vytvořen návrh více prostředí bez využití příslušných větví:
     \item \textbf{produkce:} nasazení pro otagované revize, aplikace používaná lektorkou.
 \end{itemize}
 
-Jakákoliv nová revize (nezávisle na větvi) v repozitáři bude sestavena a automaticky otestována na integračním serveru a nasazena do prostředí \enquote{testing}. Toto prostředí bude velmi podobné produkčnímu, až na verzi aplikace -- jakékoliv změny v aplikaci po provedení \verb|git push| budou tedy vidět nasazené v reálném prostředí -- bude je zde možné pak testovat manuálně jak mnou, tak lektorkou, řešit další úpravy apod. Zde podotknu, že samozřejmě stále zůstává vývojové (lokální prostředí). Až bude vše vyladěno a připraveno na nasazení do produkce, vydá se nová verze aplikace pomocí tagu v gitu (resp. release v GitHubu) -- pak, když tento otagovaný commit dorazí na CI, proběhnou opět též kroky jako v případě běžného commitu, výsledná aplikace bude ale nasazena nejen do prostředí \enquote{testing}, ale také na \enquote{staging} a produkci. Snažím se zde respektovat obecně známé názvy prostředí (jak třeba uvádí \cite{deployment-beanstalk, deployment-oroinc}). Prostředí \enquote{staging} je přesná kopie produkční verze odlišná pouze svou instancí databáze a slouží např. pro reprodukci problémů hlášených z produkce. Produkční prostředí je verze aplikace používaná lektorkou. Díky zmíněnému návrhu se může na produkci nasazovat až v případě, kdy máme vysokou jistotu hladkého běhu na produkci, tedy například po důkladném automatizovaném i manuálním otestování (v závislosti na změnách). Díky zavedení \enquote{staging} prostředí lze snadno reprodukovat problémy mimo produkci, díky \enquote{testing} prostředí lze okamžitě vidět aktuální změny nasazené v reálném prostředí. Navrženému způsobu dodávání nových verzí aplikace se říká průběžné dodávání (CD -- \enquote{Continuous delivery}) \cite{deployment-atlassian} a jak uvádí \cite{deployment-atlassian}, pro správné fungování CD je třeba mít dostatečně pokrytou aplikaci testy, což řeší požadavek~\ref{N2}.
+Jakákoliv nová revize (nezávisle na větvi) v repozitáři bude sestavena a automaticky otestována na integračním serveru a nasazena do prostředí \enquote{testing}. Toto prostředí bude velmi podobné produkčnímu, až na verzi aplikace -- jakékoliv změny v aplikaci po provedení \verb|git push| budou tedy vidět nasazené v reálném prostředí -- bude je zde možné pak testovat manuálně jak mnou, tak lektorkou, řešit další úpravy apod. Zde podotknu, že samozřejmě stále zůstává vývojové (lokální prostředí). Až bude vše vyladěno a připraveno na nasazení do produkce, vydá se nová verze aplikace pomocí tagu v gitu (resp. release v GitHubu) -- pak, když tento otagovaný commit dorazí na CI, proběhnou opět též kroky jako v případě běžného commitu, výsledná aplikace bude ale nasazena nejen do prostředí \enquote{testing}, ale také na \enquote{staging} a produkci. Snažím se zde respektovat obecně známé názvy prostředí (jak třeba uvádí \cite{deployment-beanstalk, deployment-oroinc}). Prostředí \enquote{staging} je přesná kopie produkční verze odlišná pouze svou instancí databáze a slouží např. pro reprodukci problémů hlášených z produkce. Produkční prostředí je verze aplikace používaná lektorkou. Díky zmíněnému návrhu se může na produkci nasazovat až v případě, kdy máme vysokou jistotu hladkého běhu na produkci, tedy například po důkladném automatizovaném i manuálním otestování (v závislosti na změnách). Díky zavedení \enquote{staging} prostředí lze snadno reprodukovat problémy mimo produkci, díky \enquote{testing} prostředí lze okamžitě vidět aktuální změny nasazené v reálném prostředí. Navrženému způsobu dodávání nových verzí aplikace se říká průběžné dodávání (CD -- \enquote{Continuous Delivery}) \cite{deployment-atlassian} a jak uvádí \cite{deployment-atlassian}, pro správné fungování CD je třeba mít dostatečně pokrytou aplikaci testy, což řeší požadavek~\ref{N2}.
 
 \section{Uživatelské prostředí}
 
@@ -307,19 +307,60 @@ Na obrázcích~\ref{fig:ui-lekce-skupina} a \ref{fig:ui-lekce-klient} jsou kompl
 Díky větší šířce formuláře bylo možné vměstnat více polí na méně řádků, díky tomu a také ikonám došlo k ušetření místa, díky nově zobrazeným účastem klientů též ve formě řádků, navíc s odlišenou barvou platby je umožněna přehlednější a jednoduší evidence. Jak bylo uvedeno v požadavku~\ref{F5}, jedním z hlavních problémů bylo, že ve skupině může být např. 6 dětí a formulář má pak výšku několika obrazovek a je prakticky nepoužitelný -- zjednodušený názorný příklad původního formuláře (pouze se dvěma účastníky pro jednoduchost, ale účastníků je obvykle mnohem více) je na obrázku~\ref{fig:ui-screen-lekce-skupina}. Formuláře pro skupiny a jednotlivce (klienty) se liší jak počítadlem pro předplacené lekce (u skupin tato možnost není, protože bude řešena počítadly v rámci karty skupiny, viz požadavek~\ref{F3}). Druhou odlišností je pak zobrazení jména účastníka, které v případě jednotlivce je samozřejmě zbytečné (je v horní části formuláře), v případě skupin je toto jméno klienta současně odkazem do jeho karty pro rychlý přechod v případě potřeby.
 
 \chapter{Implementace}
-součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
 
-% todo migrace na novy react
 
-PR:
-* chyby při práci s modálními okny https://github.com/rodlukas/UP-admin/issues/95 - issue reactstrapu, vyjde nova verze
-* react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
-* reactstrap tooltip ios fix
+\section{Funkční požadavky}
 
-\section{Implementace požadavků}
-IMPLEMENTACE POZADAVKU z analyzy vyse
 
-F15:
+\subsection{F1 -- evidování zájemců o kurz}
+
+
+\subsection{F2 -- kontrola časového konfliktu lekcí}
+
+
+\subsection{F3 -- vylepšení předplacených lekcí}
+
+
+\subsection{F4 -- vyhledávání klientů}
+
+
+\subsection{F5 -- přepracování formuláře pro lekce}
+
+
+\subsection{F6 -- zavedení aktivních a neaktivních klientů a skupin}
+
+* pri uprave/pridani skupiny/klienta dojde automaticky k prepnuti na zalozku aktivni/neaktivni podle toho, do ceho jsme pridavali
+
+
+\subsection{F7 -- nastavitelná délka kurzů}
+
+
+\subsection{F8 -- propojení s bankou}
+
+* zobrazují se transakce za posledních 14 dnů, FIO omezuje dotazy na API na 30 s, takže server cachuje odpověď banky rovnou 60 s, zobrazuje se i aktuální zůstatek + barva je podle toho, zda je na účtu dostatek peněz na zaplacení nájmu (zelená, resp. červená s upozorňujícím vykřičníkem s dalšími informacemi), po 60 s možnost výpis obnovit, případně lze jít do bankovnictví, opravuje \#50
+* cache, upozorneni na najem
+
+
+\subsection{F9 -- změny účastníků skupinových lekcí}
+
+
+\subsection{F10 -- automatické přidání předplacené lekce}
+
+
+\subsection{F11 -- efektivnější práce v rámci aplikace}
+
+
+\subsection{F12 -- evidování barev kurzů}
+
+
+\subsection{F13 -- automatické předvyplnění údajů lekce}
+
+
+\subsection{F14 -- upozornění na ztrátu dat formulářů}
+
+
+\subsection{F15 -- vylepšení chybových hlášení}
+
 * frontend odolny proti padu diky ErrorBoundary
 * drf zpracovavat ProtectedError https://github.com/rodlukas/UP-admin/issues/70
 * podrobnejsi chyby z api
@@ -329,14 +370,40 @@ F15:
 * js vylepseni notifikaci - notifikace doplnene o nadpis a ikonu, sjednoceny font, komponenta pro obsah notifikace, delsi doba zobrazeni error notifikace
 * podrobnější chybové hlášky (např. při ProtectedError, když se uživatel pokouší mazat instanci, na které závisí jiné instance s chráněným příslušným FK; podrobnější info o časovém konfliktu...)
 
-F18:
+
+\subsection{F16 -- titulky stránek}
+
+
+\subsection{F17 -- nastavitelné vlastnosti stavů účasti}
+
+
+\subsection{F18 -- omezení a validace hodnot}
+
 * pokročilá validace duplicit apod.
 * zruseni noveho omezeni "neaktivní klienty nelze přiřadit do skupin (UI je ani nezobrazí ve výběru)" - neaktivní klienti již mohou být členové skupiny
 * velka pocatecni pismena jmena klienta i pro api, presun transformaci field z modelu do serializeru
 * viz EA docs
 * js zvyrazneni neaktivity skupin a klientu napric aplikaci https://github.com/rodlukas/UP-admin/issues/85
 
-N3:
+
+\subsection{F19 -- automatické zrušení lekce}
+
+
+\subsection{F20 -- zobrazení zrušených lekcí}
+
+
+\subsection{F21 -- skupinové lekce bez účastníků}
+
+
+
+\section{Nefunkční požadavky}
+
+
+\subsection{N1 -- dokumentace}
+
+
+\subsection{N3 -- zavedení nástrojů pro usnadnění vývoje a údržby}
+
 * refaktoring
 * js komponenta pro zobrazeni lekci https://github.com/rodlukas/UP-admin/issues/71
 * template strings js
@@ -350,52 +417,8 @@ N3:
 * Minifikace HTML
 * oprava práce se setState - zbytečně se přes const state = this.state nastavoval pak ve setState celý nový stav, což je zbytečné a navíc to může způsobovat problémy při dalším volání setState (které když proběhne před tímto, může přijít v niveč, protože jej nahradí tato kompletní změna stavu, ačkoliv se má měnit jen malá část stavu komponenty) 
 
-F8:
-* zobrazují se transakce za posledních 14 dnů, FIO omezuje dotazy na API na 30 s, takže server cachuje odpověď banky rovnou 60 s, zobrazuje se i aktuální zůstatek + barva je podle toho, zda je na účtu dostatek peněz na zaplacení nájmu (zelená, resp. červená s upozorňujícím vykřičníkem s dalšími informacemi), po 60 s možnost výpis obnovit, případně lze jít do bankovnictví, opravuje \#50
-* cache, upozorneni na najem
-
-* "noopener noreferrer" z důvodu bezpečnosti
-* robots.txt, pak nahrazeni robots.txt meta tagem pro uplny zakaz cehokoliv robotum
-* pipfile
-* mnoho promennych prostredi → ve všech prostředích se pracuje stejným způsobem s příslušnými proměnnými prostředí, je čistější nastavení Djanga a umožňuje díky .env souboru (je v .gitignore) použít i lokální proměnné prostředí (jinak těžko univerzálně nastavitelné i v rámci IDE) + odstranění zašifrovaných proměnných v konfiguráku travisu a přesun přímo do repo
-* zobrazení tel. čísel klientů v zájemcích o kurz (\#61)
-* oprava logiky výpočtu "příště platit" - nebral v úvahu předplacené lekce (https://github.com/rodlukas/UP-admin/commit/e84aa4eec9bb93323a097830dd1416204658c87a)
-* lekce je automaticky zrušená na frontendu i backendu když jsou všichni účastníci omluveni, na to je příslušně uživatel upozorněn ve formuláři (a zároveň zrušení nejde měnit, protože by backend lekci stejně tak či tak zrušil)
-* rozdělení CSS stylů ke komponentám
-* asynchronní update všech dní v týdnu v diáři při nějaké změně (ca53c16), opravuje \#19
-* zjednodušení kódů a struktury souborů, refactoring, odstranění všech zbytečných getDerivedStateFromProps (nahrazeno např. componentDidUpdate)
-* migrace na nový životní cyklus komponent Reactu (503b9ac)
-* funkční zobrazení vývojové verze na jiném zařízení v síti
-* oprava chyby způsobující nekorektní zobrazení lekcí v předchozím dnu - když např. byla lekce v 1 h ráno, v diáři se ukázala v předchozím dni jako poslední → porovnávávání datumu s TZ s datumem bez TZ → vyřešeno použitím "\_\_date" v querysetu (3da9db1)
-* oprava chybné práce s datumem v diáři (JS) - pokud se zadala URL s datumem, kde den měl číslo "31", došlo k "přesunu do minulosti" (číslo dne se změnilo na "1") - v důsledku toho se v aplikaci nedalo dostat do roku 2019, protože 31.12.2018 bylo pondělí a další týden se přepnul na listopad
-* 05-2019 prechod na nwb
-* mene pozadavku - react context api (attendancestates + nově také viditelné kurzy, aktivní klienti/skupiny - vše napříč aplikací) -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
-* redesign vsech stranek pro lepsi konzistenci, srozumitelnost a pochopeni (predelany diar, zajemci, lekce v karte...)
-* Pro zrychlení načítání celé aplikace se používá lazy loading React.lazy + React Suspense - umozni kratsi prvni nacteni appky, zalozene na react-routeru + reseni nastaleho problemu -- reseni Error: Loading chunk 11 failed. https://github.com/rodlukas/UP-admin/issues/92
-* optimalizace frontendu - odstraneni komponent definovanych primo v render - mohlo zpusobit potize s vykonem i nechtenym prekreslovanim vnorenych komponent
-* úprava stavových kódu API pro bankovnictví (\#55) - už vrací jen 200/500, ostatní chyby jsou zahrnuty v 500 a podrobnější informace jsou přiloženy do JSONu rovnou na serveru (tedy na frontendu není žádná logika navíc)
-* úpravy a opravy API - na backendu nechybí žádná logika, která doteď mohla být třeba i jen na frontendu - už fungují všude PATCH metody, kód API je rozumnější, efektivnější a přehlednější a nedělají se v něm zbytečné kraviny navíc, rozumně se např. už pracuje i s takovými atributy, které lze zaslat na API jako null, ošetření všech možných případů - opravuje \#52
-
-    kompletní validace tel. čísla na backendu i frontendu, vylepšení způsobu validace a dělení čísla na mezery už při psaní o formuláře, následné odstranění mezer až na backendu
-    oprava chyby způsobující chybu při úpravě stavu účasti předplacené lekce
-* odstranění křížku pro reset react-selectu, aby nedocházelo k vymazání "omylem", když funkcionalita stejně není třeba
-* občas se využívají skupinové lekce bez definovaných účastníků (ještě nejsou známí), taková lekce se ale ukazuje jako zrušená a u skupiny chybí info, že nejsou žádní účastníci - potřeba vylepšit zobrazení
 
 
-N4:
-* contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
-
-N6:
-* DRF-JWT problémy, dotazy na SQL DB ikdyž nemají být - https://github.com/rodlukas/UP-admin/issues/51 - přechod na jinou knihovnu a zde PR na překlad do CZ
-* viditelne kurzy api, dalsi filtrovani (aktivita)
-* pomalé SQL dotazy- obri optimalizace dotazu na DB (>4x zrychleni) diky DJDT, pokrocile optimalizace
-* odstraneni zbytecne prace s DB napric api - zrychleni - commit https://github.com/rodlukas/UP-admin/commit/ba12eea6be642d0c56629ac607fb1f8ffab267f7
-* vice info viz https://github.com/rodlukas/UP-admin/releases/tag/0.9.0
-
-F6: 
-* pri uprave/pridani skupiny/klienta dojde automaticky k prepnuti na zalozku aktivni/neaktivni podle toho, do ceho jsme pridavali
-
-\section{Zavedení nástrojů pro usnadnění vývoje a údržby}
 podrobny popis jak probihalo zavedeni, co mi to umoznuje, treba i screenshoty, k cemu to bylo pouzito, jak se to osvedcilo - nastroje vychazi ze zvolenych nastroju z reserse
 
 
@@ -425,7 +448,7 @@ deepsource
 codebeat
 codeclimate
 codacy
- 
+
 \begin{itemize}
 \item ...
 \item code formatting - prettier, black
@@ -437,11 +460,71 @@ codacy
 \item ...
 \end{itemize}
 
+\subsection{N4 -- revize bezpečnosti}
+
+* contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
+
+
+\subsection{N5 -- vylepšení použitelnosti}
+
+
+\subsection{N6 -- optimalizace API}
+
+* DRF-JWT problémy, dotazy na SQL DB ikdyž nemají být - https://github.com/rodlukas/UP-admin/issues/51 - přechod na jinou knihovnu a zde PR na překlad do CZ
+* viditelne kurzy api, dalsi filtrovani (aktivita)
+* pomalé SQL dotazy- obri optimalizace dotazu na DB (>4x zrychleni) diky DJDT, pokrocile optimalizace
+* odstraneni zbytecne prace s DB napric api - zrychleni - commit https://github.com/rodlukas/UP-admin/commit/ba12eea6be642d0c56629ac607fb1f8ffab267f7
+* vice info viz https://github.com/rodlukas/UP-admin/releases/tag/0.9.0
+
+
+
+%součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
+
+\begin{comment}
+
+% todo migrace na novy react
+
+PR:
+* chyby při práci s modálními okny https://github.com/rodlukas/UP-admin/issues/95 - issue reactstrapu, vyjde nova verze
+* react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
+* reactstrap tooltip ios fix
+
+
+* "noopener noreferrer" z důvodu bezpečnosti
+* robots.txt, pak nahrazeni robots.txt meta tagem pro uplny zakaz cehokoliv robotum
+* pipfile
+* mnoho promennych prostredi → ve všech prostředích se pracuje stejným způsobem s příslušnými proměnnými prostředí, je čistější nastavení Djanga a umožňuje díky .env souboru (je v .gitignore) použít i lokální proměnné prostředí (jinak těžko univerzálně nastavitelné i v rámci IDE) + odstranění zašifrovaných proměnných v konfiguráku travisu a přesun přímo do repo
+* zobrazení tel. čísel klientů v zájemcích o kurz (\#61)
+* oprava logiky výpočtu "příště platit" - nebral v úvahu předplacené lekce (https://github.com/rodlukas/UP-admin/commit/e84aa4eec9bb93323a097830dd1416204658c87a)
+* lekce je automaticky zrušená na frontendu i backendu když jsou všichni účastníci omluveni, na to je příslušně uživatel upozorněn ve formuláři (a zároveň zrušení nejde měnit, protože by backend lekci stejně tak či tak zrušil)
+* rozdělení CSS stylů ke komponentám
+* asynchronní update všech dní v týdnu v diáři při nějaké změně (ca53c16), opravuje \#19
+* zjednodušení kódů a struktury souborů, refactoring, odstranění všech zbytečných getDerivedStateFromProps (nahrazeno např. componentDidUpdate)
+* migrace na nový životní cyklus komponent Reactu (503b9ac)
+* funkční zobrazení vývojové verze na jiném zařízení v síti
+* oprava chyby způsobující nekorektní zobrazení lekcí v předchozím dnu - když např. byla lekce v 1 h ráno, v diáři se ukázala v předchozím dni jako poslední → porovnávávání datumu s TZ s datumem bez TZ → vyřešeno použitím "\_\_date" v querysetu (3da9db1)
+* oprava chybné práce s datumem v diáři (JS) - pokud se zadala URL s datumem, kde den měl číslo "31", došlo k "přesunu do minulosti" (číslo dne se změnilo na "1") - v důsledku toho se v aplikaci nedalo dostat do roku 2019, protože 31.12.2018 bylo pondělí a další týden se přepnul na listopad
+* 05-2019 prechod na nwb
+* mene pozadavku - react context api (attendancestates + nově také viditelné kurzy, aktivní klienti/skupiny - vše napříč aplikací) -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
+* redesign vsech stranek pro lepsi konzistenci, srozumitelnost a pochopeni (predelany diar, zajemci, lekce v karte...)
+* Pro zrychlení načítání celé aplikace se používá lazy loading React.lazy + React Suspense - umozni kratsi prvni nacteni appky, zalozene na react-routeru + reseni nastaleho problemu -- reseni Error: Loading chunk 11 failed. https://github.com/rodlukas/UP-admin/issues/92
+* optimalizace frontendu - odstraneni komponent definovanych primo v render - mohlo zpusobit potize s vykonem i nechtenym prekreslovanim vnorenych komponent
+* úprava stavových kódu API pro bankovnictví (\#55) - už vrací jen 200/500, ostatní chyby jsou zahrnuty v 500 a podrobnější informace jsou přiloženy do JSONu rovnou na serveru (tedy na frontendu není žádná logika navíc)
+* úpravy a opravy API - na backendu nechybí žádná logika, která doteď mohla být třeba i jen na frontendu - už fungují všude PATCH metody, kód API je rozumnější, efektivnější a přehlednější a nedělají se v něm zbytečné kraviny navíc, rozumně se např. už pracuje i s takovými atributy, které lze zaslat na API jako null, ošetření všech možných případů - opravuje \#52
+
+    kompletní validace tel. čísla na backendu i frontendu, vylepšení způsobu validace a dělení čísla na mezery už při psaní o formuláře, následné odstranění mezer až na backendu
+    oprava chyby způsobující chybu při úpravě stavu účasti předplacené lekce
+* odstranění křížku pro reset react-selectu, aby nedocházelo k vymazání "omylem", když funkcionalita stejně není třeba
+* občas se využívají skupinové lekce bez definovaných účastníků (ještě nejsou známí), taková lekce se ale ukazuje jako zrušená a u skupiny chybí info, že nejsou žádní účastníci - potřeba vylepšit zobrazení
+
+\end{comment}
+
 
 \chapter{Testování}
+pozadavek N2
 implementace samotneho testovani v behave, Selenium
 
-
+https://www.katalon.com/resources-center/blog/continuous-testing-introduction/
 
 N2: 
 * vylepseni vsech testu - neprobihala kontrola zobrazenych dat ve formulari pred upravou
@@ -463,6 +546,7 @@ N2:
 
 
 \chapter{Nasazení}
+pozadavky N7,N8
 popis toho jak jsem udelal novej zpusob nasazovani
 * django-environ
 

@@ -9,22 +9,22 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
 \begin{enumerate}[label=\textbf{F\arabic*}]
     \item \label{F1} \textbf{evidování zájemců o kurz *:} vzhledem k plnému obsazení všech termínů během týdne je třeba evidovat zájemce o kurzy -- ať už jednotlivce, či zájemce o skupiny -- každý klient může mít zájem o daný kurz nejvýše jednou, je třeba také evidovat k tomuto zájmu text formou poznámky, datum přidání zájemce do evidence a kurz, o který má zájem,
     \item \label{F2} \textbf{kontrola časového konfliktu lekcí *:} současná verze aplikace nijak neřeší časové konflikty lekcí, je třeba zakázat možnost jakéhokoliv překryvu lekcí vzhledem k datu, času a jejich délce, toto se netýká zrušených lekcí, které budou pro řešení konfliktů ignorovány (je třeba zavést~\ref{F19} pro korektní fungování konfliktů),
-    \item \label{F3} \textbf{vylepšení předplacených lekcí *:} stávající způsob evidence předplacených lekcí není dostačující -- pro jednotlivce je třeba předplacené lekce přidávat po jednom (klienti si často předplácí více lekcí dopředu), pro skupiny je evidování ještě horší, protože každý člen obvykle platí jinak a na odlišné časové období (případně vždy jen jednu lekci) a prakticky se nedá tato evidence předplacených lekcí ručně udržovat, je to příliš složité,
+    \item \label{F3} \textbf{vylepšení předplacených lekcí *:} stávající způsob evidence předplacených lekcí není dostačující -- pro jednotlivce je třeba předplacené lekce přidávat po jednom (klienti si často předplácí více lekcí dopředu), pro skupiny je evidování ještě horší, protože každý člen obvykle platí jinak a na odlišné časové období (případně vždy jen jednu lekci) a prakticky se nedá tato evidence předplacených lekcí ručně udržovat, je to příliš složité, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:F3detail},
     \item \label{F4} \textbf{vyhledávání klientů *:} v aplikaci je mnoho klientů a je časově náročně vždy v seznamu vyhledávat příslušného klienta, je třeba zavést možnost vyhledávání v klientech, a to z jakéhokoliv místa aplikace, také je třeba, aby vyhledávání bralo v potaz možné překlepy lektorky v zadávaném výrazu k vyhledávání a také možný překlep ve jménu uloženého klienta, vyhledávalo by se jen mezi aktivními klienty (viz požadavek~\ref{F6}),
     \item \label{F5} \textbf{přepracování formuláře pro lekce:} současný formulář není úplně přehledný, pokud má skupina více než 2 členy, je potřeba neustále posouvat obsahem, protože se nevejde na monitor, je třeba jej kompletně přepracovat dle konzultace s lektorkou, v závislosti na návrhu může souviset s~\ref{F3},
     \item \label{F6} \textbf{zavedení aktivních a neaktivních klientů a skupin:} v evidenci je mnoho klientů a skupin, kteří aktuálně nechodí, ale např. za rok budou opět chodit, je tedy třeba umožnit skrytí všech klientů/skupin, kteří aktuálně na lekce nedochází a k těmto skrytým (neaktivním) klientům/skupinám umožnit přístup, ve výchozím zobrazení ale ukazovat jen aktivní,
     \item \label{F7} \textbf{nastavitelná délka kurzů:} současná verze aplikace automaticky předvyplní dobu trvání lekce v závislosti na tom, zda je skupinová (45~min.) či pro jednotlivce (30~min.) -- to není dostačující, protože např. lekce některých kurzů trvají vždy 45~min. nehledě na počet členů -- je tedy třeba umožnit u kurzu evidovat dobu trvání pro jednotlivce, a tu pak ve výchozím stavu jednotlivcům dávat, pro skupiny stále stačí jedna výchozí hodnota (45~min.),
     \item \label{F8} \textbf{propojení s bankou:} na hlavní stránce je třeba mimo dnešních lekcí třeba zobrazit aktuální zůstatek na bankovním účtu projektu (Fio banka) a transakce za poslední 3~týdny,
-    \item \label{F9} \textbf{změny účastníků skupinových lekcí:} někdy se stává, že klient v průběhu kurzu opustí skupinu, v evidenci je již naplánováno několik lekcí dopředu a všech se účastní -- je třeba umožnit při úpravě lekce projevit tyto změny členů skupiny do účastníků dané lekce (v současné době nečlen skupiny zůstává účastníkem lekce a lektorka musí každou lekci ručně smazat a vytvořit znovu bez nečlenů, což je velmi nepohodlné),
-    \item \label{F10} \textbf{automatické přidání předplacené lekce:} při omluvě klienta/zrušení ze strany lektorky je třeba automaticky u klienta/skupiny zaznamenat, že mají jeden předplacený termín navíc (v případě, že daný klient měl zaplaceno), v případě jednotlivců je třeba také automaticky zaevidovat, za který den je tato náhradní lekce vytvořena,
+    \item \label{F9} \textbf{změny účastníků skupinových lekcí:} někdy se stává, že klient v průběhu kurzu opustí skupinu, v evidenci je již naplánováno několik lekcí dopředu a všech se účastní -- je třeba umožnit při úpravě lekce projevit tyto změny členů skupiny do účastníků dané lekce (v současné době nečlen skupiny zůstává účastníkem lekce a lektorka musí každou lekci ručně smazat a vytvořit znovu bez nečlenů, což je velmi nepohodlné), stejně tak je třeba do účastníků naopak projevit nové členy skupiny, kteří v dané lekci jako účastníci evidování nejsou,
+    \item \label{F10} \textbf{automatické přidání (a odebrání) předplacené lekce:} při omluvě klienta/zrušení ze strany lektorky je třeba automaticky u klienta/skupiny zaznamenat, že mají jeden předplacený termín navíc (v případě, že daný klient měl zaplaceno), v případě jednotlivců je třeba také automaticky zaevidovat, za který den je tato náhradní lekce vytvořena, v případě skupin je třeba při přidávání lekce automaticky označit lekci jako placenou pro účastníky, kteří mají předplacené lekce a při přidání pak odečíst jednu předplacenou lekci,
     \item \label{F11} \textbf{efektivnější práce v rámci aplikace:} v současné verzi aplikace musela lektorka pro často prováděné činnosti provádět zbytečně mnoho kroků navíc, což činilo příslušné činnosti náročnějšími a snadno se udělala chyba a ztrácel čas -- na základě dalších analýz byly zjištěny problémové oblasti, které vyžadují přepracování: umožnit úpravu lekce (pro jednotlivce i skupiny) z diáře a přehledu, umožnit úpravu klienta/skupiny přímo v kartě klienta/skupiny, umožnit přidání lekce (pro jednotlivce i skupiny) z diáře a přehledu (a to jak s příslušným datem, u kterého bude toto tlačítko, tak i obecně s jakýmkoliv datem), umožnit přidat klienta přímo při přidávání skupiny/zájemce (funkcionalita zájemce implementována v rámci~\ref{F1}),
     \item \label{F12} \textbf{evidování barev kurzů:} je třeba umožnit přiřazení barvy každému kurzu a tuto barvu použít pro rozlišení kurzů napříč celou aplikací, kdekoliv se vyskytuje název kurzu -- lektorka potřebuje okamžitě rozlišit kurzy a mít možnost na první pohled např. v diáři vidět díky barvě, kterého kurzu se barva týká (kurzy mají v rámci propagačních materiálů své ustálené barvy),
-    \item \label{F13} \textbf{automatické předvyplnění údajů lekce:} pokud má klient/skupina nějakou historii v evidenci, při přidávání nové lekce je třeba na základě této historie předvyplnit vhodnými hodnotami datum, čas a kurz nové lekce -- je tedy třeba vhodně zvolit lekci klienta z jeho historie, podle které budou tyto údaje vypočteny  -- smyslem je těmito výchozími hodnotami vystihnout co nejvíce případu tak, aby lektorka musela tyto hodnoty co nejméně často upravovat,
+    \item \label{F13} \textbf{automatické předvyplnění údajů lekce:} pokud má klient/skupina nějakou historii v evidenci, při přidávání nové lekce je třeba na základě této historie předvyplnit vhodnými hodnotami datum, čas a kurz nové lekce -- je tedy třeba vhodně zvolit lekci klienta z jeho historie, podle které budou tyto údaje vypočteny  -- smyslem je těmito výchozími hodnotami vystihnout co nejvíce případu tak, aby lektorka musela tyto hodnoty co nejméně často upravovat, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:F13detail},
     \item \label{F14} \textbf{upozornění na ztrátu dat formulářů:} při vyplňování formulářů lektorka občas omylem formulář zavře a přijde o úpravy, je třeba zavést ochranu, která tomuto zabrání (a zároveň ale nebude zbytečně upozorňovat na ztrátu dat, když k žádné změně nedošlo),
     \item \label{F15} \textbf{vylepšení chybových hlášení:} chybová hlášení jsou někdy málo podrobná, případně nezmiňují možnosti řešení, zobrazují se krátce, případně dojde k neošetřené chybě na serveru a klientská část pak nedokáže korektně uživateli popsat, kde je problém,
     \item \label{F16} \textbf{titulky stránek:} každá stránka by měla mít v prohlížeči svůj titulek, v současné době má každá stránka stejný titulek a lektorka tak nemá možnost jednoduše rozlišit, který panel má otevřenou kterou stránku aplikace,
     \item \label{F17} \textbf{nastavitelné vlastnosti stavů účasti:} některé stavy účasti mají pro některé výpočty v rámci aplikace speciální význam (např. omluvené lekce se nezapočítávají do počtu absolvovaných lekcí klienta, další stav znamená, že klient dorazí a tento stav je zároveň výchozí), toto svázání stavu účasti s významem je ale založeno na názvu stavu účasti (a pevně nadefinováno v kódu), lektorka si chce ale název příslušných stavů účasti sama měnit a je třeba pro to zavést příslušné možnosti,
-    \item \label{F18} \textbf{omezení a validace hodnot:} je třeba provést revizi stávajících omezení na jednotlivé hodnoty v rámci aplikace (API a databáze) i klientské části, zavést nová omezení pro nové funkční požadavky a zdokumentovat všechna aktuální omezení a validace prováděná nad celou doménou,
+    \item \label{F18} \textbf{omezení a validace hodnot:} je třeba provést revizi stávajících omezení na jednotlivé hodnoty v rámci aplikace (API a databáze) i klientské části, zavést nová omezení pro nové funkční požadavky a zdokumentovat všechna aktuální omezení a validace prováděná nad celou doménou, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:F18detail},
     \item \label{F19} \textbf{automatické zrušení lekce:} pokud nikdo z účastníků nemá dorazit (všichni jsou omluveni), lekce má být automaticky zrušena,
     \item \label{F20} \textbf{zobrazení zrušených lekcí:} v přehledu na hlavní stránce a v diáři je třeba zobrazit i zrušené lekce, v současné verzi se nezobrazují (to byl původní požadavek, ale nakonec se ukázal jako nesprávný a lektorka lekce potřebuje vidět nejen v kartě klienta),
     \item \label{F21} \textbf{skupinové lekce bez účastníků:} lektorka potřebuje vytvářet lekce pro skupiny bez účastníků (plánuje dopředu termíny a členy přidá až když budou známí) -- současná aplikace na toto nebyla připravena, klientská část aplikace dokonce při přidání takové lekce spadne.
@@ -36,8 +36,8 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
     \item \label{N1} \textbf{dokumentace:} dokumentace v kódu pro serverovou i klientskou část, dokumentace API,
     \item \label{N2} \textbf{testování *:} aplikace prakticky neobsahuje žádné testy (jen několik základních \enquote{smoke} testů), je třeba zavést API a UI (e2e) testy pro klíčové části aplikace a průchody v aplikaci,
     \item \label{N3} \textbf{zavedení nástrojů pro usnadnění vývoje a údržby:} je třeba zavést nástroje pro monitorování chyb v aplikaci, správu logů (vyhledávání, ukládání), statické typování a analýzu kódu -- k tomu byla provedena v teoretické části rešerše v kapitole~\ref{chap:nastrojeprousnadnenivyvojeaudrzby},
-    \item \label{N4} \textbf{revize bezpečnosti:} je třeba provést kompletní revizi aplikace z hlediska bezpečnosti a opravit případné slabiny, problémy či zranitelnosti, provést aktualizace závislostí apod.,
-    \item \label{N5} \textbf{vylepšení použitelnosti:} z hlášení lektorky a také z vlastní analýzy vyplývá, že je třeba se zaměřit na opravení problémů s použitelností a její vylepšení,
+    \item \label{N4} \textbf{revize bezpečnosti:} je třeba provést kompletní revizi aplikace z hlediska bezpečnosti a opravit případné slabiny, problémy či zranitelnosti, provést aktualizace závislostí apod., detailní analýza tohoto požadavku viz podsekce~\ref{subsec:N4detail},
+    \item \label{N5} \textbf{vylepšení použitelnosti:} z hlášení lektorky a také z vlastní analýzy vyplývá, že je třeba se zaměřit na opravení problémů s použitelností a její vylepšení, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:N5detail},
     \item \label{N6} \textbf{optimalizace API *:} pokud klientská část má někde zobrazit více dat, požadavek někdy probíhá enormně dlouho a dokonce může být ze strany Heroku pro dlouhou prodlevu zastaven a lektorka si data nezobrazí -- je třeba nalézt úzké hrdlo aplikace, které toto zpomalení v jednotkách případů (když je hodně dat) zpomaluje a toto vylepšit, také je třeba se zaměřit na optimalizaci počtu požadavků na API (zda některé nelze uložit a znovupoužít bez dalšího provádění, viz možné rozšíření o React Context API v sekci~\ref{sec:planrozsirenibp}) a případně zjednodušení obsahu odpovědí díky znovupoužívání,
     \item \label{N7} \textbf{konfigurace více prostředí:} pokud se aplikace úspěšně sestaví na integračním serveru, nahraje se na produkci \cite{bp} -- to může v případě neodhalené chyby v aplikaci způsobit okamžitý pád produkce a případně i ztrátu dat, toto souvisí s lepším pokrytím testy (viz \ref{N2}), ale je třeba se také zaměřit na vhodný návrh více prostředí pro nasazování -- tedy nejen na způsob nasazování na produkci, ale také na zavedení dalších prostředí a rozhodnutí, ve kterých fázích se do nich bude nasazovat -- a to tak, aby bylo k dispozici jak prostředí naprosto totožné s produkcí (např. pro reprodukování chyb hlášených koncovým uživatelem), tak prostředí opět postavené na tom produkčním, ale s novější nasazenou verzí aplikace -- kompletní návrh bude popsán v sekci~\ref{sec:konfiguraceviceprostredi}, součástí implementace v sekci TODO bude také zaveden jednotný způsob práce s proměnnými prostředí napříč všemi prostředími (toho bude využito i v požadavku~\ref{B5}),
     \item \label{N8} \textbf{zálohy databáze:} je třeba zavést pravidelné automatické zálohování databáze z produkce.
@@ -53,7 +53,7 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
 
 Některé požadavky nejsou úplně přesně definované a před dalším pokračováním je třeba je dodefinovat.
 
-\subsection{F3 - vylepšení předplacených lekcí}
+\subsection{F3 - vylepšení předplacených lekcí}\label{subsec:F3detail}
 
 Detailní analýza požadavku~\ref{F3}.
 V případě jednotlivců je problém s tím, že je předplacené lekce přidávat po jednom -- zde bude lektorce vyhovovat ve formuláři pro přidání lekce možnost uvést počet přidávaných předplacených lekcí, tedy bude zakomponováno v rámci \ref{F5}.
@@ -62,7 +62,7 @@ Předplacené lekce skupin jsou evidovány v současné verzi stejným způsobem
 
 Řešení pomocí počítadel vypadá jako ideální řešení i pro jednotlivce, zde by ale byl problém s faktem, že mohou chodit na více kurzů, tedy nelze mít centrální počítadlo pro všechny (na některé kurzy už nechodí, předplácí třeba jen některé, na které chodí apod.), bylo by třeba mít pro každý kurz počítadlo zvlášť, ale v tom případě by pak už nebylo možné evidovat v rámci \ref{F10}, za který den daná předplacená lekce tvoří náhradu (resp. možné by to bylo, ale značně by to zkomplikovalo jak implementaci, tak i práci lektorky), proto je řešení předplacených lekcí pro jednotlivce a skupiny odlišné.
 
-\subsection{F13 -- automatické předvyplnění údajů lekce}
+\subsection{F13 -- automatické předvyplnění údajů lekce}\label{subsec:F13detail}
 
 Detailní analýza požadavku~\ref{F13}.
 Smyslem tohoto požadavku je předvyplnit datum, čas a kurz nově přidávané lekce podle minulých lekcí, a to tak, aby muselo být do těchto hodnot co nejméně ze strany lektorky zasahováno. Lekce se nejčastěji konají jednou za týden a obvykle ve stejný čas a patří samozřejmě k téže kurzu. Stačí tedy vhodně zvolit referenční lekci a z ní tyto údaje odvodit. V závislosti na podobě historie klienta/skupiny je třeba pokrýt možné případy výběru lekce.
@@ -80,7 +80,7 @@ Případy výběru lekce:
     Skupina v této situaci být nemůže, protože má vždy jen lekce k jednomu kurzu.
 \end{enumerate}
 
-\subsection{F18 -- omezení a validace hodnot}
+\subsection{F18 -- omezení a validace hodnot}\label{subsec:F18detail}
 
 Detailní analýza požadavku~\ref{F18}.
 V rámci tohoto požadavku bylo třeba vytvořit kompletní seznam všech omezení a validací, které v aplikaci mají být, a to i s ohledem na všechny nové funkční požadavky. Všechna tato omezení byla v rámci analýzy definována. Jejich seznam a rozdělení je vidět v obrázku~\ref{fig:db-model} s návrhem aktualizovaného logického datového modelu.
@@ -102,7 +102,7 @@ Nalezené problémy:
 \end{enumerate}
 
 
-\subsection{N5 -- vylepšení použitelnosti}
+\subsection{N5 -- vylepšení použitelnosti}\label{subsec:N5detail}
 
 Detailní analýza požadavku~\ref{N5}.
 Pro zjištění problémů v oblasti použitelnosti a přístupnosti bylo zvoleno několik metod -- Nielsenova heuristická analýza, WCAG~2.1 (Web Content Accessibility Guidelines) a uživatelské testování použitelnosti formou pozorování lektorky při každodenní práci v aplikaci. 
@@ -187,7 +187,7 @@ V případě kurzu bylo třeba pro evidování délky trvání kurzu (viz požad
 
 Další změnou, která byla provedena navíc oproti požadavkům bylo přejmenování atributu \verb|name| u klienta na \verb|firstname|. Kromě více vystihujícího názvu (jedná se skutečně o křestní jméno) se zde během vývoje vyskytl problém s nejednoznačností, kde se v rámci klientské části někde pracovalo s \verb|name| jakožto celým jménem klienta, kdežto jinde jako s křestním jménem.
 
-\section{Komunikační rozhraní}
+\section{Komunikační rozhraní}\label{sec:komunikacnirozhrani}
 
 Ukázalo se, že původní komunikační rozhraní (REST API) z bakalářské práce mělo velmi dobrý návrh, bylo třeba provést pouze drobnější úpravy a především začlenit všechny potřebné změny z požadavků a datového modelu. Nejprve se zaměřím na drobnější změny a poté na začlenění změn z požadavků a datového modelu. V rámci této kapitoly nebudu uvádět přesnou novou podobu API včetně původních bodů, ale pouze změny, v rámci požadavku~\ref{N1} totiž bude dostupná dokumentace celého API.
 
@@ -217,7 +217,7 @@ Pro lepší evidenci předplacených lekcí skupin je na základě předchozí s
 
 \subsection{Banka}
 
-Přidání úplně nového bodu nastalo kvůli požadavku~\ref{F8} na zobrazení transakcí z banky -- zde API bude nově umožňovat GET na \verb|bank/|, odpověď bude především obsahovat samotná data z banky, která budou dle potřeba transformována (upravena, doplněna, zjednodušena). Lektorka pro ÚP používá bankovní účet u Fio banky, která nabízí zdarma možnost zřízení přístupu k datům účtu přes API, pomocí získaného tokenu je možné každých 30 sekund zaslat na API požadavek \cite{fioapi}. Vzhledem k tomuto časovému omezení (kde by se jinak lektorka při dalším načtení stránky dočkala chybové hlášky) bylo zde rozhodnuto o cachování získaných dat z banky po dobu 60 sekund.
+Přidání úplně nového bodu nastalo kvůli požadavku~\ref{F8} na zobrazení transakcí z banky -- zde API bude nově umožňovat GET na \verb|bank/|, odpověď bude především obsahovat samotná data z banky, která budou dle potřeba transformována (upravena, doplněna, zjednodušena). Pokud by tento bod na API nebyl a klientská část by do banky přistupovala na přímo, znamenalo by to, že nelze provést žádné transformace, zjednodušení dat, přidání dalších dat a také by součástí klientské části musel být token do banky, což je nepřípustné. Lektorka pro ÚP používá bankovní účet u Fio banky, která nabízí zdarma možnost zřízení přístupu k datům účtu přes API, pomocí získaného tokenu je možné každých 30 sekund zaslat na API požadavek \cite{fioapi}. Vzhledem k tomuto časovému omezení (kde by se jinak lektorka při dalším načtení stránky dočkala chybové hlášky) bylo zde rozhodnuto o cachování získaných dat z banky po dobu 60 sekund.
 
 \subsection{Zájemci o kurzy}
 
@@ -246,6 +246,8 @@ V rámci požadavku~\ref{N6} pro optimalizaci API bylo také přidáno filtrová
 Do API bylo také třeba projevit změny z datového modelu v předchozí sekci~\ref{sec:datovymodel}. Pro klienty a skupiny přibyl nový klíč \verb|active| znázorňující aktivitu klienta/skupiny. Pro kurzy byl přidán nový klíč \verb|duration| pro evidování délky trvání kurzu a \verb|color| pro evidování barvy kurzu. Stejně tak zde došlo k projevení změn povinných atributů, povolených hodnota ad., vzhledem k použití Django REST Framework ale není v této oblasti na API provádět v kódu žádné změny, protože se projeví automaticky z datové vrstvy (modelů).
 
 Dále, vzhledem ke zvolenému řešení evidování vlastností stavů účasti v předchozí sekci~\ref{sec:datovymodel} je třeba v bodu \verb|attendancestates/| umožnit pracovat nově i s klíči \verb|default| a \verb|excused|, to je velmi jednoduché (proto byl také tento přístup zvolen).
+
+Pro implementaci požadavku~\ref{F9}, který má umožnit jednoduchou automatickou změnu účastníků lekce na klienty, kteří jsou členové skupiny (tedy pokud už např. někdo členem není, tak jej z účastníků odebrat, resp. když byl jako člen přidán a účastník nebyl, tak jej jako účastníka přidat), je třeba umožnit na API toto volitelně učinit. Pro toto je nově zaveden pro bod \verb|lectures/| klíč \verb|refresh_clients| (pro operace PUT, POST, PATCH), výchozí hodnota je \verb|false| (obvykle toto projevení změn účastníků požadováno nebude), při opačné hodnotě pak serverová část zařídí projevení požadovaných změn. 
 
 \section{Architektura}
 
@@ -276,7 +278,7 @@ Byl vytvořen návrh více prostředí bez využití příslušných větví:
 
 Jakákoliv nová revize (nezávisle na větvi) v repozitáři bude sestavena a automaticky otestována na integračním serveru a nasazena do prostředí \enquote{testing}. Toto prostředí bude velmi podobné produkčnímu, až na verzi aplikace -- jakékoliv změny v aplikaci po provedení \verb|git push| budou tedy vidět nasazené v reálném prostředí -- bude je zde možné pak testovat manuálně jak mnou, tak lektorkou, řešit další úpravy apod. Zde podotknu, že samozřejmě stále zůstává vývojové (lokální prostředí). Až bude vše vyladěno a připraveno na nasazení do produkce, vydá se nová verze aplikace pomocí tagu v gitu (resp. release v GitHubu) -- pak, když tento otagovaný commit dorazí na CI, proběhnou opět též kroky jako v případě běžného commitu, výsledná aplikace bude ale nasazena nejen do prostředí \enquote{testing}, ale také na \enquote{staging} a produkci. Snažím se zde respektovat obecně známé názvy prostředí (jak třeba uvádí \cite{deployment-beanstalk, deployment-oroinc}). Prostředí \enquote{staging} je přesná kopie produkční verze odlišná pouze svou instancí databáze a slouží např. pro reprodukci problémů hlášených z produkce. Produkční prostředí je verze aplikace používaná lektorkou. Díky zmíněnému návrhu se může na produkci nasazovat až v případě, kdy máme vysokou jistotu hladkého běhu na produkci, tedy například po důkladném automatizovaném i manuálním otestování (v závislosti na změnách). Díky zavedení \enquote{staging} prostředí lze snadno reprodukovat problémy mimo produkci, díky \enquote{testing} prostředí lze okamžitě vidět aktuální změny nasazené v reálném prostředí. Navrženému způsobu dodávání nových verzí aplikace se říká průběžné dodávání (CD -- \enquote{Continuous Delivery}) \cite{deployment-atlassian} a jak uvádí \cite{deployment-atlassian}, pro správné fungování CD je třeba mít dostatečně pokrytou aplikaci testy, což řeší požadavek~\ref{N2}.
 
-\section{Uživatelské prostředí}
+\section{Uživatelské prostředí}\label{sec:uzivatelskeprostredi}
 
 Do klientské části bylo třeba navrhnout několik prvků z požadavků. Drobnější změny zde ukázány nebudou, zaměřím se jen na nejdůležitější změny v uživatelském rozhraní. Návrhy obvykle probíhaly na papír, ale pro lepší čitelnost je zde uvádím překreslené v aplikaci \href{https://pencil.evolus.vn/}{Pencil}.
 
@@ -308,59 +310,156 @@ Díky větší šířce formuláře bylo možné vměstnat více polí na méně
 
 \chapter{Implementace}
 
+V rámci této kapitoly se budu věnovat způsobu samotné implementace rozšíření aplikace. Nejprve se zaměřím na implementaci funkčních požadavků, poté nefunkčních požadavků TODO
+
+% todo dalsi upravy modelu
+
 
 \section{Funkční požadavky}
+
+V rámci této sekce popíši způsob implementace všech funkčních požadavků. Pokusím se vždy shrnout jednoduše provedené kroky a také tyto kroky zasadit do kontextu ostatních požadavků a problémů.
 
 
 \subsection{F1 -- evidování zájemců o kurz}
 
+Pro zájemce o kurzy bylo třeba přidat do serverové části aplikace nový model \verb|Application| (viz datový model v sekci~\ref{sec:datovymodel}), oproti běžným vlastnostem a atributům zde bylo třeba nastavit pomocí parametru \verb|auto_now_add| automatické nastavení data přidání do atributu \verb|created_at|. Na tomto modelu pak staví nově implementovaný bod API pro zájemce (viz komunikační rozhraní v sekci~\ref{sec:komunikacnirozhrani}). Také byly naimplementovány požadované validace a omezení.
+
+Na klientské části jsem vycházel z návrhu uživatelského rozhraní v sekci~\ref{sec:uzivatelskeprostredi}. Bylo třeba přidat do aplikace novou (a v této práci jedinou novou) stránku se zájemci o kurzy a dle návrhu zájemce dělit dle kurzů (API poskytne pouze nerozdělený seznam, tedy toto je třeba řešit na klientské části) a také u každého kurzu dopočíst, kolik je o něj zájemců a zobrazit toto číslo u názvu kurzu (opět dle návrhu). Kurz obsahuje v záhlaví na pozadí svou barvu dle požadavku~\ref{F12}. Důležitou součástí je také formulář pro práci se zájemcem -- ten umožňuje pomocí rozbalovací nabídky \verb|react-select| zvolit jednoduše kurz a klienta (oproti běžnému \verb|select| nabízí možnost vyhledávání a také v případě kurzu zobrazení jeho barvy, viz požadavek~\ref{F12} a související problém s použitelností~\ref{P5}) a připsat ještě poznámku. Taktéž, dle problému~\ref{P7}, jsou zvýrazněny povinné položky. Kromě výběru již existujícího klienta je také možné jedním klikem přidat klienta nového bez opuštění aktuálního formuláře, toto souvisí s požadavkem~\ref{F11} a zároveň opravdu dává smysl, protože většina přidávaných klientů jsou klienti noví, nikoliv stávající -- tedy lektorka by jinak musela formulář zavřít, přejít do klientů, zde klienta vytvořit a poté přejít zpět do zájemců, díky současné implementaci toto ale není třeba a zájemce lze velmi rychle včetně samotného přidání klienta zpracovat v rámci tohoto formuláře pro zájemce.
 
 \subsection{F2 -- kontrola časového konfliktu lekcí}
 
+Kontrola časového konfliktu lekcí má lektorku upozornit ve všech možných případech na překryv dvou lekcí. Existuje mnoho variant, jak se lekce mohou navzájem překrývat, jak ale uvádí \cite{overlap}, lze toto ošetřit jednoduchou podmínkou -- časový konflikt mezi lekcí \enquote{A} a přidávanou lekcí \enquote{B} znamená, že:
+\begin{itemize}
+    \item \enquote{A} začíná před koncem \enquote{B} a zároveň
+    \item \enquote{B} začíná před koncem \enquote{A}.
+\end{itemize}
+
+Konec lekce ale v databázi není přímo uložen, známe jen začátek lekce (atribut \verb|start|) a trvání lekce v minutách (atribut \verb|duration|) -- z toho lze ale konec lekce vypočítat. Dotaz na časový konflikt bude tedy mírně složitější a pokročilejší, pro zajímavost finální verzi kódu uvádím v ukázce~\ref{lst:casovekonflikty} (v reálném kódu je tento dotaz rozpadlý do několika částí, pro přehlednost jej zde ale uvádím dohromady), ukázka si vyžaduje samozřejmě vysvětlení.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+qs = Lecture.objects.annotate(
+    end_db=ExpressionWrapper(
+        F("start") + (timedelta(minutes=1) * F("duration")),
+        output_field=DateTimeField()
+    )
+).filter(
+    start__lt=
+        data["start"] + timedelta(minutes=data["duration"]),
+    end_db__gt=data["start"],
+    canceled=False,
+)
+	\end{minted}
+	\caption{Dotaz pro nalezení časových konfliktů}\label{lst:casovekonflikty}
+\end{listing}
+
+Dotaz v ukázce~\ref{lst:casovekonflikty} se skládá ze dvou částí -- první část zajišťuje, že se ke všem lekcím dodá atribut \verb|end_db| s dopočítaným koncem lekce, druhá část pak nad těmito lekcemi provede filtrování a nalezne lekce v konfliktu. Nyní podrobněji k první části -- v \verb|annotate| bylo při tvorbě atributu konce lekce \verb|end_db| třeba použít \verb|ExpressionWrapper|, protože typy jednotlivých atributů lekce získaných pomocí výrazu \verb|F()| nejsou stejné, také je třeba číslo uložené v \verb|duration| \enquote{přetypovat} na typ, který zde lze sčítat s typem atributu \verb|start|.
+
+Ve druhé části jsou zakomponovány obě podmínky pro časový konflikt zmíněné výše a navíc se pracuje pouze se zrušenými lekcemi, pro korektní fungování tohoto dotazu je třeba tedy implementovat také požadavek~\ref{F19}. Zde je třeba ještě říci, že lekce, kde jedná končí např. v 15:00 a druhá v 15:00 začíná, nejsou v konfliktu (díky tomu, že se v dotazu neřeší rovnost), což je požadované. Dále je třeba doplnit, že dotaz je dále v reálném kódu ještě ošetřen tak, aby v případě úpravy trvání/startu lekce nebyl hlášen časový konflikt lekce samotné se sebou.
+
+Součástí validace časového konfliktu je také naimplementovaná srozumitelná chybová zpráva pro lektorku obsahující start a dobu trvání lekce a jméno klienta, kterému lekce náleží (případně skupiny)
 
 \subsection{F3 -- vylepšení předplacených lekcí}
 
+Pro pohodlnější evidenci předplacených lekcí bylo třeba na serverové části aplikace upravit model \verb|Membership| (viz datový model v sekci~\ref{sec:datovymodel}) -- doplnit jej o atribut \verb|prepaid_cnt|. Dále bylo třeba tuto změnu projevit i v API (viz komunikační rozhraní v sekci~\ref{sec:komunikacnirozhrani}), stejně jako doplnit do API možnost zaslání více kurzu najednou (pro pohodlnější evidenci více předplacených lekcí jednotlivce), toto řeší v Django REST Framework příslušný \verb|LectureViewSet|, který umožňuje na základě zaslaných dat (jedna lekce/pole lekcí) tyto data zpracovat.
+
+Všechny tyto změny bylo třeba projevit na klientské části -- především dodat pole do formuláře pro přidání lekce jednotlivce, které umožní zadat počet předplacených lekcí (viz návrh UI v sekci~\ref{sec:uzivatelskeprostredi}), tato změna byla součástí kompletního přepracování tohoto formuláře v rámci požadavku~\ref{F5}. Pro evidenci předplacených lekcí pro skupiny, jak bylo uvedeno v analýze tohoto požadavku v podsekci~\ref{subsec:F3detail}, byly do karty skupiny implementovány počítadla předplacených lekcí pro jednotlivé klienty. Každý klient má zde hodnotu počtu předplacených lekcí, která lze upravit jak ručně, tak je připravena na automatické projevení změn v počtu předplacených lekcí z požadavku~\ref{F10}. Toto řešení je vidět na obrázku~\ref{fig:ui-screen-pocitadla}.
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.8\textwidth]{img/ui-screen-pocitadla.png}
+    \caption{Implementace počítadel předplacených lekcí ve skupinách}\label{fig:ui-screen-pocitadla}
+\end{figure}
 
 \subsection{F4 -- vyhledávání klientů}
 
+TODO
 
 \subsection{F5 -- přepracování formuláře pro lekce}
 
+Přepracovaný formulář pro lekce byl implementován dle návrhů na obrázcích~\ref{fig:ui-lekce-skupina} a \ref{fig:ui-lekce-klient}. Součástí implementace byla také migrace z běžné rozbalovací nabídky na \verb|react-select| pro lepší použitelnost a možnost zobrazení barev kurzů (viz požadavek~\ref{F12} a související problém s použitelností~\ref{P5}). Na obrázku~\ref{fig:ui-screen-formular-lekce} je finální implementovaný formulář pro lekce, konkrétně úprava skupinové lekce (od jednotlivce se, jak je též zmíněno v návrhu, liší zobrazením jmen účastníků a naopak nezobrazuje počítadlo předplacených lekcí).
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.9\textwidth]{img/ui-screen-formular-lekce.png}
+    \caption{Přepracovaný formulář pro lekce}\label{fig:ui-screen-formular-lekce}
+\end{figure}
 
 \subsection{F6 -- zavedení aktivních a neaktivních klientů a skupin}
 
-* pri uprave/pridani skupiny/klienta dojde automaticky k prepnuti na zalozku aktivni/neaktivni podle toho, do ceho jsme pridavali
+Pro zavedení aktivních a neaktivních klientů bylo třeba na serverové části aplikace do modelů \verb|Group| a \verb|Client| vložit atribut \verb|active| (viz datový model v sekci~\ref{sec:datovymodel}) a taktéž jej zakomponovat do API (viz komunikační rozhraní v sekci~\ref{sec:komunikacnirozhrani}) -- zde bylo využito propojení modelů s Django REST Frameworkem, tedy do API se změny projeví automaticky. Taktéž byly zavedeny omezení související s aktivitou klientů/skupin, např. při přidání lekce neaktivnímu klientovi se změní na aktivního.
 
+Na klientské části bylo potřeba zvolit, kde se bude z API stahovat seznam všech klientů a kde naopak jen aktivní/neaktivní -- např. při výběru klienta pro přidání lekce stačí stahovat jen aktivní (neaktivním klientům lekce přidat nelze). Dalším důležitým bodem bylo zavést možnost filtrování viditelných a neviditelných klientů/skupin na stránkách se seznamy klientů a skupin. Dle požadavku bylo třeba ve výchozím stavu zobrazit jen aktivní a na vyžádání přepnout do neaktivních. Toto je řešeno komponentou na obrázku~\ref{fig:ui-screen-prepinac-aktivity}. Další implementovanou funkcionalitou nad rámec požadavků pro lepší použitelnost je automatické přepnutí na záložku aktivních/neaktivních klientů/skupin podle toho, do které části patří přidávaný klient/skupina (resp. také upravovaný klient/skupina dle aktivity po uložení).
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.7\textwidth]{img/ui-screen-prepinac-aktivity.png}
+    \caption{Přepínač aktivních a neaktivních klientů}\label{fig:ui-screen-prepinac-aktivity}
+\end{figure}
 
 \subsection{F7 -- nastavitelná délka kurzů}
 
+Aby bylo možné nastavit délku kurzů pro jednotlivce, bylo třeba na serverové části aplikace do modelu \verb|Course| vložit atribut \verb|duration| (viz datový model v sekci~\ref{sec:datovymodel}) a opět jej zakomponovat do API (viz komunikační rozhraní v sekci~\ref{sec:komunikacnirozhrani}), což opět automaticky zařídí Django REST Framework.
+
+Na klientské části bylo třeba jak umožnit samotné upravování hodnoty do formuláře s kurzy. Dále bylo ale také potřeba s touto hodnotou vhodně pracovat v rámci formulářů pro vytváření lekce -- tato hodnota totiž, jak uvádí požadavek, platí pouze pro lekce jednotlivců, kdežto lekce skupin mají stále jednu fixní hodnotu. Při automatickém vyplňování hodnoty délky trvání lekce v závislosti na zvoleném kurzu je třeba tedy brát v úvahu, zda se jedná o lekci jednotlivce či skupiny. Na základě toho se pak automaticky vloží daná hodnota do pole pro délku trvání lekce.
 
 \subsection{F8 -- propojení s bankou}
 
-* zobrazují se transakce za posledních 14 dnů, FIO omezuje dotazy na API na 30 s, takže server cachuje odpověď banky rovnou 60 s, zobrazuje se i aktuální zůstatek + barva je podle toho, zda je na účtu dostatek peněz na zaplacení nájmu (zelená, resp. červená s upozorňujícím vykřičníkem s dalšími informacemi), po 60 s možnost výpis obnovit, případně lze jít do bankovnictví, opravuje \#50
-* cache, upozorneni na najem
+Fio banka, u které má lektorka účet ÚP, poskytuje velmi jednoduchý přístup k API a zde jednoduchý přístup k transakcím -- token se získá v administraci samotného účtu. V datovém modelu aplikace není třeba řešit žádné změny, je třeba ale připravit API pro přístup k transakcím (viz návrh komunikačního rozhraní v sekci~\ref{sec:komunikacnirozhrani}) -- byl vytvořen bod \verb|bank/| umožňující metodou GET získat transakce za poslední 3 týdny. Oproti ostatním bodům, které jsou založeny na datových modelech a používají tak pro vytvoření bodu \verb|ModelViewSet| zde bylo třeba využít obecnější \verb|APIView|, protože s modely nepracujeme. Příslušná metoda \verb|get| je oanotovaná pomocí dekorátoru v ukázce kódu~\ref{lst:cache} -- díky tomu jsou získané výsledky z banky uloženy do cache na 60 s z důvodu omezeného počtu požadavků na API banky (jednou za 30 s).
 
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+@method_decorator(cache_page(60))
+	\end{minted}
+	\caption{Dekorátor pro zavedení cache}\label{lst:cache}
+\end{listing}
+
+Pro použití cache bylo třeba nakonfigurovat Django -- to nabízí mnoho možností ukládání a práce s cache, pro jednoduchost ale bylo zvoleno použití \verb|LocMemCache|, tedy ukládání cache do lokální paměti procesu \cite{django-docs-cache}. V případě pokročilejší práce s cache či pokročilejší aplikace běžící ve více procesech by bylo třeba použít sofistikovanějších možností jako např. databáze Memcached \cite{django-docs-cache}.
+
+Logika práce s bankovním API byla oddělena do samostatného souboru \verb|services.py|, získaná data z banky zde projdou transformací, zjednodušením a doplněním -- odstraní se nepotřebné položky o účtu, doplní se klíč \verb|fetch_timestamp| (timestamp stažených dat z banky, aby bylo jasné, ze kdy získaná data z banky pocházejí), klíč \verb|rent_price| (výše nájmu v Kč), seřadí se transakce od nejnovějších po nejstarší a hodnota zůstatku na účtu se sníží o 100 Kč (minimální zůstatek na Fio účtu, tedy nelze toto započítat do reálně použitelných prostředků, ačkoliv API banky vrátí hodnotu zůstatku včetně této hodnoty). Celá logika je připravena na jakékoliv výskyty chyb ze strany banky, ošetřuje své chování a korektně vrací stavové kódy HTTP. V případě stavových kódů zde bylo otázkou, jak řešit vracení kódu pro požadavky, které zkolabují ze strany API banky, ale ze strany API aplikace proběhnou prakticky korektně, jen neobsahují získaná data -- kód 200 sice dává smysl z hlediska toho, že samotné naše API nemá problém, ale prakticky došlo k interní chybě na serveru, tedy proto zde dojde k vrácení kódu 500 a součástí odpovědi je i přesný popis problému, který nastal.
+
+Na klientské části byla dle požadavku vytvořena komponenta pro napojení na banku umístěná přímo na hlavní stránku do přehledu (zde se tedy nyní kromě přehledu lekcí pro dnešní den nachází přehled transakcí). Lektorka tak už nemusí chodit často do bankovnictví a kontrolovat účet a platby. Součástí této komponenty je i tlačítko umožňující jednoduché znovunačtení dat z banky a také možnost rychle přejít do samotného bankovnictví, pokud je třeba např. zaslat platbu, pokročile vyhledávat či přistoupit k transakcím starších 3 týdnů. Výše nájmu je zde využita k tomu, aby mohla být lektorka případně upozorněna přímo na hlavní stránce na nedostatek prostředků pro uhrazení nájmu na účtu. Zobrazují se dle požadavku transakce za poslední 3 týdny a také aktuální zůstatek na účtu. Součástí přehledu každé transakce je srozumitelný datum (pro blízké dny se také zobrazí např. \enquote{včera}, \enquote{dnes}), částka, barevné rozlišení příchozí a odchozí platby (kromě odlišení znakem \enquote{-}), poznámka k platbě a zpráva pro příjemce. Z analýzy seznamu transakcí banky vyplývá, že v poznámce většiny transakcí se nachází jméno vlastníka účtu, z toho důvodu bylo rozhodnuto v rámci klientské části údaje o transakcích zjednodušit uvedenou formou, tedy zobrazit pouze poznámku (a v případě, že chybí, tak vlastníka účtu) a případně zprávu pro příjemce, je-li uvedena. Výsledná komponenta je na obrázku~\ref{fig:ui-screen-banka}.
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.8\textwidth]{img/ui-screen-banka.png}
+    \caption{Komponenta pro informace z banky}\label{fig:ui-screen-banka}
+\end{figure}
 
 \subsection{F9 -- změny účastníků skupinových lekcí}
 
+Jak uvádí požadavek~\ref{F9}, je třeba umožnit lektorce jednoduché automatické projevení změn účastníků lekce v závislosti na aktuálních členech. Pro toto bylo třeba dle návrhu komunikačního rozhraní v sekci~\ref{sec:komunikacnirozhrani} zavést nový klíč \verb|refresh_clients| pro operace PUT, PATCH, POST na lekcích.
+
+Tento klíč bylo poté třeba využít na klientské části takovým způsobem, aby si lektorka mohla vybrat, zda chce úpravy/přidání lekce provést bez změn v účastnících, nebo změny automaticky během ukládání provést. Pro toto bylo zvoleno vytvoření druhého tlačítka pro uložení formuláře s popisem \enquote{Uložit + projevit změny v klientech}, po najetí se také zobrazí více vysvětlující popis. Po kliknutí na toto tlačítko dojde jak k uložení změn v lekci, tak k projevení změn v účastnících (po kliknutí na běžné tlačítko \enquote{Uložit} dojde jen k uložení změn).
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.7\textwidth]{img/ui-screen-formular-projevenizmen.png}
+    \caption{Tlačítko pro projevení změn účastníků lekce}\label{fig:ui-screen-formular-projevenizmen}
+\end{figure}
 
 \subsection{F10 -- automatické přidání předplacené lekce}
 
+Implementace tohoto požadavku souvisí s požadavkem~\ref{F3} na lepší evidenci předplacených lekcí. Na základě implementace zmíněného požadavku bylo pak možné kód rozšířit a upravit o automatické přidání předplacených lekcí.
+
+Pro jednotlivce bylo naimplementováno, aby se při omluvě klienta/zrušení lekce automaticky klientovi přidala předplacená lekce s poznámkou např. \enquote{Náhrada lekce (7.~4.~2020)}. V případě lekcí skupin bylo využito implementace požadavku~\ref{F3} a klientovi skupiny se předplacená lekce přidá do jeho členství (přičte se k \verb|prepaid_cnt|. V obou případech musely být v kódu přesně stanoveny podmínky, aby došlo k přičtení předplacené lekce právě jednou a nikoliv vícekrát -- například při úpravě již zrušené lekce tedy nesmí být další lekce přičtena.
+
+Součástí požadavku je ale také automatické odebírání předplacených lekcí pro skupiny, což je třeba řešit jak na serverové části, kde dojde k samotnému odečtení předplacených lekcí při přidávání klientů, tak na klientské části, kde při přidávání lekce se automaticky u účastníků označí lekce jako zaplacená v případě, že mají nějaké předplacené lekce. Lektorka tak vůbec nemusí řešit, který klient má danou přidávanou lekci zaplacenou, protože to za ni označí aplikace a po uložení se automaticky odečtou předplacené lekce (pokud klient nějaké má).
 
 \subsection{F11 -- efektivnější práce v rámci aplikace}
 
+TODO
 
 \subsection{F12 -- evidování barev kurzů}
 
+TODO
 
 \subsection{F13 -- automatické předvyplnění údajů lekce}
 
+TODO
 
 \subsection{F14 -- upozornění na ztrátu dat formulářů}
 
+TODO
 
 \subsection{F15 -- vylepšení chybových hlášení}
 
+TODO
 * frontend odolny proti padu diky ErrorBoundary
 * drf zpracovavat ProtectedError https://github.com/rodlukas/UP-admin/issues/70
 * podrobnejsi chyby z api
@@ -373,12 +472,15 @@ Díky větší šířce formuláře bylo možné vměstnat více polí na méně
 
 \subsection{F16 -- titulky stránek}
 
+TODO
 
 \subsection{F17 -- nastavitelné vlastnosti stavů účasti}
 
+TODO
 
 \subsection{F18 -- omezení a validace hodnot}
 
+TODO
 * pokročilá validace duplicit apod.
 * zruseni noveho omezeni "neaktivní klienty nelze přiřadit do skupin (UI je ani nezobrazí ve výběru)" - neaktivní klienti již mohou být členové skupiny
 * velka pocatecni pismena jmena klienta i pro api, presun transformaci field z modelu do serializeru
@@ -388,22 +490,28 @@ Díky větší šířce formuláře bylo možné vměstnat více polí na méně
 
 \subsection{F19 -- automatické zrušení lekce}
 
+TODO
 
 \subsection{F20 -- zobrazení zrušených lekcí}
 
+TODO
 
 \subsection{F21 -- skupinové lekce bez účastníků}
 
+TODO
 
 
 \section{Nefunkční požadavky}
 
+V této sekci se zaměřím na implementaci většiny nefunkčních požadavků, některé nefunkční požadavky (\ref{N2}, \ref{N7}, \ref{N8}) budou ale řešeny až v následující kapitolách.
 
 \subsection{N1 -- dokumentace}
 
+TODO
 
 \subsection{N3 -- zavedení nástrojů pro usnadnění vývoje a údržby}
 
+TODO
 * refaktoring
 * js komponenta pro zobrazeni lekci https://github.com/rodlukas/UP-admin/issues/71
 * template strings js
@@ -462,14 +570,17 @@ codacy
 
 \subsection{N4 -- revize bezpečnosti}
 
+TODO
 * contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 
 
 \subsection{N5 -- vylepšení použitelnosti}
 
+TODO
 
 \subsection{N6 -- optimalizace API}
 
+TODO
 * DRF-JWT problémy, dotazy na SQL DB ikdyž nemají být - https://github.com/rodlukas/UP-admin/issues/51 - přechod na jinou knihovnu a zde PR na překlad do CZ
 * viditelne kurzy api, dalsi filtrovani (aktivita)
 * pomalé SQL dotazy- obri optimalizace dotazu na DB (>4x zrychleni) diky DJDT, pokrocile optimalizace

@@ -19,7 +19,7 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
     \item \label{F10} \textbf{automatické přidání (a odebrání) předplacené lekce:} při omluvě klienta/zrušení ze strany lektorky je třeba automaticky u klienta/skupiny zaznamenat, že mají jeden předplacený termín navíc (v případě, že daný klient měl zaplaceno), v případě jednotlivců je třeba také automaticky zaevidovat, za který den je tato náhradní lekce vytvořena, v případě skupin je třeba při přidávání lekce automaticky označit lekci jako placenou pro účastníky, kteří mají předplacené lekce a při přidání pak odečíst jednu předplacenou lekci,
     \item \label{F11} \textbf{efektivnější práce v rámci aplikace:} v současné verzi aplikace musela lektorka pro často prováděné činnosti provádět zbytečně mnoho kroků navíc, což činilo příslušné činnosti náročnějšími a snadno se udělala chyba a ztrácel čas -- na základě dalších analýz byly zjištěny problémové oblasti, které vyžadují přepracování: umožnit úpravu lekce (pro jednotlivce i skupiny) z diáře a přehledu, umožnit úpravu klienta/skupiny přímo v kartě klienta/skupiny, umožnit přidání lekce (pro jednotlivce i skupiny) z diáře a přehledu (a to jak s příslušným datem, u kterého bude toto tlačítko, tak i obecně s jakýmkoliv datem), umožnit přidat klienta přímo při přidávání skupiny/zájemce (funkcionalita zájemce implementována v rámci~\ref{F1}),
     \item \label{F12} \textbf{evidování barev kurzů:} je třeba umožnit přiřazení barvy každému kurzu a tuto barvu použít pro rozlišení kurzů napříč celou aplikací, kdekoliv se vyskytuje název kurzu -- lektorka potřebuje okamžitě rozlišit kurzy a mít možnost na první pohled např. v diáři vidět díky barvě, kterého kurzu se barva týká (kurzy mají v rámci propagačních materiálů své ustálené barvy),
-    \item \label{F13} \textbf{automatické předvyplnění údajů lekce:} pokud má klient/skupina nějakou historii v evidenci, při přidávání nové lekce je třeba na základě této historie předvyplnit vhodnými hodnotami datum, čas a kurz nové lekce -- je tedy třeba vhodně zvolit lekci klienta z jeho historie, podle které budou tyto údaje vypočteny  -- smyslem je těmito výchozími hodnotami vystihnout co nejvíce případu tak, aby lektorka musela tyto hodnoty co nejméně často upravovat, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:F13detail},
+    \item \label{F13} \textbf{automatické předvyplnění údajů lekce:} pokud má klient/skupina nějakou historii v evidenci, při přidávání nové lekce je třeba na základě této historie předvyplnit vhodnými hodnotami datum, čas a kurz nové lekce -- je tedy třeba vhodně zvolit lekci klienta z jeho historie, podle které budou tyto údaje vypočteny  -- smyslem je těmito výchozími hodnotami vystihnout co nejvíce případů tak, aby lektorka musela tyto hodnoty co nejméně často upravovat, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:F13detail},
     \item \label{F14} \textbf{upozornění na ztrátu dat formulářů:} při vyplňování formulářů lektorka občas omylem formulář zavře a přijde o úpravy, je třeba zavést ochranu, která tomuto zabrání (a zároveň ale nebude zbytečně upozorňovat na ztrátu dat, když k žádné změně nedošlo),
     \item \label{F15} \textbf{vylepšení chybových hlášení:} chybová hlášení jsou někdy málo podrobná, případně nezmiňují možnosti řešení, zobrazují se krátce, případně dojde k neošetřené chybě na serveru a klientská část pak nedokáže korektně uživateli popsat, kde je problém,
     \item \label{F16} \textbf{titulky stránek:} každá stránka by měla mít v prohlížeči svůj titulek, v současné době má každá stránka stejný titulek a lektorka tak nemá možnost jednoduše rozlišit, který panel má otevřenou kterou stránku aplikace,
@@ -27,7 +27,7 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
     \item \label{F18} \textbf{omezení a validace hodnot:} je třeba provést revizi stávajících omezení na jednotlivé hodnoty v rámci aplikace (API a databáze) i klientské části, zavést nová omezení pro nové funkční požadavky a zdokumentovat všechna aktuální omezení a validace prováděná nad celou doménou, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:F18detail},
     \item \label{F19} \textbf{automatické zrušení lekce:} pokud nikdo z účastníků nemá dorazit (všichni jsou omluveni), lekce má být automaticky zrušena,
     \item \label{F20} \textbf{zobrazení zrušených lekcí:} v přehledu na hlavní stránce a v diáři je třeba zobrazit i zrušené lekce, v současné verzi se nezobrazují (to byl původní požadavek, ale nakonec se ukázal jako nesprávný a lektorka lekce potřebuje vidět nejen v kartě klienta),
-    \item \label{F21} \textbf{skupinové lekce bez účastníků:} lektorka potřebuje vytvářet lekce pro skupiny bez účastníků (plánuje dopředu termíny a členy přidá až když budou známí) -- současná aplikace na toto nebyla připravena, klientská část aplikace dokonce při přidání takové lekce spadne.
+    \item \label{F21} \textbf{skupinové lekce bez účastníků:} lektorka potřebuje vytvářet lekce pro skupiny bez účastníků (plánuje dopředu termíny a členy přidá až když budou známí) -- současná aplikace na toto nebyla připravena, klientská část aplikace dokonce při pokusu o přidání takové lekce spadne (resp. spadne v případě, když skupina nemá žádné členy -- nelze zobrazit ani karta skupiny).
 \end{enumerate}
 
 \subsection{Nefunkční požadavky}
@@ -133,7 +133,8 @@ Seznam nových zjištěných problémů:
     \item \label{P16} \textbf{responzivita:} některé komponenty v aplikaci při zobrazení na jiné než obvyklé velikosti obrazovky činí použití aplikace a srozumitelnost dat značně náročnější, případně se dokonce některé údaje mohou skrývat -- opravit responzivitu napříč všemi různými velikostmi displeje,
     \item \label{P17} \textbf{abecední řazení:} řazení podle abecedy nepodporuje znaky s diakritikou, dojde např. ke smíchání příjmení začínajících na \enquote{S} a \enquote{Š} a lektorka se špatně orientuje -- opravit podporu pro české znaky,
     \item \label{P18} \textbf{výstižné nadpisy:} některé nadpisy v rámci aplikace nejsou úplně výstižné a konzistentní -- projít napříč aplikací a opravit,
-    \item \label{P19} \textbf{obnovení přihlašovacího tokenu:} pokud lektorka zůstane na jedné stránce, kde provádí nějaké změny (např. má otevřenou kartu klienta a zde provádí změny a nepřechází jinam), vyprší mezitím platnost tokenu a následně při přechodu na jinou stránku je z aplikace odhlášena -- je potřeba provádět automatickou obnovu platnosti tokenu kdekoliv v aplikaci (v současné době se provádí jen při přechodu mezi stránkami).
+    \item \label{P19} \textbf{obnovení přihlašovacího tokenu:} pokud lektorka zůstane na jedné stránce, kde provádí nějaké změny (např. má otevřenou kartu klienta a zde provádí změny a nepřechází jinam), vyprší mezitím platnost tokenu a následně při přechodu na jinou stránku je z aplikace odhlášena -- je potřeba provádět automatickou obnovu platnosti tokenu kdekoliv v aplikaci (v současné době se provádí jen při přechodu mezi stránkami),
+    \item \label{P20} \textbf{react-select mazání:} u komponenty \verb|react-select| pro evidování členů skupiny je zobrazen vedle tlačítka pro rozbalení seznamu členů zobrazen křížek, který po kliknutí smaže všechny členy -- lektorka na něj často omylem kliká při pokusu o rozbalení seznamu klientů -- křížek odstranit, funkcionalita mazání všech členů není vůbec potřeba.
 \end{enumerate}
 
 Seznam problémů, které již jsou součástí požadavků:
@@ -363,7 +364,7 @@ Součástí validace časového konfliktu je také naimplementovaná srozumiteln
 
 Pro pohodlnější evidenci předplacených lekcí bylo třeba na serverové části aplikace upravit model \verb|Membership| (viz datový model v sekci~\ref{sec:datovymodel}) -- doplnit jej o atribut \verb|prepaid_cnt|. Dále bylo třeba tuto změnu projevit i v API (viz komunikační rozhraní v sekci~\ref{sec:komunikacnirozhrani}), stejně jako doplnit do API možnost zaslání více kurzu najednou (pro pohodlnější evidenci více předplacených lekcí jednotlivce), toto řeší v Django REST Framework příslušný \verb|LectureViewSet|, který umožňuje na základě zaslaných dat (jedna lekce/pole lekcí) tyto data zpracovat.
 
-Všechny tyto změny bylo třeba projevit na klientské části -- především dodat pole do formuláře pro přidání lekce jednotlivce, které umožní zadat počet předplacených lekcí (viz návrh UI v sekci~\ref{sec:uzivatelskeprostredi}), tato změna byla součástí kompletního přepracování tohoto formuláře v rámci požadavku~\ref{F5}. Pro evidenci předplacených lekcí pro skupiny, jak bylo uvedeno v analýze tohoto požadavku v podsekci~\ref{subsec:F3detail}, byly do karty skupiny implementovány počítadla předplacených lekcí pro jednotlivé klienty. Každý klient má zde hodnotu počtu předplacených lekcí, která lze upravit jak ručně, tak je připravena na automatické projevení změn v počtu předplacených lekcí z požadavku~\ref{F10}. Toto řešení je vidět na obrázku~\ref{fig:ui-screen-pocitadla}.
+Všechny tyto změny bylo třeba projevit na klientské části -- především dodat pole do formuláře pro přidání lekce jednotlivce, které umožní zadat počet předplacených lekcí (viz návrh UI v sekci~\ref{sec:uzivatelskeprostredi}), tato změna byla součástí kompletního přepracování tohoto formuláře v rámci požadavku~\ref{F5}. Pro evidenci předplacených lekcí pro skupiny, jak bylo uvedeno v analýze tohoto požadavku v podsekci~\ref{subsec:F3detail}, byly do karty skupiny implementována počítadla předplacených lekcí pro jednotlivé klienty. Každý klient má zde hodnotu počtu předplacených lekcí, která lze upravit jak ručně, tak je připravena na automatické projevení změn v počtu předplacených lekcí z požadavku~\ref{F10}. Toto řešení je vidět na obrázku~\ref{fig:ui-screen-pocitadla}. Pokud skupina nemá žádné členy
 
 \begin{figure}[h]\centering
     \includegraphics[width=0.8\textwidth]{img/ui-screen-pocitadla.png}
@@ -372,7 +373,7 @@ Všechny tyto změny bylo třeba projevit na klientské části -- především 
 
 \subsection{F4 -- vyhledávání klientů}
 
-TODO
+TODO!
 
 \subsection{F5 -- přepracování formuláře pro lekce}
 
@@ -415,7 +416,7 @@ Pro použití cache bylo třeba nakonfigurovat Django -- to nabízí mnoho možn
 
 Logika práce s bankovním API byla oddělena do samostatného souboru \verb|services.py|, získaná data z banky zde projdou transformací, zjednodušením a doplněním -- odstraní se nepotřebné položky o účtu, doplní se klíč \verb|fetch_timestamp| (timestamp stažených dat z banky, aby bylo jasné, ze kdy získaná data z banky pocházejí), klíč \verb|rent_price| (výše nájmu v Kč), seřadí se transakce od nejnovějších po nejstarší a hodnota zůstatku na účtu se sníží o 100 Kč (minimální zůstatek na Fio účtu, tedy nelze toto započítat do reálně použitelných prostředků, ačkoliv API banky vrátí hodnotu zůstatku včetně této hodnoty). Celá logika je připravena na jakékoliv výskyty chyb ze strany banky, ošetřuje své chování a korektně vrací stavové kódy HTTP. V případě stavových kódů zde bylo otázkou, jak řešit vracení kódu pro požadavky, které zkolabují ze strany API banky, ale ze strany API aplikace proběhnou prakticky korektně, jen neobsahují získaná data -- kód 200 sice dává smysl z hlediska toho, že samotné naše API nemá problém, ale prakticky došlo k interní chybě na serveru, tedy proto zde dojde k vrácení kódu 500 a součástí odpovědi je i přesný popis problému, který nastal.
 
-Na klientské části byla dle požadavku vytvořena komponenta pro napojení na banku umístěná přímo na hlavní stránku do přehledu (zde se tedy nyní kromě přehledu lekcí pro dnešní den nachází přehled transakcí). Lektorka tak už nemusí chodit často do bankovnictví a kontrolovat účet a platby. Součástí této komponenty je i tlačítko umožňující jednoduché znovunačtení dat z banky a také možnost rychle přejít do samotného bankovnictví, pokud je třeba např. zaslat platbu, pokročile vyhledávat či přistoupit k transakcím starších 3 týdnů. Výše nájmu je zde využita k tomu, aby mohla být lektorka případně upozorněna přímo na hlavní stránce na nedostatek prostředků pro uhrazení nájmu na účtu. Zobrazují se dle požadavku transakce za poslední 3 týdny a také aktuální zůstatek na účtu. Součástí přehledu každé transakce je srozumitelný datum (pro blízké dny se také zobrazí např. \enquote{včera}, \enquote{dnes}), částka, barevné rozlišení příchozí a odchozí platby (kromě odlišení znakem \enquote{-}), poznámka k platbě a zpráva pro příjemce. Z analýzy seznamu transakcí banky vyplývá, že v poznámce většiny transakcí se nachází jméno vlastníka účtu, z toho důvodu bylo rozhodnuto v rámci klientské části údaje o transakcích zjednodušit uvedenou formou, tedy zobrazit pouze poznámku (a v případě, že chybí, tak vlastníka účtu) a případně zprávu pro příjemce, je-li uvedena. Výsledná komponenta je na obrázku~\ref{fig:ui-screen-banka}.
+Na klientské části byla dle požadavku vytvořena komponenta pro napojení na banku umístěná přímo na hlavní stránku do přehledu (zde se tedy nyní kromě přehledu lekcí pro dnešní den nachází přehled transakcí). Lektorka tak už nemusí chodit často do bankovnictví a kontrolovat účet a platby. Součástí této komponenty je i tlačítko umožňující jednoduché znovunačtení dat z banky a také možnost rychle přejít do samotného bankovnictví, pokud je třeba např. zaslat platbu, pokročile vyhledávat či přistoupit k transakcím starších 3 týdnů. Výše nájmu je zde využita k tomu, aby mohla být lektorka případně upozorněna přímo na hlavní stránce na nedostatek prostředků pro uhrazení nájmu na účtu. Zobrazují se dle požadavku transakce za poslední 3 týdny a také aktuální zůstatek na účtu. Součástí přehledu každé transakce je srozumitelný datum (pro blízké dny se také zobrazí např. \enquote{včera}, \enquote{dnes}), částka, barevné rozlišení příchozí a odchozí platby (kromě odlišení znakem \enquote{-}), poznámka k platbě a zpráva pro příjemce. Z analýzy seznamu transakcí banky vyplývá, že v poznámce většiny transakcí se nachází jméno vlastníka účtu, z toho důvodu bylo rozhodnuto v rámci klientské části údaje o transakcích zjednodušit uvedenou formou, tedy zobrazit pouze poznámku (a v případě, že chybí, tak vlastníka účtu) a případně zprávu pro příjemce, je-li uvedena. Transakce z dnešního dne jsou žlutě zvýrazněny dle následného požadavku lektorky. Výsledná komponenta je na obrázku~\ref{fig:ui-screen-banka}.
 
 \begin{figure}[h]\centering
     \includegraphics[width=0.8\textwidth]{img/ui-screen-banka.png}
@@ -443,63 +444,143 @@ Součástí požadavku je ale také automatické odebírání předplacených le
 
 \subsection{F11 -- efektivnější práce v rámci aplikace}
 
-TODO
+V rámci analýzy požadavku~\ref{F11} byl uveden podrobný výčet oblastí, kde je třeba zefektivnit práci v aplikaci -- obecně řečeno se jedná o oblasti, kde je jasné, že je třeba provést určitý úkon a zde pak také vidět výsledky po uložení, ale aplikace toto nenabízí a příslušnou oblast je třeba opustit, provést úkon jinde a manuálně se zpět vrátit do původní oblasti. Problémem je, že původní oblast navíc nemusí být přímo přístupná, nemusí se totiž např. jednat o pouhou stránku s diářem, ale o nějaký formulář, ve kterém je třeba vybrat např. klienta, ale klient zatím není vytvořený -- nejen, že je třeba vše zrušit a přejít do klientů a zde přidat klienta, ale pak je třeba ještě jít zpět na původní formulář, což je skutečně mnoho kroků navíc.
+
+Původní verze aplikace na toto přeužívání formulářů nebyla připravena. Bylo tedy třeba vymyslet takový způsob přeužívání formulářů, že je bude možné využít napříč aplikací bez jakékoliv duplikace kódu a co možná nejjednodušeji.
+
+Řešení přiblížím na konkrétním příkladu -- dle požadavku je třeba umožnit úpravu klienta nejen ze seznamu klientů, ale také z karty klienta. Podívejme se nyní na aktuální situaci v seznamu klientů -- je zde tlačítko pro úpravu klienta, kde po kliknutí lze prostřednictvím formuláře v nově otevřeném modálním okně provádět úpravy. V kódu této stránky je jak příslušné tlačítko, tak i kód obstarávající zobrazení modálního okna, potomkem tohoto modálního okna je uveden pak samotný formulář pro práci s klientem. Jako ideální řešení pro všechny možné situace zadané v požadavcích (tedy i tuto) se ukázalo kompletní odstranění všeho kódu souvisejícího s modálním oknem a formulářem včetně samotných tlačítek. Tento kód byl vždy vyčleněn do speciální komponenty (např. \verb|ModalClients|), která na základě toho, zda obdrží klienta či ne pak zobrazí tlačítko pro přidání, resp. úpravu klienta, které pak otevře formulář pro přidání, resp. úpravu klienta. Na stránce s klienty tedy pouze vložíme komponentu \verb|ModalClients|, které předáme několik potřebných parametrů (tzv. \enquote{props}) a vše ostatní necháme na ní. Tutéž komponentu pak můžeme využít kdekoliv napříč aplikací, stačí ji naimportovat a dát jí potřebné parametry. Všechna logika je obsažena v ní, na jednom centrálním místě. Zmíněný přístup byl použit také pro úpravu skupin v kartě skupiny (původně bylo taktéž možné skupinu upravit jen ze seznamu skupin) a také pro úpravu lekcí jednotlivců i skupin z diáře a přehledu (lekce šly původně upravit pouze v kartě klienta/skupiny). 
+
+Dále bylo třeba vyřešit možnost přidávání klientů např. při vytváření zájemce -- tedy aby lektorka nemusela přidávání zájemce zrušit, přejít do klientů, vytvořit zde klienta, přejít zpět do zájemců a znovu vytvořit zájemce z již založeného klienta. Implementace tohoto je opět založena na komponentách a logice výše, jen je bylo třeba rozšířit o možnost získat z otevřeného formuláře uložená data (např. informace o nově přidaném klientovi), a ty poskytnout jiné komponentě s formulářem (např. formuláři pro zájemce o kurz) -- zde je totiž seznam aktuálních klientů, který my po přidání nového aktualizujeme a rovnou vybereme jako zájemce příslušného nově přidaného klienta. Pro ilustraci je na obrázku~\ref{fig:ui-screen-efektivita-zajemci} vidět, jak je tlačítko pro přidání řešeno -- lektorka je navedena k tomu, že buď zvolí existujícího klienta, nebo když ještě neexistuje, vytvoří nového, a ten se pak, jak již bylo zmíněno, také po přidání automaticky vybere jako zvolený klient ze seznamu již existujících klientů. Totéž řešení je implementováno pro tvorbu skupiny -- tedy lektorka může v klidu vytvářet skupinu a do ní vkládat klienty, které si jednoduše během práce v tomto formuláři s lekcí vytvoří a nemusí jej nikdy opustit.
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.7\textwidth]{img/ui-screen-efektivita-zajemci.png}
+    \caption{Možnost přidat nového klienta přímo při práci v jiném formuláři}\label{fig:ui-screen-efektivita-zajemci}
+\end{figure}
+
+Nejtěžším krokem bylo zefektivnění práce s přidáváním lekcí. Je totiž třeba umožnit v diáři i přehledu přidat lekci buď pro jednotlivce nebo pro skupinu. Dále je třeba umožnit rychlé přidání lekce pro daný zobrazený den, ale také pro úplně jiný den, bez jakéhokoliv přecházení na zobrazení tohoto dne (na obrázku~\ref{fig:ui-screen-efektivita-lekce2} je toto vidět -- je otevřená nabídka pro přidání lekce bez určení data, ale vpravo lze vidět možnost přidání lekce pro konkrétní datum). K řešení těchto mnoha cest, kterými se lektorka může chtít vydat, byla vytvořena jednoduchá komponenta \verb|ModalLecturesWizard| (s poměrně složitější implementací), která tvoří prostředníka mezi jakoukoliv stránkou (diář/přehled) a zmíněnými komponentami jako \verb|ModalClients| či \verb|ModalGroups|, které mají na starost práci s formulářem kdekoliv v aplikaci. Tato komponenta může obdržet informaci o dni, pro který se lekce vkládá (když lektorka chce vložit lekci v příslušném dni), ale nemusí (když lektorka chce vložit lekci v jiném dni, který si vybere až ve formuláři pro lekci). Dále, po kliknutí na tlačítko \enquote{+}, které tato komponenta vykresluje, si lektorka zvolí, zda chce přidat lekci pro skupinu nebo jednotlivce (viz obrázek~\ref{fig:ui-screen-efektivita-lekce1}). Poté si (viz obrázek~\ref{fig:ui-screen-efektivita-lekce2}) buď z rozbalovací nabídky zvolí existujícího klienta/skupinu, pro kterou přidává lekci, nebo přidá nového klienta/skupinu (jednoduše bez jakékoliv práce navíc díky napojení na komponenty zmíněné výše, např. \verb|ModalClients|), v obou případech, jakmile dojde k výběru, automaticky se otevře formulář pro přidání lekce skupiny/jednotlivce dle situace s předvyplněným údajem o datu (pokud byl předán komponentě) a mj. také předvyplněnými dalšími informacemi dle požadavku~\ref{F13} (zde je třeba ošetřit případ, abychom např. nepřepsali datum lekce odhadnutým datem následující lekce z implementace tohoto požadavku, protože lektorka již dala jasně najevo, že chce přidat lekci na daný den, nikoliv něco odhadovat). Po uložení lekce dojde k automatickému obnovení původní stránky (diář/přehled) a lektorka vidí všechny změny, aniž by musela za celou dobu někam vůbec přecházet -- vše se dělo v rámci jedné stránky.
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.7\textwidth]{img/ui-screen-efektivita-lekce1.png}
+    \caption{Rychlé přidání lekce -- krok~1}\label{fig:ui-screen-efektivita-lekce1}
+\end{figure}
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.7\textwidth]{img/ui-screen-efektivita-lekce2.png}
+    \caption{Rychlé přidání lekce -- krok~2}\label{fig:ui-screen-efektivita-lekce2}
+\end{figure}
 
 \subsection{F12 -- evidování barev kurzů}
 
-TODO
+Bylo třeba implementovat uživatelsky přívětivý způsob výběru barvy kurzů, není samozřejmě možné pouze připravit pole pro zapsání kódu barvy. Zde bylo využito knihovny \href{https://github.com/casesandberg/react-color/}{React Color}, která nabízí množství různých komponent pro jednoduchý výběr barvy -- konkrétní komponenta již integrovaná do aplikace je vidět na obrázku~\ref{fig:ui-screen-barva}. Ve formuláři lektorka jednoduše klikne do pole pro změnu barvy a v této komponentě si barvu vybere. Pro integraci této komponenty bylo třeba vymyslet vhodnou formu otevření a zavření komponenty, v rámci drobného testování použitelnosti na lektorce pak byl finální návrh přijat a nasazen.
+
+Vzhledem k pravidlům použitelnosti a přístupnosti~\cite{wcag} je třeba dbát na to, aby volba konkrétní barvy nezpůsobila nečitelnost jednotlivých komponent v aplikaci -- součástí požadavku je totiž nejen samotná volba barvy kurzu, ale také začlenění této barvy do komponent napříč aplikací pro zvýšení přehlednosti. Zde bylo nejprve třeba napříč aplikací tuto barvu vhodně začlenit všude, kde se zmiňuje kurz -- tedy do přehledu lekcí a diáře, do rozbalovacích nabídek ve formulářích (díky tomu, že jsou řešeny komponentou \verb|react-select| je toto možné), do karty klienta, k seznamu skupin, jichž je klient členem, do seznamu všech skupin. Na základě začlenění barvy do aplikace bylo jasné, že se vždy bude vyskytovat barva kurzu s bílým textem, tedy bylo třeba vyřešit, jak lektorku upozornit, že zvolená barva není příliš kontrastní -- byla vytvořena validační funkce, která díky použití knihovny \href{https://github.com/gka/chroma.js/}{chroma.js} umožní zjistit, na kolik jsou dvě barvy vůči sobě kontrastní a toto porovnat vůči vhodně zvolené konstantě (experimenty bylo zjištěno, že je zbytečně restriktivní vycházet z doporučení WCAG a lze jej mírně zrelaxovat pro možnost volby více barev bez zásadního vlivu na čitelnost). Výsledné začlenění barev napříč aplikací je vidět v TODO.
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.6\textwidth]{img/ui-screen-barva.png}
+    \caption{Komponenta pro výběr barvy kurzu}\label{fig:ui-screen-barva}
+\end{figure}
 
 \subsection{F13 -- automatické předvyplnění údajů lekce}
 
-TODO
+Dle detailní analýzy~\ref{subsec:F13detail} byly implementovány funkce s daným algoritmem. Funkce jsou oddělené od implementace samotného formuláře i z důvodu požadavku~\ref{F11} pro efektivnější práci v rámci aplikace, kde se počítá s více různými možnostmi přidávání lekcí. Pokud je tedy možné z historie klienta odvodit nové hodnoty pro lekci, při přidávání nové lekce odkudkoliv napříč aplikací se lekce příslušného kurzu (posledního navštíveného) automaticky vytváří o týden později (včetně času) oproti poslední lekci -- tento datum a čas i kurz samozřejmě může lektorka před uložením upravit v případě odlišností, ale ve většině případů bude toto ponecháno bez dalších úprav, protože takto kurzy v mnoha případech fungují. 
 
 \subsection{F14 -- upozornění na ztrátu dat formulářů}
 
-TODO
+Pro všechny formuláře napříč aplikací bylo třeba implementovat funkcionalitu upozornění na ztrátu nově zadaných dat do formuláře při pokusu o jeho zavření bez uložení. Vzhledem k principu DRY bylo třeba tuto implementaci provést tak, aby byla pouze na jednom místě. K tomu byly využity React Hooks (budu se jim věnovat v TODO), tedy hook pro modální okno (který poskytuje nejen požadovanou funkcionalitu, ale také sjednocuje práci s modálními okny napříč aplikací) obsahuje indikátor \enquote{dirty}, který při první úpravě lektorkou ve formuláři nabude hodnoty \enquote{true}, v opačném případě (lektorka změny neprovede) nikoliv. Při zavírání jakoukoliv formou (zavření modálního okna či celého okna) se pak provede kontrola indikátoru a případně je lektorka formou vyskakovacího okna upozorněna na ztrátu dat při opuštění, zde může buď jít zpět do formuláře, nebo potvrdit, že o ztrátě ví.
+
+Zde je třeba říci, že z hlediska implementace je odlišné, zda lektorka zavírá jen samotné modální okno s formulářem, nebo rovnou celé okno/panel s aplikací. V případě modálního okna s formulářem se pro zobrazení vyskakovacího okna použije kód v ukázce~\ref{lst:alert1} -- zde se lektorce jednoduše zobrazí okno s textem v kódu. V případě zavření celé stránky se použije kód v ukázce~\ref{lst:alert2} -- zde se přidává naslouchávání na danou událost, kde se při výskytu zavolá daná funkce, ale jak uvádí \cite{mdn-beforeunload}, prohlížeče vyžadují různou podobu této funkce a její chování a také obvykle již nepodporují možnost zobrazit vlastní text zprávy -- funkce byla tedy implementována s důrazem na co nejlepší podporu prohlížečů a lektorce se místo textu v ukázce kódu~\ref{lst:alert1} zobrazí generická zpráva příslušného prohlížeče o možné ztrátě dat.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{javascript}
+window.confirm(
+    "Opravdu chcete zavřít formulář bez uložení změn?")
+	\end{minted}
+	\caption{Upozornění na neuložené změny při zavření formuláře}\label{lst:alert1}
+\end{listing}
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{javascript}
+window.addEventListener("beforeunload", beforeUnload)
+	\end{minted}
+	\caption{Upozornění na neuložené změny při zavření stránky}\label{lst:alert2}
+\end{listing}
 
 \subsection{F15 -- vylepšení chybových hlášení}
 
-TODO
-* frontend odolny proti padu diky ErrorBoundary
-* drf zpracovavat ProtectedError https://github.com/rodlukas/UP-admin/issues/70
-* podrobnejsi chyby z api
-* osetreni v api (IO...)
-* notifikace neprekryvaji menu
-* osetreni vstupu (vcetne konecne plne funkcniho API)
-* js vylepseni notifikaci - notifikace doplnene o nadpis a ikonu, sjednoceny font, komponenta pro obsah notifikace, delsi doba zobrazeni error notifikace
-* podrobnější chybové hlášky (např. při ProtectedError, když se uživatel pokouší mazat instanci, na které závisí jiné instance s chráněným příslušným FK; podrobnější info o časovém konfliktu...)
+Požadavek~\ref{F15} definuje několik částí, na které je třeba se zaměřit. V prvé řadě byl zvýšen časový limit zobrazení chybové notifikace na 15~s (původně nebyl definován, tedy aplikovala se výchozí hodnota knihovny \href{https://github.com/fkhadra/react-toastify}{React-Toastify} 5~s, což nestačilo na pochopení chyby). Všechny chybové hlášky napříč původní aplikací i novými implementovanými požadavky byly revidovány a rozšířeny o více podrobností, možné způsoby řešení -- např. při vzniku časového konfliktu mezi lekcemi je součástí notifikace podrobné info o lekci (datum, čas, klient/skupina, doba trvání) a také info, že je třeba upravit datum a čas lekce. Notifikace také překrývaly menu aplikace, což znesnadňovalo přechod na jiné stránky (bylo třeba notifikací ručně zavřít nebo čekat na automatické zavření) -- notifikace byly posunuty tak, aby menu nepřekrývaly. Notifikace také díky použití nové komponenty \verb|Notification| mají sjednocený vzhled -- obsahují nadpis, ikony symbolizující ne/úspěch a přehledný popis.
 
+Dále bylo třeba se věnovat parsování chyb na klientské části z API. Zde bylo několik problémů -- často se stávalo, že nastala na serverové části chyba, kterou klientská část neuměla rozpoznat a nezobrazila chybu žádnou, lektorka tedy nechápala, proč aplikace \enquote{nic nedělá} (chyba se zobrazila jen v konzoli prohlížeče). Parsování chyb bylo přepracováno a vylepšeno a v případě neznámé chyby se zobrazí také notifikace, stejně tak se lépe a srozumitelněji chyby parsují a je pokryto větší spektrum chyb. Součástí tohoto bylo třeba opravit související problém, kdy při pokusu o smazání entity, která závisí na jiných a je zakázáno ji smazat pokud nějaké tyto závislosti existují (např. smazání klienta s lekcemi), taktéž nedošlo k zobrazení jakékoliv chyby -- zde se ale nehodí obecná chyba a na straně serverové části bylo tedy třeba pomocí kódu v ukázce~\ref{lst:protectederror} toto ošetřit na všech příslušných místech (jednalo se o chybu \verb|ProtectedError|) a dát lektorce srozumitelné vysvětlení, proč se nepodařilo danou entitu smazat.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+def destroy(self, request, *args, **kwargs):
+    try:
+        result = super().destroy(request, *args, **kwargs)
+    except ProtectedError:
+        result = super().get_result(
+            "Klienta lze smazat jen pokud nemá žádné lekce.")
+    return result
+	\end{minted}
+	\caption{Upozornění na neuložené změny při zavření stránky}\label{lst:protectederror}
+\end{listing}
+
+Jedním z dalších problémů, který nastával, byl pád aplikace na klientské části, který mohl nastat. Takový pád způsobí, že celá aplikace přestane fungovat, zmizí a je třeba celou stránku načíst znovu (toto chování je výchozí od Reactu~16 \cite{react-errorboundaries}, na kterém je tato aplikace postavená). Samozřejmě nejlepší cestou je vše ošetřit, což bylo také učiněno, problémy se ale stále mohou přihodit a je třeba zvolit takové záchranné řešení, aby celá aplikace nespadla a nabídla lektorce možné řešení. React nabízí od verze 16 možnost toto řešit pomocí komponent zvaných \enquote{Error Boundaries} -- je to běžná komponenta, která ale obsahuje navíc jednu (nebo obě) metody \verb|static getDerivedStateFromError| a \verb|componentDidCatch|, tyto komponenty odchytávají všechny chyby ve svých potomcích, logují je a umožňují zobrazit záložní UI \cite{react-errorboundaries}. Je mnoho možností, kam a kolik komponent umístit od zabalení individuálních komponent až po zabalení nejvyšších komponent ve stromu komponent. Zde jsem zvolil přístup zabalení tagu \verb|main| do jedné komponenty zvané přímočaře \verb|ErrorBoundary|, který obsahuje všechny komponenty v rámci aplikace pod menu. Díky tomu při výskytu jakékoliv chyby v těchto potomcích místo pádu a zmizení celé aplikace se zobrazí informace o chybě a stránka je díky zobrazenému menu stále nadále použitelná. Jak bude uvedeno v TODO, do zmíněné metody \verb|componentDidCatch| bude zakomponováno logování do služby Sentry.
 
 \subsection{F16 -- titulky stránek}
 
-TODO
+Každá stránka by měla mít svůj unikátní titulek (zobrazený např. v panelu prohlížeče), v aktuální verzi toto řešeno není a napříč aplikací je jen jeden titulek. Bylo tedy třeba toto zakomponovat do klientské části, konkrétně toto závisí na aktuální stránce, přičemž vzhledem ke SPA architektuře aktuální stránku řeší React Router. Byla tedy implementována komponenta \verb|Page|, kterou React Router vykreslí a ta zároveň zaobaluje samotnou stránku -- jen jí navíc přidá titulek, titulky k jednotlivým stránkám byly přidány formou rozšíření struktury, která doposavad držela pouze URL adresy stránek napříč aplikací.
+
+Toto prvotní řešení, které bylo nasazeno, mělo ovšem jeden nedostatek, který už může být z popisu implementace patrný -- každá stránka (tedy např. karta klienta) má svůj titulek, ale právě jeden. Tedy různí klienti mají stejný titulek na své kartě, tedy \enquote{Karta klienta -- ÚPadmin}. Toto ale není žádoucí, protože při otevření více klientů pak není jasné, který je zobrazený. Totéž platí pro karty skupin a zobrazený týden v diáři. Implementované řešení tedy bylo rozšířeno o možnost manipulovat s titulkem i ze samotné stránky, která je potomkem \verb|Page| -- a to tak, že na základě informací z předka buď má titulek na starost přímo \verb|Page|, nebo jej řeší až její potomek (např. \verb|Card| -- karta klienta) a do titulku vloží např. i jméno klienta, resp. skupiny, resp. pro diář zobrazený týden. Toto je třeba, protože rodičovské komponenty pouze ví, která stránka se bude zobrazovat, neví ale např. jméno klienta (v URL adrese je jeho ID, k němuž si informace získá až potomek \verb|Page|).
+
+Díky tomuto řešení má nyní aplikace např. titulky: \enquote{Novák Dominik – Karta klienta – ÚPadmin}, \enquote{Diář (6. 4. – 10. 4.) – ÚPadmin} a \enquote{Zájemci – ÚPadmin}. Jak je vidět, informace v titulcích jsou řazeny podle důležitosti, tedy v případě prvním uživatel okamžitě vidí celé jméno klienta, pokud by informace byly naopak, viděl by všude nejprve název aplikace a zbytek by neviděl vůbec nebo pouze částečně.
 
 \subsection{F17 -- nastavitelné vlastnosti stavů účasti}
 
-TODO
+Vzhledem ke zvolenému způsobu řešení evidence vlastností stavů účasti v návrhu datového modelu (sekce~\ref{sec:datovymodel}) bylo třeba dodat do modelu \verb|AttendanceState| atributy \verb|default| a \verb|excused|. Pro oba atributy platí, že hodnotu \verb|true| smí mít vždy nejvýše jeden řádek v databázi. Bylo tedy toto třeba explicitně ošetřit a pro lepší použitelnost byla zakomponována také funkce automatického odznačení příslušného atributu u starého stavu účasti při aktualizaci tohoto atributu -- tedy pokud někdo označí nějaký stav účasti jako stav \verb|excused|, původní stav účasti takto označený je automaticky odznačen. Co se týče komunikačního rozhraní, bylo dle návrhu v sekci~\ref{sec:komunikacnirozhrani} třeba do bodu \verb|attendancestates/| přidat možnost práce s klíči \verb|default| a \verb|excused|.
+
+Na klientské části bylo třeba zvolit vhodný způsob zobrazení informací o tom, které stavy účasti mají jaké označení. Byl zvolen přístup, který jednoduše umožní příslušný stav účasti také změnit (a využije tedy zmíněného automatického odznačení starého stavu) -- v nastavení jsou dvě rozbalovací nabídky, jedna pro stav účasti \enquote{omluven}, jedna pro stav účasti s významem \enquote{dorazil/dorazí} (ten je také výchozí), toto je vidět na obrázku~\ref{fig:ui-screen-vlastnostistavu}. Lektorka zde může snadno změnit příslušný stav, v případě, že je aplikace nasazena do prázdné databáze, jsou zde také zobrazeny upozornění ohledně nenastavených vlastností stavů účastí -- protože v případě, že není ani jeden z atributů u žádného stavu účasti \verb|true|, aplikace nemůže korektně fungovat (resp. funguje, ale např. není schopná korektně spočítat pořadové číslo lekce, automaticky lekce rušit apod.).
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.7\textwidth]{img/ui-screen-vlastnostistavu.png}
+    \caption{Automatické zrušení lekce, když jsou všichni omluveni}\label{fig:ui-screen-vlastnostistavu}
+\end{figure}
 
 \subsection{F18 -- omezení a validace hodnot}
 
-TODO
-* pokročilá validace duplicit apod.
-* zruseni noveho omezeni "neaktivní klienty nelze přiřadit do skupin (UI je ani nezobrazí ve výběru)" - neaktivní klienti již mohou být členové skupiny
-* velka pocatecni pismena jmena klienta i pro api, presun transformaci field z modelu do serializeru
-* viz EA docs
-* js zvyrazneni neaktivity skupin a klientu napric aplikaci https://github.com/rodlukas/UP-admin/issues/85
+V rámci všech požadavků a také na základě revize stávající domény, jejích entit a omezení byla vytvořena a sepsána v rámci návrhu na obrázku~\ref{fig:db-model}, na základě tohoto návrhu bylo třeba mnoho z omezení doimplementovat -- o některých jsem se již zmínil při implementaci jednotlivých funkčních požadavků. Zde uvedu ještě několik komentářů k implementaci.
 
+Vzhledem k tomu, že počet omezení od původní aplikace poměrně narostl a v čase se i měnil (zde uvádím finální verze návrhu a implementace), bylo třeba, aby byla omezení trasovatelná napříč aplikací a bylo jasné, který kód řeší které omezení -- proto bylo zavedeno značení pomocí identifikátorů (např. \enquote{O13}). Toto označení je pak součástí dokumentace v kódu a implementace je tak prakticky propojená s návrhem, toto řešení tedy kromě trasovatelnosti umožňuje jistou míru konzistentnosti.
+
+Konkrétní implementaci omezení a validaci zde popisovat nebudu, jednak je často zmíněna v textech o implementaci příslušných souvisejících požadavků, druhak se obvykle nejedná o složité konstrukty. Mnoho z validačních metod bylo přesunuto do zvláštního souboru \verb|serializers_helpers.py|, aby byl původní soubor \verb|serializers.py| zachován co možná nejjednodušší. Součástí implementace tohoto požadavku bylo také mnoho ošetření napříč celou aplikací, zejména na serverové části, kde bylo zjištěno mnoho případů, kdy při využití holého API (nikoliv prostřednictvím klientské části) by v datech vznikly nekonzistence a při následném zobrazení na klientské části by mohly být z toho důvodu způsobeny různé problémy. Byly tedy opraveny všechny problémy na API tak, aby pracovalo v souladu s očekáváním a nepovolovalo ukládat do aplikace z pohledu omezení nevalidní data. Mnoho ze zjištěných problémů nebylo odhaleno dříve z důvodu, že klientská část API používá určitým způsobem a mnoha omezeními na klientské části se zamezí už samotnému zaslání nevalidních dat na API -- kdežto při použití čistého API toto někdy hlídáno nebylo.
+
+Do API byly také začleněny některé další transformace dat umožňující konzistentně uložená data, ale s možností zaslání jiného formátu, který je automaticky převeden na požadovaný formát. Příkladem budiž různé délky hexa zápisu barev, mezery v rámci telefonních čísel klientů či velká počáteční písmena křestních jmen a příjmení klientů -- toto řešila klientská část pro lepší použitelnost již při práci v rámci formulářů, pro konzistentnost dat je ale následná validace a transformace kontrolována především také na API. Dalším opraveným problémem byla nefunkčnost některých PATCH metod, které klientská část nepoužívá.
+
+% todo? * zruseni noveho omezeni "neaktivní klienty nelze přiřadit do skupin (UI je ani nezobrazí ve výběru)" - neaktivní klienti již mohou být členové skupiny
 
 \subsection{F19 -- automatické zrušení lekce}
 
-TODO
+Primární místo, kde se bude řešit automatické zrušení lekce, bude serverová část aplikace -- zde bylo třeba vytvořit funkci, která zjistí dle počtu omluvených účastníků (fakt, že stav účasti znamená omluven lze díky implementaci požadavku~\ref{F17} snadno zjistit) a počtu všech účastníků, zda je třeba lekci zrušit. Funkcionalita byla do funkce oddělena také z toho důvodu, že se zrušení lekce bude řešit nejen při práci s lekcí, ale také při prací se samotnou účastí (\verb|Attendance|) -- např. při rychlé úpravě stavu účasti klienta na lekci bez otevření formuláře se pošle PATCH požadavek na \verb|attendances/:id|, tedy API bod lekcí se zpracováním tohoto požadavku nemá nic společného -- je třeba kontrolu provádět i zde. Funkce byla implementována a korektně fungovala.
+
+Bylo rozhodnuto, že je vhodné, aby se na klientské části (ve formuláři pro lekce) v případě, že jsou všichni klienti lekce omluveni, dávalo najevo, že lekce bude označena jako zrušená. Toto bylo vyřešeno tak, že se pak automaticky zaškrtne \enquote{Zrušeno}, hodnota nelze upravit a vedle se zobrazí symbol s vysvětlením, jak je vidět na obrázku~\ref{fig:ui-screen-automatickezruseni}.
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.6\textwidth]{img/ui-screen-automatickezruseni.png}
+    \caption{Automatické zrušení lekce, když jsou všichni omluveni}\label{fig:ui-screen-automatickezruseni}
+\end{figure}
+
+Po nasazení bylo zjištěno, že zde došlo k problému zvoleného řešení tohoto požadavku v souvislosti s požadavkem~\ref{F21}, kdy algoritmus označil jako zrušenou lekci bez účastníků, toto bylo opraveno (viz~\ref{F21implementace}).
 
 \subsection{F20 -- zobrazení zrušených lekcí}
 
-TODO
+Vzhledem ke způsobu řešení původního požadavku z bakalářské práce na skrytí zrušených lekcí -- bylo řešeno jednoduchým filtrem na API -- je snadné toto filtrování zrušit a zobrazit tak zrušené lekce i v přehledu a diáři, které právě užívají bod s filtrováním. Filtrování zrušených lekcí bylo tedy v kódu jednoduchou úpravou jednoho řádku zrušeno a zrušené lekce se nyní zobrazují nejen v kartě klientů, ale také se korektně včetně příslušného zvýraznění barvou a symboly zobrazují i v přehledu a diáři.
 
-\subsection{F21 -- skupinové lekce bez účastníků}
+\subsection{F21 -- skupinové lekce bez účastníků}\label{F21implementace}
 
-TODO
+V rámci požadavku~\ref{F21} je zmíněno, že původní aplikace nezvládá evidovat lekce bez účastníků -- serverová část s tímto nepočítá (ale při zaslání lekce bez účastníků neprotestuje), klientská část dokonce při práci se skupinou bez členů a lekcí bez účastníků spadne.
 
+V rámci klientské části bylo třeba opravit chyby způsobující zmíněné pády, dále bylo třeba upravit kód serverové části tak, aby byla na evidování lekcí bez účastníků připravena.
+
+Po opravě chyb se objevil problém, kdy vzhledem k implementaci požadavku~\ref{F19} na automatické zrušení lekce, když nemá nikdo z účastníků dorazit, byly lekce bez účastníků označovány jako zrušené. Toto bylo způsobeno řešením algoritmu, který byl postaven na procházení klientů a srovnávání počtu omluvených s celkovým počtem klientů -- bylo dodáno ošetření, aby lekce bez účastníků nebyly v tomto algoritmu označovány jako zrušené.
 
 \section{Nefunkční požadavky}
 
@@ -507,12 +588,14 @@ V této sekci se zaměřím na implementaci většiny nefunkčních požadavků,
 
 \subsection{N1 -- dokumentace}
 
-TODO
+TODO!
 
 \subsection{N3 -- zavedení nástrojů pro usnadnění vývoje a údržby}
 
-TODO
+TODO!
+
 * refaktoring
+* kód API je rozumnější, efektivnější a přehlednější a nedělají se v něm zbytečné kraviny navíc
 * js komponenta pro zobrazeni lekci https://github.com/rodlukas/UP-admin/issues/71
 * template strings js
 * python refaktoring https://github.com/rodlukas/UP-admin/issues/93
@@ -570,23 +653,32 @@ codacy
 
 \subsection{N4 -- revize bezpečnosti}
 
-TODO
+TODO!
+
+
+* pipfile
+* "noopener noreferrer" z důvodu bezpečnosti
+* robots.txt, pak nahrazeni robots.txt meta tagem pro uplny zakaz cehokoliv robotum
 * contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 
 
 \subsection{N5 -- vylepšení použitelnosti}
 
-TODO
+TODO!
 
 \subsection{N6 -- optimalizace API}
 
-TODO
+TODO!
+
 * DRF-JWT problémy, dotazy na SQL DB ikdyž nemají být - https://github.com/rodlukas/UP-admin/issues/51 - přechod na jinou knihovnu a zde PR na překlad do CZ
 * viditelne kurzy api, dalsi filtrovani (aktivita)
 * pomalé SQL dotazy- obri optimalizace dotazu na DB (>4x zrychleni) diky DJDT, pokrocile optimalizace
 * odstraneni zbytecne prace s DB napric api - zrychleni - commit https://github.com/rodlukas/UP-admin/commit/ba12eea6be642d0c56629ac607fb1f8ffab267f7
 * vice info viz https://github.com/rodlukas/UP-admin/releases/tag/0.9.0
+* Pro zrychlení načítání celé aplikace se používá lazy loading React.lazy + React Suspense - umozni kratsi prvni nacteni appky, zalozene na react-routeru + reseni nastaleho problemu -- reseni Error: Loading chunk 11 failed. https://github.com/rodlukas/UP-admin/issues/92
 
+* optimalizace frontendu - odstraneni komponent definovanych primo v render - mohlo zpusobit potize s vykonem i nechtenym prekreslovanim vnorenych komponent
+* mene pozadavku - react context api (attendancestates + nově také viditelné kurzy, aktivní klienti/skupiny - vše napříč aplikací) -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 
 
 %součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
@@ -601,13 +693,8 @@ PR:
 * reactstrap tooltip ios fix
 
 
-* "noopener noreferrer" z důvodu bezpečnosti
-* robots.txt, pak nahrazeni robots.txt meta tagem pro uplny zakaz cehokoliv robotum
-* pipfile
 * mnoho promennych prostredi → ve všech prostředích se pracuje stejným způsobem s příslušnými proměnnými prostředí, je čistější nastavení Djanga a umožňuje díky .env souboru (je v .gitignore) použít i lokální proměnné prostředí (jinak těžko univerzálně nastavitelné i v rámci IDE) + odstranění zašifrovaných proměnných v konfiguráku travisu a přesun přímo do repo
-* zobrazení tel. čísel klientů v zájemcích o kurz (\#61)
 * oprava logiky výpočtu "příště platit" - nebral v úvahu předplacené lekce (https://github.com/rodlukas/UP-admin/commit/e84aa4eec9bb93323a097830dd1416204658c87a)
-* lekce je automaticky zrušená na frontendu i backendu když jsou všichni účastníci omluveni, na to je příslušně uživatel upozorněn ve formuláři (a zároveň zrušení nejde měnit, protože by backend lekci stejně tak či tak zrušil)
 * rozdělení CSS stylů ke komponentám
 * asynchronní update všech dní v týdnu v diáři při nějaké změně (ca53c16), opravuje \#19
 * zjednodušení kódů a struktury souborů, refactoring, odstranění všech zbytečných getDerivedStateFromProps (nahrazeno např. componentDidUpdate)
@@ -616,17 +703,12 @@ PR:
 * oprava chyby způsobující nekorektní zobrazení lekcí v předchozím dnu - když např. byla lekce v 1 h ráno, v diáři se ukázala v předchozím dni jako poslední → porovnávávání datumu s TZ s datumem bez TZ → vyřešeno použitím "\_\_date" v querysetu (3da9db1)
 * oprava chybné práce s datumem v diáři (JS) - pokud se zadala URL s datumem, kde den měl číslo "31", došlo k "přesunu do minulosti" (číslo dne se změnilo na "1") - v důsledku toho se v aplikaci nedalo dostat do roku 2019, protože 31.12.2018 bylo pondělí a další týden se přepnul na listopad
 * 05-2019 prechod na nwb
-* mene pozadavku - react context api (attendancestates + nově také viditelné kurzy, aktivní klienti/skupiny - vše napříč aplikací) -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 * redesign vsech stranek pro lepsi konzistenci, srozumitelnost a pochopeni (predelany diar, zajemci, lekce v karte...)
-* Pro zrychlení načítání celé aplikace se používá lazy loading React.lazy + React Suspense - umozni kratsi prvni nacteni appky, zalozene na react-routeru + reseni nastaleho problemu -- reseni Error: Loading chunk 11 failed. https://github.com/rodlukas/UP-admin/issues/92
-* optimalizace frontendu - odstraneni komponent definovanych primo v render - mohlo zpusobit potize s vykonem i nechtenym prekreslovanim vnorenych komponent
-* úprava stavových kódu API pro bankovnictví (\#55) - už vrací jen 200/500, ostatní chyby jsou zahrnuty v 500 a podrobnější informace jsou přiloženy do JSONu rovnou na serveru (tedy na frontendu není žádná logika navíc)
-* úpravy a opravy API - na backendu nechybí žádná logika, která doteď mohla být třeba i jen na frontendu - už fungují všude PATCH metody, kód API je rozumnější, efektivnější a přehlednější a nedělají se v něm zbytečné kraviny navíc, rozumně se např. už pracuje i s takovými atributy, které lze zaslat na API jako null, ošetření všech možných případů - opravuje \#52
 
-    kompletní validace tel. čísla na backendu i frontendu, vylepšení způsobu validace a dělení čísla na mezery už při psaní o formuláře, následné odstranění mezer až na backendu
-    oprava chyby způsobující chybu při úpravě stavu účasti předplacené lekce
-* odstranění křížku pro reset react-selectu, aby nedocházelo k vymazání "omylem", když funkcionalita stejně není třeba
-* občas se využívají skupinové lekce bez definovaných účastníků (ještě nejsou známí), taková lekce se ale ukazuje jako zrušená a u skupiny chybí info, že nejsou žádní účastníci - potřeba vylepšit zobrazení
+
+akceptacni testovani?:
+* js zvyrazneni neaktivity skupin a klientu napric aplikaci https://github.com/rodlukas/UP-admin/issues/85
+* zobrazení tel. čísel klientů v zájemcích o kurz (\#61)
 
 \end{comment}
 

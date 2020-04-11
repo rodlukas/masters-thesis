@@ -98,7 +98,7 @@ Nalezené problémy:
     Django obsahuje nastavenou proměnnou \verb|DEBUG = True|, na produkci toto nastavení ale být nesmí -- jedná se jak o bezpečnostní (náhled útočníka do metadat aplikace, některých proměnných prostředí ad.), tak výkonnostní problém (zbytečné režijní náklady a vysoké nároky na paměť kvůli ukládání všech SQL dotazů) -- na produkci je tedy třeba nastavit \verb|DEBUG = False| \cite{django-debug},
     \item \label{B4} \textbf{HTTP hlavičky:} díky nástroji Mozilla Observatory bylo zjištěno, že v aplikaci chybí nastavení některých HTTP (Hypertext Transfer Protocol) hlaviček -- Referrer Policy, CSP (Content Security Policy), HSTS (HTTP Strict Transport Security) -- podrobnému popisu významu se budu věnovat v TODO,
     \item \label{B5} \textbf{sjednocení práce s tokeny:} je třeba sjednotit práci s citlivými tokeny a dalšími podobnými elementy -- těchto citlivých dat bude vzhledem k požadavkům přibývat (např. přístup do banky) a je třeba zavést centrální místo správy, kterým budou proměnné prostředí (nyní jsou některé tokeny zašifrované např. v rámci souboru s konfigurací Travisu, některé kvůli své povaze zašifrované nejsou apod.), nebude tak hrozit žádný únik např. ve verzovacím systému (který již nastal i v případě tohoto projektu, kdy kvůli bezpečnostnímu problému s FontAwesome PRO \cite{fontawesome-token} došlo k úniku tokenu pro přístup k placeným ikonám prostřednictvím souboru \verb|yarn.lock|, což by znamenalo problém právě při zveřejnění repozitáře, což je jeden z úkolů této práce), zavedení proměnných prostředí umožní také jednoduchou práci s více prostředími (viz \ref{N7}),
-    \item \label{B6} \textbf{zákaz robotů:} roboti mohou přistupovat na stránku s aplikací (např. indexovací robot Google) -- přístup robotům je třeba zakázat, indexace není potřeba a jediným výsledkem je zbytečná spotřeba výpočetního výkonu.
+    \item \label{B6} \textbf{zákaz indexace roboty:} roboti mohou přistupovat na stránku s aplikací a stránku indexovat (např. indexovací robot Google) -- indexace není potřeba a jediným výsledkem jsou pak zbytečné přístupy z vyhledávačů bez přihlášení, tedy zbytečná spotřeba výpočetního výkonu.
 \end{enumerate}
 
 
@@ -122,8 +122,8 @@ Seznam nových zjištěných problémů:
     \item \label{P5} \textbf{react-select:} některé prvky pro výběr (\verb|select|) jsou řešeny uživatelsky přívětivým \verb|react-select| (výběr členů skupiny), některé (výběr kurzu) ale ne a nedá se v nich tak např. vyhledávat či jednotlivé položky odlišit barvou -- všude použít \verb|react-select| (kromě stavu účasti, kde je pohodlnější jednodušší \verb|select|),
     \item \label{P6} \textbf{nefunkční label:} na některé popisy formulářových polí (\verb|label|) nelze kliknout pro psaní do pole -- opravit,
     \item \label{P7} \textbf{povinná pole:} nejsou nijak indikována povinná pole ve formulářích -- doplnit indikaci povinných polí,
-    \item \label{P8} \textbf{kontrola pravopisu:} ve polích pro poznámky nefunguje kontrola pravopisu -- opravit,
-    \item \label{P9} \textbf{už. jméno:} uživatelské jméno na iOS začíná velkým písmenem -- opravit a používat malé písmeno,
+    \item \label{P8} \textbf{kontrola pravopisu:} v polích pro poznámky nefunguje kontrola pravopisu -- opravit,
+    \item \label{P9} \textbf{už. jméno na iOS:} uživatelské jméno na iOS začíná velkým písmenem -- opravit a používat malé písmeno,
     \item \label{P10} \textbf{autofocus ve formulářích:} některé formuláře automaticky nevyberou první pole pro psaní (\verb|autofocus|) nebo neumožní pohyb pomocí klávesy TAB mezi prvky formuláře -- opravit,
     \item \label{P11} \textbf{indikace načítání:} zobrazení načítání v mnoha případech nekoresponduje s tím, zda je už skutečně vše načteno a obsah komponent se zobrazí až později (ačkoliv načítání už není zobrazeno), tento fakt by také komplikoval zavedení automatizovaných testů UI (testovací nástroj nepozná, stejně jako uživatel, zda už je načteno), uživatel také není informován po odeslání formuláře, po kliknutí na uložení celá aplikace nic nedělá a až po dokončení požadavku se najednou formulář bez jakéhokoliv upozornění na načítání zavře -- uživatel musí být korektně informován o konci načítání až ve chvíli, kdy úplně všechny komponenty získají odpověď z API a vše zpracují, po uložení formuláře je třeba taktéž zobrazit načítání,
     \item \label{P12} \textbf{lepší popisy polí:} některá pole nejsou dostatečně popsaná, např. chybí jednotky pro příslušnou hodnotu, chybí vysvětlení např. automaticky zaškrtnutých polí při zaškrtnutí jiného, na macOS se pro datum a čas nezobrazí žádná nápověda formátu (Safari oproti jiným prohlížečům nenabízí uživatelsky přívětivý nativní prvek pro jednoduchý výběr) -- doplnit lepší popisy, vysvětlení a nápovědu pro formáty (\verb|placeholder|),
@@ -653,18 +653,56 @@ codacy
 
 \subsection{N4 -- revize bezpečnosti}
 
-TODO!
+V rámci detailní analýzy tohoto požadavku v podsekci~\ref{subsec:N4detail} bylo vytyčeno celkem 6 oblastí, na které je třeba se zaměřit a vylepšit je. Byly detailně specifikovány problémy, které je třeba opravit. Zde se postupně všem těmto vytyčeným bodům budu věnovat.
 
+Problém~\ref{B1} popisuje problém se zastaralými knihovnami, nerespektováním alespoň drobných oprav v rámci sémantického verzování závislostí, nalezené zranitelnosti v závislostech. Nejprve se zaměřím na serverovou část -- zde byl soubor \verb|requirements.txt|. Pro pokročilou práci se závislostmi, virtuálními prostředími \cite{pipenv-realpython} byl do projektu zaveden nástroj \href{https://pipenv.pypa.io/en/latest/}{Pipenv} a s ním příslušný soubor \verb|Pipfile| obsahující seznam knihoven, na kterých projekt závisí. Všechny verze knihoven jsou zde definovány pomocí \verb|~=| a tedy umožňují drobné aktualizace, všechny knihovny byly aktualizovány na své poslední verze, do kódu a konfigurace aplikace byly projeveny všechny s tím související potřebné změny. Na klientské části se pro správu závislostí používá nástroj Yarn, který byl zachován, bylo ale třeba upravit závislosti v souboru \verb|package.json| tak, aby všechny respektovaly alespoň drobné aktualizace (formou \verb|^verze|). Opět bylo třeba všechny knihovny zaktualizovat na poslední verze a příslušné změny projevit do kódu. Pro klientskou i serverovou část platí, že mnoho z knihoven prošlo poměrně velkými změnami a bylo tedy třeba do kódu samotné aplikace více zasahovat. S aktualizací klientské části souvisí přechod na jiný nástroj pro práci s klientskou částí, o tom bude řeč v TODO.
 
-* pipfile
-* "noopener noreferrer" z důvodu bezpečnosti
-* robots.txt, pak nahrazeni robots.txt meta tagem pro uplny zakaz cehokoliv robotum
-* contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
+Problém~\ref{B2} se sjednocením konfigurací Django aplikace a problém~\ref{B3} ohledně deaktivace \verb|DEBUG| módu Django aplikace spolu souvisejí. Bylo tedy nejprve potřeba kompletně projít lokální a produkční konfiguraci a kde to bylo možné, přesunout konfiguraci z produkční na lokální verzi. Produkční verze totiž importuje všechny konfigurace z té lokální, tedy ji pouze rozšiřuje, není soběstačná. Tím bylo dosaženo toho, že je lokální konfigurace co nejpodobnější té produkční a vyvarujeme se tedy možných chyb, které by se projevily až na produkci. Aby bylo možné na lokálním stroji testovat přímo produkční konfiguraci (tedy např. běh bez webpack-dev-server pouze se statickými soubory), byl v rámci konfigurace aplikace (prostřednictvím proměnné prostředí) zaveden režim \verb|MANUAL_PRODUCTION|, kde lze spustit aplikaci v prakticky totožném prostředí a produkční konfiguraci, jako po nasazení (až na několik drobných výjimek), díky tomu lze ještě přesněji testovat fungování před nasazením. 
 
+V původní verzi aplikace, jak bylo zmíněno v rámci problému~\ref{B3}, byl aktivovaný režim \verb|DEBUG|, jak bylo v rámci analýzy zmíněno, toto není dobře. V rámci inspekce bylo zjištěno, že po deaktivování aplikace přestane na Heroku fungovat, tento problém se do vydání verze pro bakalářskou práci nepodařilo vyřešit. Nyní už byl ale problém zjištěn -- na Heroku se používalo nastavení proměnné pomocí \verb|export|, což ale Heroku nepodporovalo a tedy k nastavení proměnné nedošlo, na tuto proměnnou ale spoléhal následující příkaz \verb|collectstatic|, který sice i tak posbíral všechny statické soubory, ale nikoliv dle produkční, ale dle lokální konfigurace, samotná nasazená aplikace pak běžela v produkční konfiguraci (to bylo v kódu napevno) a soubory nenašla tam, kde měly být. Dotyčná proměnná byla tedy nastavena přímo v Heroku, jak je požadováno, a následně již vše fungovalo v pořádku a \verb|DEBUG| režim se používá jen na lokálním stroji.
+
+TODO CSP
+
+Problém~\ref{B4} podrobně popisuje, které HTTP hlavičky v aplikaci v rámci bezpečnosti scházejí -- Referrer Policy, CSP a HSTS. Hlavička \verb|Referrer-Policy| slouží k omezení hodnoty hlavičky \verb|Referer|, která obsahuje informace o předchozí stránce \cite{securityheaders-referer}. Je například nežádoucí, aby se mohly cizí stránky dozvědět, kolik klientů máme v aplikací (díky ID klientů v URL), naproti tomu je ale žádoucí, aby byla někdy známá alespoň doména (např. kvůli povolení zasílání chyb do Sentry v závislosti na jejich původu). Z toho důvodu je v rámci Django konfigurace nastavena tato hlavička na hodnotu \verb|strict-origin-when-cross-origin|, která umožňuje napříč naší aplikací zasílat úplnou adresu (hodí se např. pro Google Analytics, viz zavedení v TODO), mimo doménu se zašle pouze název původní domény a pokud cílová doména nemá HTTPS, nepošle se nic (proto \verb|strict|). Související problematikou jsou pak odkazy napříč aplikací, které se otevírají v novém panelu (\verb|target="_blank"|) -- zde se může vyskytnout útok na původní stránku, odkud došlo k otevření \cite{noopener}, proto bylo do takovýchto odkazů dodán atribut \verb|rel="noopener noreferrer"| -- dokonce v některých případech (bankovnictví Fio) se bez tohoto atributu nedá v nově otevřeném panelu zobrazit přihlašovací formulář, stránka místo toho zahlásí, že došlo k úspěšnému odhlášení. Hlavička \verb|Strict-Transport-Security| umožňuje, aby prohlížeč komunikoval se serverem už od počátku přes HTTPS, jinak jsou první komunikace jen v HTTP, což umožňuje útok typu \enquote{man-in-the-middle} \cite{securityheaders-hsts}. Díky možnosti registrace stránky do autoritativní databáze na adrese \href{https://hstspreload.org/}{https://hstspreload.org/}, která je distribuována do jednotlivých prohlížečů, lze i při úplně první komunikaci s webem (a pak i dalších prvních komunikacích) fungovat přímo přes HTTPS \cite{jakpsatweb-hsts}. Django konfigurace opět umožňuje nastavit HSTS, konkrétní nastavení je v ukázce kódu~\ref{lst:hsts}.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+SECURE_HSTS_SECONDS = 63072000  # 2 roky
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+	\end{minted}
+	\caption{HSTS konfigurace}\label{lst:hsts}
+\end{listing}
+
+V rámci~\ref{B5} je třeba zavést jednotnou práci s proměnnými prostředí napříč aplikací. K tomu byla použita knihovna \href{https://django-environ.readthedocs.io/en/latest/}{Django-environ}, která umožňuje proměnné prostředí převést na odpovídající typy pro použití v Pythonu (např. řetězec \verb|True| se převede na boolean s hodnotou \verb|True|) a také umožňuje proměnné prostředí naplnit hodnotami ze souboru \verb|.env| \cite{django-environ}. Těchto funkcí bylo využito tak, že na lokálním stroji jsou hodnoty proměnných prostředí uloženy ve zmíněném souboru, při spuštění aplikace jsou načteny do proměnných prostředí a mohou být využívány. Při nasazení se pak již nevyužívá tohoto souboru, ale proměnné prostředí jsou definovány přímo na Heroku prostřednictvím GUI/CLI aplikace (Command Line Interface) a jejich rozparsované hodnoty se pak taktéž používají v rámci aplikace. Další výhodou tohoto řešení je možnost nastavit výchozí hodnoty pro různé proměnné prostředí. Celkem bylo takto zavedeno 11~proměnných prostředí, mj. sloužících pro uložení údajů pro přístup do databáze, dalších tokenů a také proměnných indikujících určité stavy aplikace (např. zda je aktivováno bankovnictví ad.). Díky tomuto přístupu také bude jednoduché zprovoznit v rámci požadavku~\ref{N7} více různých prostředí pro nasazení a také umožnit jednoduché zprovoznění aplikace u kohokoliv (což je výhodné v souvislosti s plánem vystavení aplikace jako open-source). Ukázka konfigurace proměnných prostředí v rámci knihovny Django-environ (v konfiguraci Djanga) je vidět v ukázce kódu~\ref{lst:envvars} (proměnné nejsou uvedeny všechny).
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+env = environ.Env(
+    DATABASE_URL=str,  # url pouzivane DB
+    SECRET_KEY=str,  # tajny klic pro Django
+    FIO_API_KEY=(str, ""),  # token pro pristup do Fia
+    BANK_ACTIVE=(bool, True),  # aktivace propojeni s bankou
+    ...
+)
+	\end{minted}
+	\caption{Ukázka konfigurace proměnných prostředí}\label{lst:envvars}
+\end{listing}
+
+Problém~\ref{B6} popisuje požadavek na zakázání indexování všem robotům. Zde je volba mezi několika způsoby -- zákazem procházení prostřednictvím souboru \verb|robots.txt| a zákazem indexování pomocí \verb|meta| tagu (případně HTTP hlavičky \verb|X-Robots-Tag|) \cite{roboti}. Soubor \verb|robots.txt| sice zakáže procházení stránky roboty, stránka ale stále může být zaindexována z jiné stránky, z toho důvodu je zvolena druhá možnost, která nezakáže procházení, ale zakáže indexování ve všech případech, řešení je v ukázce kódu~\ref{lst:robots} -- důležitý je zde především parametr \verb|noindex|, který toto řeší. 
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{html}
+<meta name="robots" content="noindex, nofollow"/>
+	\end{minted}
+	\caption{Ukázka konfigurace proměnných prostředí}\label{lst:robots}
+\end{listing}
 
 \subsection{N5 -- vylepšení použitelnosti}
 
-TODO!
+ V rámci detailní analýzy požadavku~\ref{N5} v podsekci~\ref{subsec:N5detail} bylo zjištěno celkem 20~problémů s použitelností. V této sekci popíši některá řešení těchto problémů -- především ta zajímavější. Řešení některých problémů zde naopak popisovat nebudu, protože není příliš zajímavé (ale všechny byly vyřešeny) -- řešit zde nebudu problémy \ref{P3}, \ref{P4}, \ref{P6}, \ref{P8}, \ref{P9}, \ref{P10}, \ref{P12}, \ref{P14}, \ref{P16}, \ref{P18} a \ref{P20}.
+ 
+ TODO!
 
 \subsection{N6 -- optimalizace API}
 
@@ -694,6 +732,8 @@ PR:
 
 
 * mnoho promennych prostredi → ve všech prostředích se pracuje stejným způsobem s příslušnými proměnnými prostředí, je čistější nastavení Djanga a umožňuje díky .env souboru (je v .gitignore) použít i lokální proměnné prostředí (jinak těžko univerzálně nastavitelné i v rámci IDE) + odstranění zašifrovaných proměnných v konfiguráku travisu a přesun přímo do repo
+* "noopener noreferrer" z důvodu bezpečnosti
+* contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 * oprava logiky výpočtu "příště platit" - nebral v úvahu předplacené lekce (https://github.com/rodlukas/UP-admin/commit/e84aa4eec9bb93323a097830dd1416204658c87a)
 * rozdělení CSS stylů ke komponentám
 * asynchronní update všech dní v týdnu v diáři při nějaké změně (ca53c16), opravuje \#19

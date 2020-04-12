@@ -700,9 +700,55 @@ Problém~\ref{B6} popisuje požadavek na zakázání indexování všem robotům
 
 \subsection{N5 -- vylepšení použitelnosti}
 
- V rámci detailní analýzy požadavku~\ref{N5} v podsekci~\ref{subsec:N5detail} bylo zjištěno celkem 20~problémů s použitelností. V této sekci popíši některá řešení těchto problémů -- především ta zajímavější. Řešení některých problémů zde naopak popisovat nebudu, protože není příliš zajímavé (ale všechny byly vyřešeny) -- řešit zde nebudu problémy \ref{P3}, \ref{P4}, \ref{P6}, \ref{P8}, \ref{P9}, \ref{P10}, \ref{P12}, \ref{P14}, \ref{P16}, \ref{P18} a \ref{P20}.
+V rámci detailní analýzy požadavku~\ref{N5} v podsekci~\ref{subsec:N5detail} bylo zjištěno celkem 20~problémů s použitelností. V této sekci popíši některá řešení těchto problémů -- především ta zajímavější. Řešení některých problémů zde naopak popisovat nebudu, protože není příliš zajímavé (ale všechny byly vyřešeny) -- řešit zde nebudu problémy \ref{P3}, \ref{P4}, \ref{P6}, \ref{P8}, \ref{P9}, \ref{P10}, \ref{P12}, \ref{P14}, \ref{P16}, \ref{P18} a \ref{P20}.
  
- TODO!
+\textbf{\ref{P1}:} Lektorka nebyla nijak informována o délce načítání -- byla rozšířena komponenta \verb|Loading| mající na starost zobrazení informace o načítání o informování vzhledem k času, tedy po 5~sekundách se lektorce navíc zobrazí informace, že aplikace stále pracuje a načítá, po 25~s (což je dostatečně dlouhá doba na to, aby se případně i probudila aplikace na Heroku, pokud spí v rámci programu zdarma) se zobrazí výstražnější upozornění, že pravděpodobně došlo k nějaké chybě a je třeba aplikaci načíst znovu (včetně tlačítka pro načtení znovu), toto je vidět na obrázku~\ref{fig:ui-screen-loading}.
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.9\textwidth]{img/ui-screen-loading.png}
+    \caption{Upozornění při velmi dlouhém načítání}\label{fig:ui-screen-loading}
+\end{figure}
+
+\textbf{\ref{P2}:} Chyběly popisy u některých netextových prvků, případně byly formou \verb|title|, kterou nelze zobrazit na dotykových zařízeních. Toto bylo vyřešeno jak dodáním a vylepšením samotných popisů, tak využitím komponenty \verb|Tooltip| z knihovny Reactstrap, která umožňuje zobrazit lépe čitelné popisy, které lze navíc otevřít i na dotykových zařízeních. Zde byl při implementaci objeven v knihovně Reactstrap problém, který na iOS způsoboval, že se popis zobrazil vždy až po druhém kliknutí, problém byl nahlášen a poté jsem jej formou PR do tohoto repozitáře\footnote{\url{https://github.com/reactstrap/reactstrap/issues/1676}} opravil, oprava je již vydána v nové verzi.
+
+\textbf{\ref{P5}:} Některé prvky pro rozbalovací seznamy nebyly řešeny uživatelsky přívětivým \verb|react-select| -- kde tedy bylo třeba dle analýzy, byly tyto seznamy nahrazeny \verb|react-select|, na obrázku~\ref{fig:ui-screen-select} je vidět, jak tyto komponenty mohou práci usnadnit -- umožňují např. vyhledávat, dodat barvy ke kurzům (a v případě členů skupiny umožnit výběr více položek, tedy klientů, naráz).
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.4\textwidth]{img/ui-screen-select.png}
+    \caption{Komponenta react-select pro výběr kurzů}\label{fig:ui-screen-select}
+\end{figure}
+
+\textbf{\ref{P7}:} Napříč aplikací nebylo poznat před odesláním formuláře, která pole jsou povinná. Toto bylo napraveno dodáním \cverb|*| k popisům jednotlivých polí (jednoduše pomocí CSS), jak je to vidět např. na obrázku~\ref{fig:ui-screen-efektivita-zajemci}. K tomuto znaku je třeba obvykle pro aplikace používané širším okruhem uživatelů v rámci použitelnosti dodat popis, zde se ale jedná o interní aplikaci pro jednoho konkrétního uživatele srozuměného s významem, tedy zbytečně vysvětlení nezabírá prostor ve formulářích.
+
+\textbf{\ref{P11}:} V aplikaci se často načítání zobrazovalo jen v závislosti na ne/dokončení jednoho, nikoliv všech požadavků v rámci stránky. Tedy často se stávalo, že se zobrazila neúplná data a poté docházelo k překreslení, lektorka toto ale nemohla vědět, tedy mohly nastávat komplikované situace, kdy např. chyběl obsah rozbalovacího seznamu se stavy účasti. V rámci použitelnosti je třeba, aby bylo vždy jasné, že dochází k načítání. Tento problém je navíc o to vážnější, že v rámci automatizovaného testování v kapitole~\ref{chap:testovani} se objeví tentýž problém -- vzhledem k asynchronní práci aplikace nevíme, kdy už můžeme testovat UI, protože stále nemusí být načteno vše potřebné, což může vést k selhání testů. Všechny části aplikace musely být zrevidovány a přepsány tak, aby skutečně až po načtení úplně všech částí na dané stránce načítací animace (prostřednictvím již zmíněné komponenty \verb|Loading|) zmizela.
+
+\textbf{\ref{P13}:} Pohyb v diáři komplikuje neustálé načítání dní v týdnu, odskakování tlačítek dle délky zobrazeného data a nemožnost ovládat diář klávesnicí. Odskakování tlačítek bylo opraveno v CSS, do diáře byla přidána možnost přesunu mezi jednotlivými týdny pomocí šipek vlevo a vpravo na klávesnici -- to značně zvyšuje pohodlnost používání diáře. Posledním zmíněným problémem je, že při pohybu mezi týdny se okamžitě začínají načítat data jednotlivých dnů, ačkoliv lektorka daný týden jen přeskočí a jde do jiného týdne -- zde bylo dle požadavku implementováno zpoždění požadavku o 700~ms, tedy pokud lektorka na stránce zůstane, po uplynutí tohoto intervalu (s počátkem ve chvíli přechodu na jiný týden) se data lekcí jednotlivých dnů v daném týdnu začnou teprve načítat -- ulehčí se tak jak klientské, tak serverové části. Zde je třeba zdůraznit, že bylo myšleno také na zbytečné prodlevy, jelikož se toto čekání děje v komponentě \verb|DashboardDay|, která je pětkrát použita v rámci diáře a jedenkrát v rámci přehledu na hlavní stránce, bylo třeba vyčlenit případy, kdy se lekce ve dnech načtou bez prodlevy -- v přehledu kdykoliv nehledě na situaci, v diáři se prodleva neuplatní při prvním načtení diáře a také při znovunačítání všech dní v týdnu při úpravě v nějakém dni přímo v diáři.
+
+\textbf{\ref{P15}:} Při otevření rozbalovacích seznamů (\verb|select| i \verb|react-select|) a stisku klávesy ESC dojde jak k zavření seznamu, tak k zavření celého modálního okna. Toto chování je silně závislé na konkrétní implementaci modálních oken v Bootstrapu, zde bylo podrobnou inspekcí kódu zjištěno, že se zde používá chování \verb|onKeyUp|, uvolnění ESC tedy modální okno zavře. Toho bylo využito při vytváření obalující komponenty pro \verb|select| z knihovny Reactstrap s názvem \verb|CustomInputWrapper| -- po otevření seznamu (\verb|onClick|) si do stavu komponenty uložíme příznak, že je seznam otevřený, \verb|onKeyUp| pak při stisku ESC a příznaku otevřeného seznamu příznak obrátí a zastaví propagaci události \verb|onKeyUp|, aby nedošlo k uzavření modálního okna. Situace pro obalující komponentu pro \verb|react-select| je mírně složitější, protože zde po podrobné inspekci bylo zjištěno, že zavření samotného seznamu je řešeno přes \verb|onKeyDown| a API \verb|react-select| neumožňuje pracovat s \verb|onKeyUp| a tedy zastavit propagaci této události při zavření seznamu, naproti tomu API umožňuje vytvořit si vlastní součásti celé komponenty \verb|react-select|, čehož bylo využito a byl vytvořen vlastní \verb|Input|, který umožňuje v rámci \verb|onKeyUp| pro klávesu ESC v případě, že skutečně předtím (na základě zjištění z interního stavu komponenty) došlo k zavření seznamu prostřednictvím \verb|onKeyDown|, propagaci \verb|onKeyUp| zastavit (a modální okno se tak nezavře).
+
+\textbf{\ref{P17}:} Problém s nefunkčním abecedním řazením dat na API při použití diakritiky se ukázal jako poměrně složitý na řešení. PostgreSQL nabízí možnost toto řazení přizpůsobit pomocí proměnné \verb|LC_COLLATE|, jak ale uvádí \cite{heroku-razeni}, toto není možné na Heroku upravit -- dá se ale na úrovni tabulek řešit jinak, příklad pro řešení je v ukázce kódu~\ref{lst:razeni}. Takto byla připravena konkrétní Django migrace s pomocí příkazu \verb|migrations.RunSQL|. Posledním chybějícím dílem do skládačky je konkrétní kód jazyka, zde \verb|cz| -- problém je, že na každém operačním systému mají kódy jiné názvy, bylo tedy třeba toto řešit v rámci migrace, jak je uvedeno v ukázce kódu~\ref{lst:razeni2} -- na základě systému zvolit vhodný kód jazyka. Dále bylo třeba na Travis připravit skript (dostupný v \verb|scripts/postgresql_cs.sh|), který stáhne chybějící balíčky i zde.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{sql}
+ALTER TABLE admin_group
+    ALTER COLUMN name TYPE VARCHAR COLLATE cz;
+	\end{minted}
+	\caption{Řešení řazení podle české abecedy -- 1. část}\label{lst:razeni}
+\end{listing}
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+if platform.system() == "Windows":
+    collation = migrations.RunSQL(
+        'CREATE COLLATION cz (locale = "cs-CZ-x-icu")')
+else:
+    collation = migrations.RunSQL(
+        'CREATE COLLATION cz (locale = "cs_CZ.utf8")')
+	\end{minted}
+	\caption{Řešení řazení podle české abecedy -- 2. část}\label{lst:razeni2}
+\end{listing}
+
+\textbf{\ref{P19}:} TODO
 
 \subsection{N6 -- optimalizace API}
 
@@ -719,32 +765,27 @@ TODO!
 * mene pozadavku - react context api (attendancestates + nově také viditelné kurzy, aktivní klienti/skupiny - vše napříč aplikací) -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 
 
-%součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
-
 \begin{comment}
-
-% todo migrace na novy react
-
 PR:
 * chyby při práci s modálními okny https://github.com/rodlukas/UP-admin/issues/95 - issue reactstrapu, vyjde nova verze
 * react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
-* reactstrap tooltip ios fix
 
-
-* mnoho promennych prostredi → ve všech prostředích se pracuje stejným způsobem s příslušnými proměnnými prostředí, je čistější nastavení Djanga a umožňuje díky .env souboru (je v .gitignore) použít i lokální proměnné prostředí (jinak těžko univerzálně nastavitelné i v rámci IDE) + odstranění zašifrovaných proměnných v konfiguráku travisu a přesun přímo do repo
-* "noopener noreferrer" z důvodu bezpečnosti
+dalsi:
+% todo migrace na novy react
+% součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
 * contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
-* oprava logiky výpočtu "příště platit" - nebral v úvahu předplacené lekce (https://github.com/rodlukas/UP-admin/commit/e84aa4eec9bb93323a097830dd1416204658c87a)
 * rozdělení CSS stylů ke komponentám
-* asynchronní update všech dní v týdnu v diáři při nějaké změně (ca53c16), opravuje \#19
 * zjednodušení kódů a struktury souborů, refactoring, odstranění všech zbytečných getDerivedStateFromProps (nahrazeno např. componentDidUpdate)
 * migrace na nový životní cyklus komponent Reactu (503b9ac)
 * funkční zobrazení vývojové verze na jiném zařízení v síti
-* oprava chyby způsobující nekorektní zobrazení lekcí v předchozím dnu - když např. byla lekce v 1 h ráno, v diáři se ukázala v předchozím dni jako poslední → porovnávávání datumu s TZ s datumem bez TZ → vyřešeno použitím "\_\_date" v querysetu (3da9db1)
-* oprava chybné práce s datumem v diáři (JS) - pokud se zadala URL s datumem, kde den měl číslo "31", došlo k "přesunu do minulosti" (číslo dne se změnilo na "1") - v důsledku toho se v aplikaci nedalo dostat do roku 2019, protože 31.12.2018 bylo pondělí a další týden se přepnul na listopad
 * 05-2019 prechod na nwb
 * redesign vsech stranek pro lepsi konzistenci, srozumitelnost a pochopeni (predelany diar, zajemci, lekce v karte...)
 
+opravy chyb:
+* oprava chybné práce s datumem v diáři (JS) - pokud se zadala URL s datumem, kde den měl číslo "31", došlo k "přesunu do minulosti" (číslo dne se změnilo na "1") - v důsledku toho se v aplikaci nedalo dostat do roku 2019, protože 31.12.2018 bylo pondělí a další týden se přepnul na listopad
+* oprava chyby způsobující nekorektní zobrazení lekcí v předchozím dnu - když např. byla lekce v 1 h ráno, v diáři se ukázala v předchozím dni jako poslední → porovnávávání datumu s TZ s datumem bez TZ → vyřešeno použitím "\_\_date" v querysetu (3da9db1)
+* asynchronní update všech dní v týdnu v diáři při nějaké změně (ca53c16), opravuje \#19
+* oprava logiky výpočtu "příště platit" - nebral v úvahu předplacené lekce (https://github.com/rodlukas/UP-admin/commit/e84aa4eec9bb93323a097830dd1416204658c87a)
 
 akceptacni testovani?:
 * js zvyrazneni neaktivity skupin a klientu napric aplikaci https://github.com/rodlukas/UP-admin/issues/85
@@ -752,8 +793,7 @@ akceptacni testovani?:
 
 \end{comment}
 
-
-\chapter{Testování}
+\chapter{Testování}\label{chap:testovani}
 pozadavek N2
 implementace samotneho testovani v behave, Selenium
 
@@ -778,7 +818,7 @@ N2:
 \end{itemize}
 
 
-\chapter{Nasazení}
+\chapter{Nasazení}\label{chap:nasazeni}
 pozadavky N7,N8
 popis toho jak jsem udelal novej zpusob nasazovani
 * django-environ

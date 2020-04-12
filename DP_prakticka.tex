@@ -388,7 +388,7 @@ Přepracovaný formulář pro lekce byl implementován dle návrhů na obrázcí
 
 Pro zavedení aktivních a neaktivních klientů bylo třeba na serverové části aplikace do modelů \verb|Group| a \verb|Client| vložit atribut \verb|active| (viz datový model v sekci~\ref{sec:datovymodel}) a taktéž jej zakomponovat do API (viz komunikační rozhraní v sekci~\ref{sec:komunikacnirozhrani}) -- zde bylo využito propojení modelů s Django REST Frameworkem, tedy do API se změny projeví automaticky. Taktéž byly zavedeny omezení související s aktivitou klientů/skupin, např. při přidání lekce neaktivnímu klientovi se změní na aktivního.
 
-Na klientské části bylo potřeba zvolit, kde se bude z API stahovat seznam všech klientů a kde naopak jen aktivní/neaktivní -- např. při výběru klienta pro přidání lekce stačí stahovat jen aktivní (neaktivním klientům lekce přidat nelze). Dalším důležitým bodem bylo zavést možnost filtrování viditelných a neviditelných klientů/skupin na stránkách se seznamy klientů a skupin. Dle požadavku bylo třeba ve výchozím stavu zobrazit jen aktivní a na vyžádání přepnout do neaktivních. Toto je řešeno komponentou na obrázku~\ref{fig:ui-screen-prepinac-aktivity}. Další implementovanou funkcionalitou nad rámec požadavků pro lepší použitelnost je automatické přepnutí na záložku aktivních/neaktivních klientů/skupin podle toho, do které části patří přidávaný klient/skupina (resp. také upravovaný klient/skupina dle aktivity po uložení).
+Na klientské části bylo potřeba zvolit, kde se bude z API stahovat seznam všech klientů a kde naopak jen aktivní/neaktivní -- např. při výběru klienta pro přidání lekce stačí stahovat jen aktivní (neaktivním klientům lekce přidat nelze). Dalším důležitým bodem bylo zavést možnost filtrování aktivních a neaktivních klientů/skupin na stránkách se seznamy klientů a skupin. Dle požadavku bylo třeba ve výchozím stavu zobrazit jen aktivní a na vyžádání přepnout do neaktivních. Toto je řešeno komponentou na obrázku~\ref{fig:ui-screen-prepinac-aktivity}. Další implementovanou funkcionalitou nad rámec požadavků pro lepší použitelnost je automatické přepnutí na záložku aktivních/neaktivních klientů/skupin podle toho, do které části patří přidávaný klient/skupina (resp. také upravovaný klient/skupina dle aktivity po uložení).
 
 \begin{figure}[h]\centering
     \includegraphics[width=0.7\textwidth]{img/ui-screen-prepinac-aktivity.png}
@@ -748,22 +748,76 @@ else:
 	\caption{Řešení řazení podle české abecedy -- 2. část}\label{lst:razeni2}
 \end{listing}
 
-\textbf{\ref{P19}:} TODO
+\textbf{\ref{P19}:} Bylo třeba vytvořit komponentu \verb|AuthChecking|, která provádí dotaz na platnost tokenu napříč aplikací (kde se používá autentizace, tedy ne ve veřejných částech), a to nehledě na to, zda se přechází mezi stránkami nebo nikoliv -- jedenkrát za 3,5~h. Při požadavcích na API se taktéž řeší platnost tokenu a pro oba zmíněné případy platí, že pokud má token menší (nebo rovnu) platnost 65~min, obnoví se. Zavedené metody pro kontrolu platnosti jsou součástí objektu kontextu \verb|AuthContext| zavedeného v rámci následujícího požadavku~\ref{N6implementace}, díky zavedení tohoto kontextu bylo kompletně přepracováno přihlašování na klientské části a vyřešeny i další drobné chyby a problémy s tím související (např. už nelze otevřít přihlašovací stránku když je uživatel už přihlášen, během přihlašování se zobrazuje načítání, sloučení veškeré logiky přihlašování, na mobilu už se nezobrazuje ikonka hamburger menu když uživatel není přihlášen ad.).
 
-\subsection{N6 -- optimalizace API}
+\subsection{N6 -- optimalizace API}\label{N6implementace}
 
-TODO!
+Práci na tomto požadavku lze rozdělit do dvou částí -- optimalizace samotného API na serverové části a optimalizace využívání API z klientské části. Jedním problémem je totiž samotná pomalost API v určitých případech, druhým pak fakt, že na klientské části jsou dokola opakovány požadavky, které by bylo možné si na poději zapamatovat a neprovádět je znovu.
 
-* DRF-JWT problémy, dotazy na SQL DB ikdyž nemají být - https://github.com/rodlukas/UP-admin/issues/51 - přechod na jinou knihovnu a zde PR na překlad do CZ
-* viditelne kurzy api, dalsi filtrovani (aktivita)
-* pomalé SQL dotazy- obri optimalizace dotazu na DB (>4x zrychleni) diky DJDT, pokrocile optimalizace
-* odstraneni zbytecne prace s DB napric api - zrychleni - commit https://github.com/rodlukas/UP-admin/commit/ba12eea6be642d0c56629ac607fb1f8ffab267f7
-* vice info viz https://github.com/rodlukas/UP-admin/releases/tag/0.9.0
-* Pro zrychlení načítání celé aplikace se používá lazy loading React.lazy + React Suspense - umozni kratsi prvni nacteni appky, zalozene na react-routeru + reseni nastaleho problemu -- reseni Error: Loading chunk 11 failed. https://github.com/rodlukas/UP-admin/issues/92
+Nejprve se zaměřím na serverovou část. Bylo třeba analyzovat, jaké konkrétní požadavky na databázi jsou prováděny v rámci nějakého požadavku na API -- zde byla do projektu integrována knihovna \href{https://django-debug-toolbar.readthedocs.io/en/latest/}{Django Debug Toolbar}, která toto umožňuje. Vzhledem k tomu, že požadavky ale probíhají asynchronně, bylo třeba dodat do tohoto nástroje doplněk \href{https://github.com/djsutho/django-debug-toolbar-request-history}{django-debug-toolbar-request-history}, který umožňuje analyzovat i asynchronní požadavky. Na obrázku~\ref{fig:ddt} je vidět výstup analýzy požadavku na lekce skupiny. Díky těmto analýzám bylo zjištěno, že se zbytečně provádí mnoho požadavků -- obvykle se jednalo o dohledávání informací o cizích klíčích, kde namísto toho, aby proběhl JOIN a všechna data byla ihned k dispozici, docházelo k neustálému opakovanému dohledávání týž informací o entitách. Pro znázornění uvedu modelový příklad -- v DEBUG režimu Django aplikace na lokálním stroji bylo Django napojeno na vzdálenou databázi na Heroku a analyzováno prostřednictvím Django Debug Toolbar -- vzhledem k běhu na lokálním stroji, DEBUG režimu a vzdálené databázi došlo k mnohonásobnému zpomalení aplikace, tedy následující čísla zdaleka nejsou taková, jaká by byla na produkci (to by činilo aplikaci značně nepoužitelnou), důležité ale jsou poměry čísel při srovnání před a po optimalizaci, které samozřejmě zůstávají stejné. Pro určitou poměrně rozsáhlou kartu skupiny se začínalo na 637 SQL dotazech, které zabraly 35,4~s, postupnými úpravami toto bylo sníženo na 113 dotazů a dobu vyřízení 7~s, mimo měření pak ještě došlo k dalším drobnějším úpravám, které by tato čísla ještě snížily a pro určité případy tedy došlo k více než čtyřnásobnému zrychlení. Hlavními kroky k optimalizaci bylo využití \verb|select_related|, \verb|prefetch_related| a \verb|Prefetch| -- všechny tyto metody řeší zavedení určitého způsobu JOINování dat, které Django ve výchozím stavu neprovádí \cite{django-optimalizace}, rozdíl je, že \verb|select_related| provádí JOIN přímo v SQL (ale funguje jen pro jednoduché vztahy (cizí klíče, 1:1), naproti tomu \verb|prefetch_related| (a více konfigurovatelný \verb|Prefetch|) provádí JOIN přímo v Pythonu (a podporuje i složitější vztahy, např. 1:N, M:N). Například dotaz na lekce, který je již optimalizovaný pomocí těchto metod je v ukázce kódu~\ref{lst:optimalizace-django}. Dále vzhledem k úpravám bylo na některých místech úplně upuštěno od JOINu a zasílá se z API pouze ID, protože informace o daném ID si již pamatuje samotná klientská část. Taktéž bylo identifikováno několik oblastí API, kde docházelo ke zbytečné komunikaci s databází, přestože data již byla dostupná v paměti -- toto bylo též opraveno. Django ve výchozím stavu po každém požadavku ukončí spojení s databází, spojení se pak vždy musí znovu vytvářet, což představuje zbytečný overhead \cite{django-db} -- v konfiguraci bylo prostřednictvím parametru \verb|CONN_MAX_AGE| nastaveno znovupoužívání spojení po dobu 10~minut. Další optimalizací pak bylo, jak je uvedeno v sekci~\ref{sec:komunikacnirozhrani}, zavedení více filtrů na API (např. viditelné kurzy apod.).
 
-* optimalizace frontendu - odstraneni komponent definovanych primo v render - mohlo zpusobit potize s vykonem i nechtenym prekreslovanim vnorenych komponent
-* mene pozadavku - react context api (attendancestates + nově také viditelné kurzy, aktivní klienti/skupiny - vše napříč aplikací) -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
+\begin{figure}[h]\centering
+    \includegraphics[width=1\textwidth]{img/ddt.png}
+    \caption{Analýza SQL požadavku prostřednictvím Django Debug Toolbar}\label{fig:ddt}
+\end{figure}
 
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+queryset = (
+        Lecture.objects.order_by("-start")
+        .select_related("group__course", "course")
+        .prefetch_related(
+            Prefetch("attendances",
+                queryset=Attendance.objects
+                    .select_related("client")),
+            Prefetch("group__memberships",
+                queryset=Membership.objects
+                    .select_related("client")),
+        ))
+	\end{minted}
+	\caption{Optimalizace SQL dotazů v Djangu}\label{lst:optimalizace-django}
+\end{listing}
+
+V rámci analýzy požadavků také bylo zjištěno, že použitá knihovna pro JWT autentizaci na serverové části (\href{https://github.com/jpadilla/django-rest-framework-jwt}{django-rest-framework-jwt}) nefunguje dle očekávání -- jedním z principů JWT má být, jak bylo uvedeno v rámci bakalářské práce \cite{bp}, že není třeba zatěžovat databázi opakujícími se dotazy, protože všechny potřebné informace jsou součástí objektu tokenu. Knihovna ale při každém přístupu do API stejně kvůli uživateli do databáze přistupovala, tento problém byl hlášen mnoha uživateli \cite{django-rest-framework-jwt-issue}, ale knihovna už není oficiálně udržovaná \cite{django-rest-framework-jwt}. Dle doporučení autora této knihovny byla knihovna nahrazena knihovnou \href{https://github.com/SimpleJWT/django-rest-framework-simplejwt}{django-rest-framework-simplejwt}, byly provedeny příslušné změny pro zmigrování, protože knihovny nemají stejný základ. Díky této migraci už se do databáze opakovaně nepřistupuje. Vzhledem k tomu, že knihovna neposkytuje český překlad, některé notifikace v aplikaci byly v angličtině, proto jsem do projektu přispěl formou PR\footnote{\url{https://github.com/SimpleJWT/django-rest-framework-simplejwt/pull/188}} a kompletní český překlad je již součástí hlavní větve projektu.
+
+Na klientské části bylo identifikováno několik možných vylepšení -- zrychlení vykreslování, rozdělení kódu aplikace na více částí a snížení počtu požadavků na API díky zavedení React Context API.
+
+V původní verzi aplikace se při otevření aplikace v prohlížeči načtou skripty pro celou aplikaci, to je zbytečné, stačí načíst jen ty potřebné pro zobrazení dotyčné stránky, další skripty pak načíst až při přechodu na jinou stránku. Toto chování nově umožňuje React~16.6 pomocí funkce \verb|React.lazy()| a komponenty \verb|Suspense| (ta umožní počkat na lazy načtení importu a mezitím uživateli ukázat zvolenou formu načítání) \cite{react-blog-166}, použití je vidět v ukázce kódu~\ref{lst:optimalizace-react} -- ukázka obsahuje nejdůležitější části kódu z aplikace, tedy použití lazy načtené komponenty \verb|Diary| a zobrazení načítání pomocí \verb|Suspense|. Jak je vidět v kódu, v \verb|React.lazy| se navíc volá ještě funkce \verb|lazySafe|, toto není knihovní funkce, ale přímo mnou implementovaná funkce, která řeší problém, na který se přišlo až několik měsíců po nasazení lazy načítání. Pro pochopení je důležité vědět, že si prohlížeče ukládají do cache kódy aplikace, včetně souboru \verb|manifest.json|, který označuje jednotlivé části kódu aplikace (\enquote{chunky}), jejichž jména jsou hashe dle obsahu souboru. Při nasazení nové verze aplikace se může stát, že lektorka má u sebe starou verzi tohoto souboru a v případě, že došlo ke změně názvů souborů (změna hashe), dojde k chybě \enquote{Error: Loading chunk <číslo\_chunku> failed.}. Toto React prozatím nijak neošetřuje a bylo třeba toto ošetřit tedy přimo ručně -- funkce \verb|lazySafe| monitoruje výskyt zmíněné chyby a pokud nastane, pokusí se znovu načíst celou aplikaci (aby se odstranily staré hashe v cache), ale pouze jednou, aby nedošlo k zacyklení. Díky tomuto ošetření už lektorka neskončí na chybové stránce, ale aplikace se sama zotaví.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{js}
+// lazy nacitani pro jednotlive stranky
+...
+const Diary = React.lazy(
+    () => lazySafe(() => import("./pages/Diary")))
+...
+const Main: React.FC = () => {
+    ...
+    return (
+    ...
+    <React.Suspense fallback={<Loading />}>
+        ...
+        <PrivateRoute
+            path={`\${APP_URLS.diar.url}/:year?/:month?/:day?`}
+            component={Diary}
+        />
+        ...
+    </React.Suspense>
+    )}
+	\end{minted}
+	\caption{Dělení kódu klientské části v Reactu}\label{lst:optimalizace-react}
+\end{listing}
+
+Dalším důležitým vylepšením je zavedení React Context API pro snížení počtu požadavků na API. Context přišel do Reactu v rámci verze~16.3, která vyšla v době dokončení bakalářské práce, umožňuje sdílet data mezi komponentami bez nutnosti explicitního předávání těchto dat skrze \enquote{props} -- tedy dat, která jsou v jistém smyslu globální pro určitý strom komponent \cite{react-context}. Vzhledem k délce kódu souvisejících i se základnějším použitím Context v rámci aplikace uvedu spíše jen základní popis stavebních kamenů Context API -- jsou 3 \cite{react-context}:
+\begin{itemize}
+    \item \textbf{React.createContext:} funkce vytvářející objekt kontextu,
+    \item \textbf{Context.Provider:} komponenta (součást objektu kontextu) umožňující konzumujícím komponentám v daném stromu komponent přihlásit se k odběru změn v kontextu,
+    \item \textbf{Context.Consumer:} komponenta (součást objektu kontextu) přihlašující se ke změnám v kontextu.
+\end{itemize}
+
+V rámci aplikace byl Context zaveden pro mnoho částí aplikace -- přihlašování/odhlašování (\verb|AuthContext|), aktivní klienti (\verb|ClientsActiveContext|), viditelné kurzy (\verb|CoursesVisibleContext|), aktivní skupiny (\verb|GroupsActiveContext|) a stavy účasti (\verb|AttendanceStatesContext|). Součástí objektů těchto kontextů jsou kromě samotných příslušných dat i metody pro aktualizaci dat, zjištění, zda se data zrovna načítají, zda jsou načtená. Díky tomu lze napříč aplikací získat například stavy účasti bez jakéhokoliv požadavku na API -- data jsou do kontextu načtena při prvním požadavku na data a při úpravě dat (např. přidání klienta) dojde k aktualizaci dat i v kontextu, tedy data jsou stále aktuální. Díky tomu také během přechodů aplikace není třeba na nic čekat a data jsou okamžitě bez načítání zobrazena (některá data, např. neaktivní klienti, v kontextu nejsou, protože je to zbytečné, tedy se stále načítají pokaždé čerstvě). Aplikace je tak svižnější, lektorka nemusí často čekat, API je méně vytížené a tento jednotný přístup umožňuje také lépe kontrolovat, zda se data načítají či nikoliv (to bylo třeba v rámci problému s použitelností~\ref{P11}). Časté požadavky na API plynuly právě z toho, že se přechází např. mezi stránkami v aplikaci a zde nebyla možnost sdílet již načtené stavy účasti, protože se jedná o jiný strom komponent, tedy byly načítány znovu, znovu a znovu.
+
+Dalším drobným vylepšením z hlediska výkonu klientské části při vykreslování a překreslování aplikace bylo odstranění definice komponent z metod \verb|render|, protože komponenty (zejména ty vnořené) se pak musejí při každém vykreslení překreslit všechny, což je zbytečné.
 
 \begin{comment}
 PR:
@@ -771,9 +825,8 @@ PR:
 * react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
 
 dalsi:
-% todo migrace na novy react
+* context -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 % součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
-* contextapi pro prihlasovani - zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 * rozdělení CSS stylů ke komponentám
 * zjednodušení kódů a struktury souborů, refactoring, odstranění všech zbytečných getDerivedStateFromProps (nahrazeno např. componentDidUpdate)
 * migrace na nový životní cyklus komponent Reactu (503b9ac)

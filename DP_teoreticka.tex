@@ -182,33 +182,6 @@ Selenium je mocný nástroj, nevýhodou je ale poměrně zdlouhavý zápis skrip
 
 Selenium se postupem času stalo průmyslovým standardem pro UI testování, a to zejména díky jednoduchosti použití, kompatibilitě (s mnoha prohlížeči, možnost použití s mnoha programovacími jazyky) a popularitě \cite{test-selenium1}. Jak ale uvádí \cite{test-cypress1}, v případě asynchronních aplikací je Selenium složitější používat vzhledem k principu jeho fungování, protože je třeba vždy explicitně čekat na objevení elementu na stránce, problémem ale je, že nevíme, jak dlouho čekat. I z toho důvodu zde autor nabízí alternativu v podobě novějšího \href{https://www.cypress.io/}{Cypress}, který nabízí mnohem lepší práci s asynchronními aplikacemi, problémem ale je možnost použití pouze s JS, malá komunita a popularita a méně návodů \cite{test-cypress1}. Další nevýhodou Cypress byla podpora výhradně prohlížeče Google Chrome, to se ale v únoru~2020 změnilo \cite{test-cypress2}, naopak výhodou uváděnou např. v \cite{test-cypress3} byla lepší dokumentace oproti Seleniu, dokumentace Selenia ale byla kompletně přepsána a na podzim roku~2019 nasazena \cite{test-selenium2}.
 
-\begin{comment}
-% TODO?
-\chapter{Konfigurace více prostředí}
-
-tudle kapitolu možná nezařadím a rovnou popíšu způsob řešení v praktické části
-obsah: Deployment environments a s tím související Release management
-
-\begin{itemize}
-\item přehled toho, jak se můžou řešit různý prostředí, např. staging, testing, produkce apod., asi se tomu rika deployment pipeline
-\end{itemize}
-\begin{itemize}
-\item přehled toho jak s tím souvisí releasy, co kam může jít a k čemu je to dobrý, jak se to dá různě dělat a souvislosti (např. nemusí to dělat travis na základě releasu, ale třeba na základě podmínky proměnné prostředí nebo branch production apod.)f
-\end{itemize}
-
-viz:
-\begin{itemize}
-\item https://continuousdelivery.com/implementing/patterns/\#the-deployment-pipeline
-\item https://en.wikipedia.org/wiki/Deployment\_environment
-\item https://docs.gitlab.com/ee/ci/environments.html
-\item https://cs.wikipedia.org/wiki/Release\_management
-\item https://docs.microsoft.com/cs-cz/aspnet/web-forms/overview/deployment/configuring-server-environments-for-web-deployment/scenario-configuring-a-staging-environment-for-web-deployment
-\item http://guides.beanstalkapp.com/deployments/best-practices.html
-\item ...
-\end{itemize}
-
-\end{comment}
-
 \chapter{Nástroje pro usnadnění vývoje a údržby}\label{chap:nastrojeprousnadnenivyvojeaudrzby}
 
 Postupem času v rámci dalšího vývoje a rozšiřování aplikace se ukázalo, že je třeba použít pokročilé nástroje pro usnadnění samotného vývoje a údržby. Cílem této sekce je nastínit způsob jejich výběru. Jedním z hlavních požadavků je, aby vše potřebné bylo zdarma, neuvažuji zde tedy nástroje nenabízející alespoň nějakou formu bezplatného používání na dobu neurčitou (tedy nikoliv jen pro studenty). Při procházení ceníků budu brát také v úvahu fakt, že repozitář s projektem je open-source (to je jeden z cílů této práce). 
@@ -379,15 +352,6 @@ Pro \textbf{JS, TS a CSS} je nejpopulárnější formatter \href{https://prettie
 
 Pro \textbf{Python} se používají 3~formattery: \href{https://github.com/psf/black}{Black}, \href{https://github.com/google/yapf}{YAPF}, \href{https://github.com/hhatto/autopep8}{autopep8} \cite{formatter-python, linter-realpython}. Liší se zejména konfigurovatelností a mírou splnění Python standardu PEP~8, Black se dá přirovnat svou ideologií k Prettier -- oba dva jsou totiž založeny na co nejmenší míře konfigurovatelnosti (tím pádem se snižuje diskuze ohledně zavedení jednotlivých konfigurací, protože není moc na výběr) \cite{linter-realpython}.
 
-\begin{comment}
-% TODO?
-další možné rešerše nástrojů pro:
-\begin{itemize}
-\item + hledani dead code - python vulture
-\item nastroje pro vyvoj frontendu - bakalarka byla postavena na CRA (create-react-app), ktera byla ejectnuta (takze update reactu byl prakticky nemozny), z toho duvodu se nejprv preslo na nastroj nwb, ktery ale pozdeji nebyl udrzovany a doslo ke zkusebni migraci na neutrinojs (souvisi s mozillou) a na vlastni reseni pres webpack - tady bych teda prosel, co tyhle nastroje umoznuji, ze vlastne stavi nad webpackem, ze je to vlastne abstraktni vrstva nad nim, ktera vsechno zjednodusuje, ale nevyhoda je, kdyz ten nastroj neco neumoznuje (viz nwb), tak mas smulu.. takze pak nejdou lintery, nejde TS... zminit moznosti nastroju, jake nastroje jsou, vyhody a nevyhody; v ramci implementace pak zminim cely pribeh s nwb, neutrinojs a custom webpackem, na zaver uvedu proc jsem vse zmigroval na custom webpack ikdyz neutrinojs fungovalo taky
-\end{itemize}
-\end{comment}
-
 \chapter{Zvolené technologie}
 
 V této kapitole uvedu, které nástroje a technologie zvolím pro použití a mj. je budu zavádět v následující praktické části. Volba bude obsahovat argumenty vycházející z provedených rešerší v rámci celé teoretické části.
@@ -427,5 +391,3 @@ Nástroje z vyšší vrstvy jsem dále dělil do dvou typů podle dalších nab�
 Linter (nástroj z nižší vrstvy) pro klientskou část bude ESLint, který je v této oblasti nejpopulárnější. Pro CSS se použije též nejpoužívanější stylelint. Vzhledem k tomu, že kód serverové části oproti té klientské není tolik rozsáhlý, nebude prozatím zaváděn linter pro Python, využije se služeb pouze formatteru a nástrojů pro statickou analýzu kódu z vyšší vrstvy.
 
 Formatter pro JS (případně TS) a CSS bude Prettier, který je v této oblasti nejpopulárnější. Pro Python bude použit jeho ekvivalent Black (ekvivalent z hlediska faktu, že oba nabízejí minimální možnost konfigurovatelnosti), protože pokročilá konfigurovatelnost nebude potřeba.
-
-% TODO jaka prostredi a jak delat releasy, jak to vse bude fungovat (a fakt funguje) ?

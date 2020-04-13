@@ -39,7 +39,7 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
     \item \label{N4} \textbf{revize bezpečnosti:} je třeba provést kompletní revizi aplikace z hlediska bezpečnosti a opravit případné slabiny, problémy či zranitelnosti, provést aktualizace závislostí apod., detailní analýza tohoto požadavku viz podsekce~\ref{subsec:N4detail},
     \item \label{N5} \textbf{vylepšení použitelnosti:} z hlášení lektorky a také z vlastní analýzy vyplývá, že je třeba se zaměřit na opravení problémů s použitelností a její vylepšení, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:N5detail},
     \item \label{N6} \textbf{optimalizace API *:} pokud klientská část má někde zobrazit více dat, požadavek někdy probíhá enormně dlouho a dokonce může být ze strany Heroku pro dlouhou prodlevu zastaven a lektorka si data nezobrazí -- je třeba nalézt úzké hrdlo aplikace, které toto zpomalení v jednotkách případů (když je hodně dat) zpomaluje a toto vylepšit, také je třeba se zaměřit na optimalizaci počtu požadavků na API (zda některé nelze uložit a znovupoužít bez dalšího provádění, viz možné rozšíření o React Context API v sekci~\ref{sec:planrozsirenibp}) a případně zjednodušení obsahu odpovědí díky znovupoužívání,
-    \item \label{N7} \textbf{konfigurace více prostředí:} pokud se aplikace úspěšně sestaví na integračním serveru, nahraje se na produkci \cite{bp} -- to může v případě neodhalené chyby v aplikaci způsobit okamžitý pád produkce a případně i ztrátu dat, toto souvisí s lepším pokrytím testy (viz \ref{N2}), ale je třeba se také zaměřit na vhodný návrh více prostředí pro nasazování -- tedy nejen na způsob nasazování na produkci, ale také na zavedení dalších prostředí a rozhodnutí, ve kterých fázích se do nich bude nasazovat -- a to tak, aby bylo k dispozici jak prostředí naprosto totožné s produkcí (např. pro reprodukování chyb hlášených koncovým uživatelem), tak prostředí opět postavené na tom produkčním, ale s novější nasazenou verzí aplikace -- kompletní návrh bude popsán v sekci~\ref{sec:konfiguraceviceprostredi}, součástí implementace v sekci TODO bude také zaveden jednotný způsob práce s proměnnými prostředí napříč všemi prostředími (toho bude využito i v požadavku~\ref{B5}),
+    \item \label{N7} \textbf{konfigurace více prostředí:} pokud se aplikace úspěšně sestaví na integračním serveru, nahraje se na produkci \cite{bp} -- to může v případě neodhalené chyby v aplikaci způsobit okamžitý pád produkce a případně i ztrátu dat, toto souvisí s lepším pokrytím testy (viz \ref{N2}), ale je třeba se také zaměřit na vhodný návrh více prostředí pro nasazování -- tedy nejen na způsob nasazování na produkci, ale také na zavedení dalších prostředí a rozhodnutí, ve kterých fázích se do nich bude nasazovat -- a to tak, aby bylo k dispozici jak prostředí naprosto totožné s produkcí (např. pro reprodukování chyb hlášených koncovým uživatelem), tak prostředí opět postavené na tom produkčním, ale s novější nasazenou verzí aplikace -- kompletní návrh bude popsán v sekci~\ref{sec:konfiguraceviceprostredi}, součástí implementace v podsekci~\ref{N4implementace} (v rámci požadavku~\ref{N4}) bude také zaveden jednotný způsob práce s proměnnými prostředí napříč všemi prostředími (toho bude využito i v požadavku~\ref{B5}),
     \item \label{N8} \textbf{zálohy databáze:} je třeba zavést pravidelné automatické zálohování databáze z produkce.
 \end{enumerate}
 
@@ -96,7 +96,7 @@ Nalezené problémy:
     \item \label{B2} \textbf{sjednocení konfigurací:} v rámci produkční konfigurace je možné některá nastavení sloučit s konfigurací lokální verze -- kromě zvýšení bezpečnosti dojde především také ke zvýšení konzistence mezi těmito verzemi aplikace a tedy v budoucnu méně problémy kvůli odlišnostem,
     \item \label{B3} \textbf{deaktivace DEBUG módu:} produkční konfigurace pro 
     Django obsahuje nastavenou proměnnou \verb|DEBUG = True|, na produkci toto nastavení ale být nesmí -- jedná se jak o bezpečnostní (náhled útočníka do metadat aplikace, některých proměnných prostředí ad.), tak výkonnostní problém (zbytečné režijní náklady a vysoké nároky na paměť kvůli ukládání všech SQL dotazů) -- na produkci je tedy třeba nastavit \verb|DEBUG = False| \cite{django-debug},
-    \item \label{B4} \textbf{HTTP hlavičky:} díky nástroji Mozilla Observatory bylo zjištěno, že v aplikaci chybí nastavení některých HTTP (Hypertext Transfer Protocol) hlaviček -- Referrer Policy, CSP (Content Security Policy), HSTS (HTTP Strict Transport Security) -- podrobnému popisu významu se budu věnovat v TODO,
+    \item \label{B4} \textbf{HTTP hlavičky:} díky nástroji Mozilla Observatory bylo zjištěno, že v aplikaci chybí nastavení některých HTTP (Hypertext Transfer Protocol) hlaviček -- Referrer Policy, CSP (Content Security Policy), HSTS (HTTP Strict Transport Security) -- podrobnému popisu významu se budu věnovat v podsekci~\ref{N4implementace},
     \item \label{B5} \textbf{sjednocení práce s tokeny:} je třeba sjednotit práci s citlivými tokeny a dalšími podobnými elementy -- těchto citlivých dat bude vzhledem k požadavkům přibývat (např. přístup do banky) a je třeba zavést centrální místo správy, kterým budou proměnné prostředí (nyní jsou některé tokeny zašifrované např. v rámci souboru s konfigurací Travisu, některé kvůli své povaze zašifrované nejsou apod.), nebude tak hrozit žádný únik např. ve verzovacím systému (který již nastal i v případě tohoto projektu, kdy kvůli bezpečnostnímu problému s FontAwesome PRO \cite{fontawesome-token} došlo k úniku tokenu pro přístup k placeným ikonám prostřednictvím souboru \verb|yarn.lock|, což by znamenalo problém právě při zveřejnění repozitáře, což je jeden z úkolů této práce), zavedení proměnných prostředí umožní také jednoduchou práci s více prostředími (viz \ref{N7}),
     \item \label{B6} \textbf{zákaz indexace roboty:} roboti mohou přistupovat na stránku s aplikací a stránku indexovat (např. indexovací robot Google) -- indexace není potřeba a jediným výsledkem jsou pak zbytečné přístupy z vyhledávačů bez přihlášení, tedy zbytečná spotřeba výpočetního výkonu.
 \end{enumerate}
@@ -196,7 +196,7 @@ Ukázalo se, že původní komunikační rozhraní (REST API) z bakalářské pr
 
 Pro odpověď na GET požadavek na lekce (GET \verb|lectures/|) byl u každé účasti klienta klíč \verb|count| pro označení pořadového čísla lekce. Zde jsou dva problémy. Prvním je fakt, že název klíče není úplně přesně vypovídající název vzhledem k dané situaci a při práci v kódu nastávaly nedorozumění, proto došlo k přejmenování na \verb|number|, což lépe odpovídá tomu, že se jedná a pořadové číslo lekce. Druhý problém je, že se z neznámého důvodu tento klíč vyskytoval u každé účasti v rámci lekce, což v případě lekce jednotlivce není důležité, ale v případě skupiny je pak totéž číslo u každé účasti (protože se řeší celkový počet lekcí, nikoliv zda konkrétní klient na nějaké lekci byl) -- tedy zbytečně se informace duplikuje a na klientské části se vezme její první výskyt -- toto bylo opraveno a pořadové číslo lekce se nyní vyskytuje přímo u lekce, nikoliv u každé účasti.
 
-Součástí odpovědi GET \verb|lectures/|, jak již bylo zmíněno, je také přehled účastí jednotlivých klientů, zde bylo rozhodnuto také o odstranění vnořených informací o stavech účasti jednotlivých klientů -- v praxi zde byl poslán vždy název účasti, ID (a nově vzhledem k novému datovému modelu by byly poslány i informace \verb|default| a \verb|excused|), vzhledem k plánovaným změnám v rámci požadavku~\ref{N6} tyto vnořené informace byly odstraněny a nahrazeny pouze ID stavu účasti, protože si klientská část aplikace bude stavy účasti pamatovat (implementace viz TODO).
+Součástí odpovědi GET \verb|lectures/|, jak již bylo zmíněno, je také přehled účastí jednotlivých klientů, zde bylo rozhodnuto také o odstranění vnořených informací o stavech účasti jednotlivých klientů -- v praxi zde byl poslán vždy název účasti, ID (a nově vzhledem k novému datovému modelu by byly poslány i informace \verb|default| a \verb|excused|), vzhledem k plánovaným změnám v rámci požadavku~\ref{N6} tyto vnořené informace byly odstraněny a nahrazeny pouze ID stavu účasti, protože si klientská část aplikace bude stavy účasti pamatovat (díky zavedení React Context API, implementace viz podsekce~\ref{N6implementace}).
 
 U klientů, jak bylo uvedeno v datovém modelu v předchozí sekci~\ref{sec:datovymodel}, se přejmenoval klíč pro křestní jméno na \verb|firstname|.
     
@@ -259,7 +259,7 @@ Aktualizovaný diagram nasazení na obrázku~\ref{fig:deployment-diagram} vychá
 	\caption[Aktualizovaný diagram nasazení]{Aktualizovaný diagram nasazení, vychází z~\cite{bp}}\label{fig:deployment-diagram}
 \end{figure}
 
-V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem uvedeno HTTP/S. Vzhledem k požadavku na revizi bezpečnosti~\ref{N4} a jeho následné detailní analýze~\ref{subsec:N4detail} je v problému~\ref{B4} zmíněno zavedení HSTS. Podrobnému popisu se budu věnovat v TODO, důležitý je ale dopad na návrh architektury, kde díky zavedení HSTS a korektní konfiguraci aplikace všechna komunikace bude probíhat z důvodu bezpečnosti pouze přes HTTPS (Hypertext Transfer Protocol Secure).
+V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem uvedeno HTTP/S. Vzhledem k požadavku na revizi bezpečnosti~\ref{N4} a jeho následné detailní analýze~\ref{subsec:N4detail} je v problému~\ref{B4} zmíněno zavedení HSTS. Podrobnému popisu se budu věnovat v podsekci~\ref{N4implementace}, důležitý je ale dopad na návrh architektury, kde díky zavedení HSTS a korektní konfiguraci aplikace všechna komunikace bude probíhat z důvodu bezpečnosti pouze přes HTTPS (Hypertext Transfer Protocol Secure).
 
 \section{Konfigurace více prostředí}\label{sec:konfiguraceviceprostredi}
 
@@ -311,10 +311,7 @@ Díky větší šířce formuláře bylo možné vměstnat více polí na méně
 
 \chapter{Implementace}
 
-V rámci této kapitoly se budu věnovat způsobu samotné implementace rozšíření aplikace. Nejprve se zaměřím na implementaci funkčních požadavků, poté nefunkčních požadavků TODO
-
-% todo dalsi upravy modelu
-
+V rámci této kapitoly se budu věnovat způsobu samotné implementace rozšíření aplikace. Nejprve se zaměřím na implementaci funkčních požadavků, poté nefunkčních požadavků a na závěr zmíním další zajímavé problémy řešené během implementace.
 
 \section{Funkční požadavky}
 
@@ -403,7 +400,7 @@ Na klientské části bylo třeba jak umožnit samotné upravování hodnoty do 
 
 \subsection{F8 -- propojení s bankou}
 
-Fio banka, u které má lektorka účet ÚP, poskytuje velmi jednoduchý přístup k API a zde jednoduchý přístup k transakcím -- token se získá v administraci samotného účtu. V datovém modelu aplikace není třeba řešit žádné změny, je třeba ale připravit API pro přístup k transakcím (viz návrh komunikačního rozhraní v sekci~\ref{sec:komunikacnirozhrani}) -- byl vytvořen bod \verb|bank/| umožňující metodou GET získat transakce za poslední 3 týdny. Oproti ostatním bodům, které jsou založeny na datových modelech a používají tak pro vytvoření bodu \verb|ModelViewSet| zde bylo třeba využít obecnější \verb|APIView|, protože s modely nepracujeme. Příslušná metoda \verb|get| je oanotovaná pomocí dekorátoru v ukázce kódu~\ref{lst:cache} -- díky tomu jsou získané výsledky z banky uloženy do cache na 60 s z důvodu omezeného počtu požadavků na API banky (jednou za 30 s).
+Fio banka, u které má lektorka účet ÚP, poskytuje velmi jednoduchý přístup k API a zde jednoduchý přístup k transakcím -- token se získá v administraci samotného účtu. V datovém modelu aplikace není třeba řešit žádné změny, je třeba ale připravit API pro přístup k transakcím (viz návrh komunikačního rozhraní v sekci~\ref{sec:komunikacnirozhrani}) -- byl vytvořen bod \verb|bank/| umožňující metodou GET získat transakce za poslední 3 týdny. Oproti ostatním bodům, které jsou založeny na datových modelech a používají tak pro vytvoření bodu \verb|ModelViewSet| zde bylo třeba využít obecnější \verb|APIView|, protože s modely nepracujeme. Příslušná metoda \verb|get| je oanotovaná pomocí dekorátoru v ukázce kódu~\ref{lst:cache} -- díky tomu jsou získané výsledky z banky uloženy do cache na 60 s z důvodu omezeného počtu požadavků na API banky (jednou za 30~s).
 
 \begin{listing}[ht]
 	\begin{minted}[bgcolor=bg]{python}
@@ -651,7 +648,7 @@ codacy
 \item ...
 \end{itemize}
 
-\subsection{N4 -- revize bezpečnosti}
+\subsection{N4 -- revize bezpečnosti}\label{N4implementace}
 
 V rámci detailní analýzy tohoto požadavku v podsekci~\ref{subsec:N4detail} bylo vytyčeno celkem 6 oblastí, na které je třeba se zaměřit a vylepšit je. Byly detailně specifikovány problémy, které je třeba opravit. Zde se postupně všem těmto vytyčeným bodům budu věnovat.
 
@@ -782,7 +779,7 @@ V rámci analýzy požadavků také bylo zjištěno, že použitá knihovna pro 
 
 Na klientské části bylo identifikováno několik možných vylepšení -- zrychlení vykreslování, rozdělení kódu aplikace na více částí a snížení počtu požadavků na API díky zavedení React Context API.
 
-V původní verzi aplikace se při otevření aplikace v prohlížeči načtou skripty pro celou aplikaci, to je zbytečné, stačí načíst jen ty potřebné pro zobrazení dotyčné stránky, další skripty pak načíst až při přechodu na jinou stránku. Toto chování nově umožňuje React~16.6 pomocí funkce \verb|React.lazy()| a komponenty \verb|Suspense| (ta umožní počkat na lazy načtení importu a mezitím uživateli ukázat zvolenou formu načítání) \cite{react-blog-166}, použití je vidět v ukázce kódu~\ref{lst:optimalizace-react} -- ukázka obsahuje nejdůležitější části kódu z aplikace, tedy použití lazy načtené komponenty \verb|Diary| a zobrazení načítání pomocí \verb|Suspense|. Jak je vidět v kódu, v \verb|React.lazy| se navíc volá ještě funkce \verb|lazySafe|, toto není knihovní funkce, ale přímo mnou implementovaná funkce, která řeší problém, na který se přišlo až několik měsíců po nasazení lazy načítání. Pro pochopení je důležité vědět, že si prohlížeče ukládají do cache kódy aplikace, včetně souboru \verb|manifest.json|, který označuje jednotlivé části kódu aplikace (\enquote{chunky}), jejichž jména jsou hashe dle obsahu souboru. Při nasazení nové verze aplikace se může stát, že lektorka má u sebe starou verzi tohoto souboru a v případě, že došlo ke změně názvů souborů (změna hashe), dojde k chybě \enquote{Error: Loading chunk <číslo\_chunku> failed.}. Toto React prozatím nijak neošetřuje a bylo třeba toto ošetřit tedy přimo ručně -- funkce \verb|lazySafe| monitoruje výskyt zmíněné chyby a pokud nastane, pokusí se znovu načíst celou aplikaci (aby se odstranily staré hashe v cache), ale pouze jednou, aby nedošlo k zacyklení. Díky tomuto ošetření už lektorka neskončí na chybové stránce, ale aplikace se sama zotaví.
+V původní verzi aplikace se při otevření aplikace v prohlížeči načtou skripty pro celou aplikaci, to je zbytečné, stačí načíst jen ty potřebné pro zobrazení dotyčné stránky, další skripty pak načíst až při přechodu na jinou stránku. Toto chování nově umožňuje React~16.6 pomocí funkce \verb|React.lazy()| a komponenty \verb|Suspense| (ta umožní počkat na lazy načtení importu a mezitím uživateli ukázat zvolenou formu načítání) \cite{react-blog-166}, použití je vidět v ukázce kódu~\ref{lst:optimalizace-react} -- ukázka obsahuje nejdůležitější části kódu z aplikace, tedy použití lazy načtené komponenty \verb|Diary| a zobrazení načítání pomocí \verb|Suspense|. Jak je vidět v kódu, v \verb|React.lazy| se navíc volá ještě funkce \verb|lazySafe|, toto není knihovní funkce, ale přímo mnou implementovaná funkce, která řeší problém, na který se přišlo až několik měsíců po nasazení lazy načítání. Pro pochopení je důležité vědět, že si prohlížeče ukládají do cache kódy aplikace, včetně souboru \verb|manifest.json|, který označuje jednotlivé části kódu aplikace (\enquote{chunky}), jejichž jména jsou hashe dle obsahu souboru. Při nasazení nové verze aplikace se může stát, že lektorka má u sebe starou verzi tohoto souboru a v případě, že došlo ke změně názvů souborů (změna hashe), dojde k chybě \enquote{Error: Loading chunk <číslo\_chunku> failed.}. Toto React prozatím nijak neošetřuje a bylo třeba toto ošetřit tedy přímo ručně -- funkce \verb|lazySafe| monitoruje výskyt zmíněné chyby a pokud nastane, pokusí se znovu načíst celou aplikaci (aby se odstranily staré hashe v cache), ale pouze jednou, aby nedošlo k zacyklení. Díky tomuto ošetření už lektorka neskončí na chybové stránce, ale aplikace se sama zotaví.
 
 \begin{listing}[ht]
 	\begin{minted}[bgcolor=bg]{js}
@@ -819,19 +816,23 @@ V rámci aplikace byl Context zaveden pro mnoho částí aplikace -- přihlašov
 
 Dalším drobným vylepšením z hlediska výkonu klientské části při vykreslování a překreslování aplikace bylo odstranění definice komponent z metod \verb|render|, protože komponenty (zejména ty vnořené) se pak musejí při každém vykreslení překreslit všechny, což je zbytečné.
 
+\section{Další řešené problémy}
+
+todo dalsi upravy modelu
+
 \begin{comment}
 PR:
 * chyby při práci s modálními okny https://github.com/rodlukas/UP-admin/issues/95 - issue reactstrapu, vyjde nova verze
 * react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
 
 dalsi:
-* context -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
+* context -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci (503b9ac) na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
 % součástí sekce bude i sypani popela na hlavu za chyby v bakalarce - popisu co vsechno se delo, co bylo za problemy (napr bad patterny v reactu, coz zpusobilo ruzne problemy)
 * rozdělení CSS stylů ke komponentám
 * zjednodušení kódů a struktury souborů, refactoring, odstranění všech zbytečných getDerivedStateFromProps (nahrazeno např. componentDidUpdate)
-* migrace na nový životní cyklus komponent Reactu (503b9ac)
 * funkční zobrazení vývojové verze na jiném zařízení v síti
-* 05-2019 prechod na nwb
+* 05-2019 prechod na nwb - nastroje pro vyvoj frontendu - bakalarka byla postavena na CRA (create-react-app), ktera byla ejectnuta (takze update reactu byl prakticky nemozny), z toho duvodu se nejprv preslo na nastroj nwb, ktery ale pozdeji nebyl udrzovany a doslo ke zkusebni migraci na neutrinojs (souvisi s mozillou) a na vlastni reseni pres webpack - tady bych teda prosel, co tyhle nastroje umoznuji, ze vlastne stavi nad webpackem, ze je to vlastne abstraktni vrstva nad nim, ktera vsechno zjednodusuje, ale nevyhoda je, kdyz ten nastroj neco neumoznuje (viz nwb), tak mas smulu.. takze pak nejdou lintery, nejde TS... zminit moznosti nastroju, jake nastroje jsou, vyhody a nevyhody; v ramci implementace pak zminim cely pribeh s nwb, neutrinojs a custom webpackem, na zaver uvedu proc jsem vse zmigroval na custom webpack ikdyz neutrinojs
+* hledani dead code - python vulture
 * redesign vsech stranek pro lepsi konzistenci, srozumitelnost a pochopeni (predelany diar, zajemci, lekce v karte...)
 
 opravy chyb:
@@ -873,7 +874,7 @@ N2:
 
 \chapter{Nasazení}\label{chap:nasazeni}
 pozadavky N7,N8
-popis toho jak jsem udelal novej zpusob nasazovani
+popis toho jak jsem udelal novej zpusob nasazovani, vice prostredi, releasy
 * django-environ
 
 \section{Zavedení více prostředí}

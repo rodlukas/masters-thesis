@@ -502,7 +502,7 @@ window.addEventListener("beforeunload", beforeUnload)
 	\caption{Upozornění na neuložené změny při zavření stránky}\label{lst:alert2}
 \end{listing}
 
-\subsection{F15 -- vylepšení chybových hlášení}
+\subsection{F15 -- vylepšení chybových hlášení}\label{F15implementace}
 
 Požadavek~\ref{F15} definuje několik částí, na které je třeba se zaměřit. V prvé řadě byl zvýšen časový limit zobrazení chybové notifikace na 15~s (původně nebyl definován, tedy aplikovala se výchozí hodnota knihovny \href{https://github.com/fkhadra/react-toastify}{React-Toastify} 5~s, což nestačilo na pochopení chyby). Všechny chybové hlášky napříč původní aplikací i novými implementovanými požadavky byly revidovány a rozšířeny o více podrobností, možné způsoby řešení -- např. při vzniku časového konfliktu mezi lekcemi je součástí notifikace podrobné info o lekci (datum, čas, klient/skupina, doba trvání) a také info, že je třeba upravit datum a čas lekce. Notifikace také překrývaly menu aplikace, což znesnadňovalo přechod na jiné stránky (bylo třeba notifikací ručně zavřít nebo čekat na automatické zavření) -- notifikace byly posunuty tak, aby menu nepřekrývaly. Notifikace také díky použití nové komponenty \verb|Notification| mají sjednocený vzhled -- obsahují nadpis, ikony symbolizující ne/úspěch a přehledný popis.
 
@@ -589,25 +589,43 @@ TODO!
 
 \subsection{N3 -- zavedení nástrojů pro usnadnění vývoje a údržby}
 
+V této podsekci budu psát o způsobu zavedení nástrojů pro usnadnění vývoje a údržby. V rámci kapitoly~\ref{chap:nastrojeprousnadnenivyvojeaudrzby} byla provedena rešerše možných nástrojů a následně v kapitole~\ref{chap:zvolenetechnologie} bylo zvoleno, které nástroje budou použity, případně vyzkoušeny. Nejprve se zaměřím na zavedení nástrojů pro monitorování chyb a správu logů. Poté popíši způsob zavedení statického typování do serverové části (Python) i klientské části (JS). V poslední části pak popíši způsob zavedení linterů, formatterů a dalších nástrojů pro statickou analýzu kódu.
+
+Pro monitorování chyb bylo třeba zavést nástroj Sentry. Aby bylo možné monitorovat chyby jak ze serverové, tak klientské části, bylo potřeba obě tyto části se Sentry propojit zvlášť. Při výskytu jakékoliv chyby na serverové části se v Sentry objeví podrobné informace včetně kontextu, totéž při výskytu problému na klientské části, kde navíc byla integrována do komponenty \verb|ErrorBoundary| implementované v podsekci~\ref{F15implementace} možnost zaslání zpětné vazby lektorkou -- tedy při výskytu chyby je možné prostřednictvím formuláře napsat slovy, co se dělo, a tyto informace jsou pak přiřazeny k danému problému v Sentry. Používaný formulář nabízí Sentry, bylo pouze třeba prostřednictvím konfigurace celý formulář přeložit do českého jazyka. Sentry je propojené s Heroku a GitHubem a díky pokročilé konfiguraci v rámci projektu je možné u problémů vidět, ve kterém nasazeném prostředí problém nastal, jaká zde byla verze aplikace, s jakým commitem chyba může souviset apod. Sentry bylo na projektu zavedeno v červenci 2018 a od té doby se ukázalo jako velmi užitečný pomocník, protože díky němu bylo zachyceno a jednoduše reprodukováno mnoho chyb, díky možnosti zobrazit kontext chyby a např. logy z konzole prohlížeče apod. Formulář pro zaslání zpětné vazby lektorka několikrát využila a i díky němu bylo ještě snadnější chyby reprodukovat. Byla analyzována možnost využití nástroje Logentries pro zaznamenávání videa s kroky uživatele, toto zavedeno nebylo -- za prvé díky podrobným informacím ze Sentry a Logentries byl za celou dobu používání vždy k dispozici dostatek informací, za druhé je zde problém s počtem nahraných sezení, kdy se nahrávají všechna sezení, nikoliv pouze ta vedoucí k chybě, tedy snadno se vyčerpá limit 1~000~ nahrávek a až dojde k chybě, nahrávka už nebude.
+
+Pro správu logů bylo třeba zavést nástroj Logentries. Bylo využito možnosti jednoduchého napojení Logentries díky doplňku na Heroku, logy z Heroku jsou tak dostupné v rámci Logentries, je k dispozici historie a vyhledávání. Využito je též upozorňování na některé události, aplikace nabízí ve výchozím stavu mnoho předdefinovaných upozornění. Logentries je na projektu nasazeno od září 2018 a od té doby bylo několikrát úspěšně využito např. pro zjištění historie práce lektorky v rámci aplikace (v rámci reprodukování chyby), díky e-mailovým upozorněním byly včas identifikovány problémy ohledně pomalých operací na API (souvisí s optimalizací API v podsekci~\ref{N6implementace}) a také byl díky upozorněním odhalen výpadek API Fio banky (kde kvůli nevhodnému ošetření možného výpadku se aplikace nechovala korektně). Prostor pro ukládání logů je dostačující, dle statistik za celou dobu používání bylo nejvíc za měsíc využito 4~MB prostoru.
+
+Napříč celou serverovou částí bylo všude v Pythonu zavedeno statické typování, v ukázce kódu~\ref{lst:statictyping-python} je vidět konkrétní implementace statického typování na kusu kódu. Pro kontrolu typů byla nejprve využita vestavěná typová kontrola v IDE (Pycharm), později byla zavedena i kontrola pomocí nástroje mypy -- díky oběma těmto nástrojům (které mimochodem nemají stejný výstup, po zavedení mypy se objevilo mnoho chyb, na které IDE neupozornilo) bylo nalezeno několik potenciálně problematických míst v kódu, které mohly způsobit různé problémy právě v souvislosti s typy, všechny byly opraveny. Díky zavedení typů tak kromě nalezení několika problémů je k dispozici kompletně oanotovaná základna, což tvoří výbornou dokumentaci kódu. Pro definice typů Djanga a Django REST Frameworku jsou využity \enquote{stubs} \href{https://github.com/typeddjango/djangorestframework-stubs}{djangorestframework-stubs} a \href{https://github.com/typeddjango/django-stubs/}{django-stubs}, po zavedení se ale ukázalo, že definice nejsou úplně kompletní a stoprocentně funkční, bylo tedy třeba na několika místech zavést explicitní ignoraci problémů, protože oba balíčky jsou stále ve vývoji.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+def process_error(self, status_code: int) -> 
+    Tuple[Dict[str, str], int]:
+	\end{minted}
+	\caption{Anotace typů v Pythonu}\label{lst:statictyping-python}
+\end{listing}
+
+Pro klientskou část nebylo v rámci kapitoly~\ref{chap:zvolenetechnologie} zvoleno, zda se vydat cestou Flow či TypeScriptu. Vzhledem k tomu, že Flow nabízí vestavěnou integraci pro React (je také z dílny Facebooku), rozhodl jsem se zavést jej jako první a pouze pro část aplikace a na základě následných zkušeností jej buď zavést napříč celou klientskou částí, nebo vše zmigrovat na TS. Během zavádění Flow jsem narazil na mnoho problémů, z nichž většina byla oficiálně nahlášená, ale nijak neřešená -- příkladem budiž naprosto nefunkční integrace s jakýmkoliv IDE/editorem (typová kontrola buď nefunguje, nebo způsobuje zamrzání celého editoru/IDE) a mnoho dalších problémů, které se objeví v průběhu postupného oanotovávání kódu, z nichž většina je hlášená a neřešená. Dalším problémem v průběhu anotování se ukázalo málo typových anotací v databázi flow-typed, pokud definice dostupné byly, často byly chybné a způsobovaly mnoho falešně pozitivních hlášení, které nešly nijak vyřešit, mnoho z nich bylo dlouho hlášených. Potvrdila se tedy zjištění z rešerše v podsekci~\ref{subsec:types-frontend} a vzhledem k tomu, že tedy bylo prakticky nemožné Flow použít kvůli špatné integraci s editory a IDE a mnoha neřešeným problémům bylo rozhodnuto provést kompletní migraci na TS (jako zmíněné firmy a projekty v rešerši).
+
+Vzhledem k tomu, že je v projektu kvůli použití knihovny \href{https://github.com/gaearon/react-hot-loader}{react-hot-loader} potřeba Babel, bylo dle rešerše v podsekci~\ref{subsec:types-frontend} přistoupeno k začlenění TS do projektu pomocí Babelu -- tedy Babel transpiluje bez typové kontroly kód do čistého JS a typovou kontrolu má na starost kompilátor TS propojený s IDE. Integrace s editorem je velmi svižná a nejsou zde žádné problémy jako s Flow. V rámci zavádění TS a anotací se nevyskytl žádný problém, který by byl neřešitelný a třeba jako v případě Flow i hlášený a neřešený. Díky databázi typů DefinitelyTyped je k dispozici mnohem více definicí pro více použitých knihoven v rámci projektu oproti flow-typed a jejich kvalita je vyšší (nedošlo zde k obdobným problémům, jako u Flow -- falešně pozitivní chyby s typy a neřešené problémy). Při anotování jsem narazil na drobné problémy s definicí typů vestavěnou v knihovně \href{https://github.com/FortAwesome/react-fontawesome}{react-fontawesome}, kde nebyl akceptován pro komponentu s ID atribut \verb|id|, ačkoliv v reálu tento atribut použít lze, problém jsem nahlásil a formou PR\footnote{\url{https://github.com/FortAwesome/react-fontawesome/issues/324}} opravil a je již začleněn v nové verzi. Vzhledem k rozsáhlosti kódu zabralo kompletní oanotování typy poměrně dlouhou dobu -- často muselo být totiž zasahováno do kódu, protože byly nalezeny různé problémy právě související s typy a potenciálními chybami. Bylo také třeba důkladně promýšlet a několikrát měnit způsob řešení definicí vlastních typů -- při přípravě a odesílání požadavku na API se například struktura daného typu liší od typu, který z API přijmeme metodou GET, toto všechno muselo být řešeno, definováno, a to tak, aby byly typy snadno znovupoužitelné napříč celou aplikací, rozšiřitelné a srozumitelné. Tyto definované typy entit v rámci klientské části jsou uvedeny v souboru \verb|types/models.ts|, řeší všechny možné případy práce s API (pomocí různých metod a příslušných dat v odpovědích). Postupným zaváděním se přicházelo na více a více drobných i větších problémů ve stávajícím kódu, které byly právě díky explicitním typovým anotacím nalezeny a vyřešeny. Výsledkem práce je kompletní pokrytí celé klientské části anotacemi, převedení všech souborů do TS a zavedení všech souvisejících nástrojů pro TS. Typové anotace jsou maximálně vyčerpávající tak, aby sebemenší chyba v kódu znamenala okamžité hlášení problému ze strany TS kompilátoru. Díky zavedení těchto anotací je také nyní velmi snadné psát kód, protože IDE napovídá vzhledem k typovým anotacím. Příklad části kódu v TS včetně anotací je v ukázce kódu~\ref{lst:statictyping-js}.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{ts}
+funcRefreshPrepaidCnt = (
+        id: MembershipType["id"],
+        prepaidCnt: MembershipType["prepaid_cnt"]
+    ): void => {...}
+	\end{minted}
+	\caption{Anotace typů v TS}\label{lst:statictyping-js}
+\end{listing}
+
+
+
 TODO!
 
-* refaktoring
-* kód API je rozumnější, efektivnější a přehlednější a nedělají se v něm zbytečné kraviny navíc
-* js komponenta pro zobrazeni lekci https://github.com/rodlukas/UP-admin/issues/71
+
 * template strings js
-* python refaktoring https://github.com/rodlukas/UP-admin/issues/93
-* zavedeni prvnich hooku, drobna vylepseni komponent - prechod na funkcionalni komponenty, upravy komponent (napr. zbytecne pouzivaly stav nebo se zbytecne casto updatovaly, ikdyz to nebylo potreba) + **odstranění zbytečného stavu odstranilo i chybu, která byla už od počátku v aplikaci a způsobovala občasné nefungování komponenty s aktuálním stavem účasti - zobrazil se jiný stav, než byl skutečný, v závislosti na pořadí obdržení odpovědí od serveru, to se začalo víc projevovat při nedávných změnách architektury reactu**
-* opravy nekonzistentnich stavu
-* analyza pruchodu aplikaci (google analytics)
-* opravy nevalidniho html a css (diky tomu lepsi zarovnani tlacitek)
 *  js useEffect - exhaustive deps https://github.com/rodlukas/UP-admin/issues/96
-* prechod na TS: dalsi zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/1.0.0
-* Minifikace HTML
-* oprava práce se setState - zbytečně se přes const state = this.state nastavoval pak ve setState celý nový stav, což je zbytečné a navíc to může způsobovat problémy při dalším volání setState (které když proběhne před tímto, může přijít v niveč, protože jej nahradí tato kompletní změna stavu, ačkoliv se má měnit jen malá část stavu komponenty) 
-
-
-
-podrobny popis jak probihalo zavedeni, co mi to umoznuje, treba i screenshoty, k cemu to bylo pouzito, jak se to osvedcilo - nastroje vychazi ze zvolenych nastroju z reserse
 
 
 LGTM: 
@@ -637,17 +655,6 @@ codebeat
 codeclimate
 codacy
 
-\begin{itemize}
-\item ...
-\item code formatting - prettier, black
-\item python zavedeni vulture pro dead code
-\item napojeni na Sentry, Slack, logentries, GA
-\item zavedeni LGTM, opravy nalezenych problemu
-\item travis: zavedeni cache pro yarn a pipenv, zjednoduseni prace s .npmrc, na heroku se neprovadi build a collectstatic
-\item zmena react toolkitu (nejdrive nwb, pak test neutrinojs a nakonec custom webpack + porovnani size bundle), viz https://github.com/rodlukas/UP-admin/issues/67 a https://github.com/rodlukas/UP-admin/issues/65
-\item ...
-\end{itemize}
-
 \subsection{N4 -- revize bezpečnosti}\label{N4implementace}
 
 V rámci detailní analýzy tohoto požadavku v podsekci~\ref{subsec:N4detail} bylo vytyčeno celkem 6 oblastí, na které je třeba se zaměřit a vylepšit je. Byly detailně specifikovány problémy, které je třeba opravit. Zde se postupně všem těmto vytyčeným bodům budu věnovat.
@@ -658,9 +665,11 @@ Problém~\ref{B2} se sjednocením konfigurací Django aplikace a problém~\ref{B
 
 V původní verzi aplikace, jak bylo zmíněno v rámci problému~\ref{B3}, byl aktivovaný režim \verb|DEBUG|, jak bylo v rámci analýzy zmíněno, toto není dobře. V rámci inspekce bylo zjištěno, že po deaktivování aplikace přestane na Heroku fungovat, tento problém se do vydání verze pro bakalářskou práci nepodařilo vyřešit. Nyní už byl ale problém zjištěn -- na Heroku se používalo nastavení proměnné pomocí \verb|export|, což ale Heroku nepodporovalo a tedy k nastavení proměnné nedošlo, na tuto proměnnou ale spoléhal následující příkaz \verb|collectstatic|, který sice i tak posbíral všechny statické soubory, ale nikoliv dle produkční, ale dle lokální konfigurace, samotná nasazená aplikace pak běžela v produkční konfiguraci (to bylo v kódu napevno) a soubory nenašla tam, kde měly být. Dotyčná proměnná byla tedy nastavena přímo v Heroku, jak je požadováno, a následně již vše fungovalo v pořádku a \verb|DEBUG| režim se používá jen na lokálním stroji.
 
-TODO CSP
+Problém~\ref{B4} podrobně popisuje, které HTTP hlavičky v aplikaci v rámci bezpečnosti scházejí -- Referrer Policy, CSP a HSTS. Hlavička \verb|Referrer-Policy| slouží k omezení hodnoty hlavičky \verb|Referer|, která obsahuje informace o předchozí stránce \cite{securityheaders-referer}. Je například nežádoucí, aby se mohly cizí stránky dozvědět, kolik klientů máme v aplikací (díky ID klientů v URL), naproti tomu je ale žádoucí, aby byla někdy známá alespoň doména (např. kvůli povolení zasílání chyb do Sentry v závislosti na jejich původu). Z toho důvodu je v rámci Django konfigurace nastavena tato hlavička na hodnotu \verb|strict-origin-when-cross-origin|, která umožňuje napříč naší aplikací zasílat úplnou adresu (hodí se např. pro Google Analytics, viz zavedení v TODO), mimo doménu se zašle pouze název původní domény a pokud cílová doména nemá HTTPS, nepošle se nic (proto \verb|strict|). Související problematikou jsou pak odkazy napříč aplikací, které se otevírají v novém panelu (\verb|target="_blank"|) -- zde se může vyskytnout útok na původní stránku, odkud došlo k otevření \cite{noopener}, proto bylo do takovýchto odkazů dodán atribut \verb|rel="noopener noreferrer"| -- dokonce v některých případech (bankovnictví Fio) se bez tohoto atributu nedá v nově otevřeném panelu zobrazit přihlašovací formulář, stránka místo toho zahlásí, že došlo k úspěšnému odhlášení.
 
-Problém~\ref{B4} podrobně popisuje, které HTTP hlavičky v aplikaci v rámci bezpečnosti scházejí -- Referrer Policy, CSP a HSTS. Hlavička \verb|Referrer-Policy| slouží k omezení hodnoty hlavičky \verb|Referer|, která obsahuje informace o předchozí stránce \cite{securityheaders-referer}. Je například nežádoucí, aby se mohly cizí stránky dozvědět, kolik klientů máme v aplikací (díky ID klientů v URL), naproti tomu je ale žádoucí, aby byla někdy známá alespoň doména (např. kvůli povolení zasílání chyb do Sentry v závislosti na jejich původu). Z toho důvodu je v rámci Django konfigurace nastavena tato hlavička na hodnotu \verb|strict-origin-when-cross-origin|, která umožňuje napříč naší aplikací zasílat úplnou adresu (hodí se např. pro Google Analytics, viz zavedení v TODO), mimo doménu se zašle pouze název původní domény a pokud cílová doména nemá HTTPS, nepošle se nic (proto \verb|strict|). Související problematikou jsou pak odkazy napříč aplikací, které se otevírají v novém panelu (\verb|target="_blank"|) -- zde se může vyskytnout útok na původní stránku, odkud došlo k otevření \cite{noopener}, proto bylo do takovýchto odkazů dodán atribut \verb|rel="noopener noreferrer"| -- dokonce v některých případech (bankovnictví Fio) se bez tohoto atributu nedá v nově otevřeném panelu zobrazit přihlašovací formulář, stránka místo toho zahlásí, že došlo k úspěšnému odhlášení. Hlavička \verb|Strict-Transport-Security| umožňuje, aby prohlížeč komunikoval se serverem už od počátku přes HTTPS, jinak jsou první komunikace jen v HTTP, což umožňuje útok typu \enquote{man-in-the-middle} \cite{securityheaders-hsts}. Díky možnosti registrace stránky do autoritativní databáze na adrese \href{https://hstspreload.org/}{https://hstspreload.org/}, která je distribuována do jednotlivých prohlížečů, lze i při úplně první komunikaci s webem (a pak i dalších prvních komunikacích) fungovat přímo přes HTTPS \cite{jakpsatweb-hsts}. Django konfigurace opět umožňuje nastavit HSTS, konkrétní nastavení je v ukázce kódu~\ref{lst:hsts}.
+Hlavička \verb|Strict-Transport-Security| umožňuje, aby prohlížeč komunikoval se serverem už od počátku přes HTTPS, jinak jsou první komunikace jen v HTTP, což umožňuje útok typu \enquote{man-in-the-middle} \cite{securityheaders-hsts}. Díky možnosti registrace stránky do autoritativní databáze na adrese \href{https://hstspreload.org/}{https://hstspreload.org/}, která je distribuována do jednotlivých prohlížečů, lze i při úplně první komunikaci s webem (a pak i dalších prvních komunikacích) fungovat přímo přes HTTPS \cite{jakpsatweb-hsts}. Django konfigurace opět umožňuje nastavit HSTS, konkrétní nastavení je v ukázce kódu~\ref{lst:hsts}.
+
+Hlavička \verb|Content-Security-Policy| určuje prohlížeči, odkud může které zdroje načítat -- díky tomu nabízí prevenci např. vůči XSS (Cross-Site Scripting) útokům \cite{adamj}. Django nenabízí nativní podporu CSP \cite{adamj}, k tomu byla využita knihovna \href{https://django-csp.readthedocs.io/en/latest/}{django-csp}. Obsah této hlavičky může být poměrně pokročilý a rozsáhlý vzhledem k počtu nabízených možností \cite{adamj} -- proto zde její finální verzi nebudu ani uvádět. Při její tvorbě bylo třeba upravit práci s některými knihovnami a nástroji tak, aby nevkládaly JS/CSS kód přímo do stránky, ale zvlášť do souborů, dále bylo třeba umožnit aplikaci komunikovat se Sentry, Google Analytics, Google Fonts a umožnit správné fungování všech částí aplikace, protože v původním stavu by aplikace nefungovala vůbec. Na základě dalších doporučení např. z \cite{dareboost} či přímo nástroje \href{https://observatory.mozilla.org/}{Mozilla Observatory} (který na chybějící CSP hlavičku v~\ref{subsec:N4detail} upozornil) byla hlavička rozšířena o další hodnoty až do své finální verze.
 
 \begin{listing}[ht]
 	\begin{minted}[bgcolor=bg]{python}
@@ -823,7 +832,6 @@ todo dalsi upravy modelu
 \begin{comment}
 PR:
 * chyby při práci s modálními okny https://github.com/rodlukas/UP-admin/issues/95 - issue reactstrapu, vyjde nova verze
-* react fontawesome PR pro vylepseni typescript podpory (ID atribut..)
 
 dalsi:
 * context -> TÍM PÁDEM POTŘEBA PŘEJÍT NA NOVÝ REACT -> je tedy potřeba provést i migraci (503b9ac) na nový lifecycle reactu, vice viz https://github.com/rodlukas/UP-admin/releases/tag/0.8
@@ -832,8 +840,21 @@ dalsi:
 * zjednodušení kódů a struktury souborů, refactoring, odstranění všech zbytečných getDerivedStateFromProps (nahrazeno např. componentDidUpdate)
 * funkční zobrazení vývojové verze na jiném zařízení v síti
 * 05-2019 prechod na nwb - nastroje pro vyvoj frontendu - bakalarka byla postavena na CRA (create-react-app), ktera byla ejectnuta (takze update reactu byl prakticky nemozny), z toho duvodu se nejprv preslo na nastroj nwb, ktery ale pozdeji nebyl udrzovany a doslo ke zkusebni migraci na neutrinojs (souvisi s mozillou) a na vlastni reseni pres webpack - tady bych teda prosel, co tyhle nastroje umoznuji, ze vlastne stavi nad webpackem, ze je to vlastne abstraktni vrstva nad nim, ktera vsechno zjednodusuje, ale nevyhoda je, kdyz ten nastroj neco neumoznuje (viz nwb), tak mas smulu.. takze pak nejdou lintery, nejde TS... zminit moznosti nastroju, jake nastroje jsou, vyhody a nevyhody; v ramci implementace pak zminim cely pribeh s nwb, neutrinojs a custom webpackem, na zaver uvedu proc jsem vse zmigroval na custom webpack ikdyz neutrinojs
+    * zmena react toolkitu (nejdrive nwb, pak test neutrinojs a nakonec custom webpack + porovnani size bundle), viz https://github.com/rodlukas/UP-admin/issues/67 a https://github.com/rodlukas/UP-admin/issues/65
 * hledani dead code - python vulture
 * redesign vsech stranek pro lepsi konzistenci, srozumitelnost a pochopeni (predelany diar, zajemci, lekce v karte...)
+* refaktoring
+* kód API je rozumnější, efektivnější a přehlednější a nedělají se v něm zbytečné kraviny navíc
+* js komponenta pro zobrazeni lekci https://github.com/rodlukas/UP-admin/issues/71
+* python refaktoring https://github.com/rodlukas/UP-admin/issues/93
+* zavedeni prvnich hooku, drobna vylepseni komponent - prechod na funkcionalni komponenty, upravy komponent (napr. zbytecne pouzivaly stav nebo se zbytecne casto updatovaly, ikdyz to nebylo potreba) + **odstranění zbytečného stavu odstranilo i chybu, která byla už od počátku v aplikaci a způsobovala občasné nefungování komponenty s aktuálním stavem účasti - zobrazil se jiný stav, než byl skutečný, v závislosti na pořadí obdržení odpovědí od serveru, to se začalo víc projevovat při nedávných změnách architektury reactu**
+* analyza pruchodu aplikaci (google analytics)
+* opravy nekonzistentnich stavu
+* opravy nevalidniho html a css (diky tomu lepsi zarovnani tlacitek)
+* prechod na TS: dalsi zmeny viz https://github.com/rodlukas/UP-admin/releases/tag/1.0.0
+* oprava práce se setState - zbytečně se přes const state = this.state nastavoval pak ve setState celý nový stav, což je zbytečné a navíc to může způsobovat problémy při dalším volání setState (které když proběhne před tímto, může přijít v niveč, protože jej nahradí tato kompletní změna stavu, ačkoliv se má měnit jen malá část stavu komponenty) 
+* Minifikace HTML
+
 
 opravy chyb:
 * oprava chybné práce s datumem v diáři (JS) - pokud se zadala URL s datumem, kde den měl číslo "31", došlo k "přesunu do minulosti" (číslo dne se změnilo na "1") - v důsledku toho se v aplikaci nedalo dostat do roku 2019, protože 31.12.2018 bylo pondělí a další týden se přepnul na listopad
@@ -876,6 +897,8 @@ N2:
 pozadavky N7,N8
 popis toho jak jsem udelal novej zpusob nasazovani, vice prostredi, releasy
 * django-environ
+
+travis: zavedeni cache pro yarn a pipenv, zjednoduseni prace s .npmrc, na heroku se neprovadi build a collectstatic
 
 \section{Zavedení více prostředí}
 \begin{itemize}

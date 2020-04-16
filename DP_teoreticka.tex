@@ -285,7 +285,7 @@ V první podsekci se zaměřím na rešerši nástrojů na vyšší vrstvě, kte
 
 Ve druhé podsekci se zaměřím na nástroje z nižší vrstvy (tzv. lintery), na kterých často nástroje z vyšší vrstvy stavějí (proto také dělení na vyšší a nižší vrstvu pro lepší orientaci). Tyto nástroje se používají při samotném vývoji na lokálním zařízení a poté se mohou spouštět např. na integračním serveru.
 
-\subsection{Průběžná kontrola kvality kódu}
+\subsection{Průběžná kontrola kvality kódu}\label{subsec:prubeznakontrolakvalitykodu}
 
 Na zmíněné vyšší vrstvě se nalézají nástroje, které jsou provozované jako služby automaticky kontrolující kvalitu kódu. Obvykle jsou to služby typu SaaS, případně On-Premise (tedy opak SaaS \cite{globema-onpremise}) \cite{codebeat-engines}. Tyto nástroje lze do procesu vývoje zapojit a zlepšovat tak kvalitu kódu už od počátku -- např. nastavit hranice pro kvalitu kódu vzhledem k pokrytí kódu testy a nulovému počtu nalezených problémů, na základě toho se pak může třeba PR (Pull Request) změn automaticky označit jako úspěšný nebo nikoliv \cite{medium-devgurus}. To pak snižuje množství diskuzí mezi vývojáři, protože je zavedeno objektivní hodnocení kódu \cite{medium-devgurus}. Nejprve uvedu minimální požadavky na nástroje pro zúžení výběru:
 \begin{itemize}

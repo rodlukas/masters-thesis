@@ -618,6 +618,8 @@ def validate_phone(phone: str) -> str:
 	\caption{Dokumentace v TS (komponenta PrepaidCounters)}\label{lst:docs-python}
 \end{listing}
 
+Pro dokumentaci API (která v rámci bakalářské práce vůbec nebyla a jediná forma dokumentace byl jednoduchý popis API v tabulkách přímo v textu práce \cite{bp}) bylo využito možností Django REST Frameworku -- ten nově nabízí podporu pro automatické generování OpenAPI schémat (standard pro jazykově nezávislý popis REST API \cite{openapi}), toto vygenerované schéma je pak možné pomocí dalších nástrojů jednoduše zobrazit uživateli srozumitelnou interaktivní formou \cite{drf-openapi}. Díky automatickému generování není třeba nijak aktualizovat dokumentaci API, protože se generuje dynamicky na základě kódu API, pro zobrazení schématu uživateli byl využit nástroj \href{https://swagger.io/tools/swagger-ui/}{Swagger UI}, díky tomu je možné dokumentaci interaktivně procházet a dokonce zasílat na API přímo z UI dotazy (vše je možné pouze po přihlášení). Na obrázku~TODO je vidět ukázka z této dokumentace.
+
 \subsection{N3 -- zavedení nástrojů pro usnadnění vývoje a údržby}
 
 V této podsekci budu psát o způsobu zavedení nástrojů pro usnadnění vývoje a údržby. V rámci kapitoly~\ref{chap:nastrojeprousnadnenivyvojeaudrzby} byla provedena rešerše možných nástrojů a následně v kapitole~\ref{chap:zvolenetechnologie} bylo zvoleno, které nástroje budou použity, případně vyzkoušeny. Nejprve se zaměřím na zavedení nástrojů pro monitorování chyb a správu logů. Poté popíši způsob zavedení statického typování do serverové části (Python) i klientské části (JS). V poslední části pak popíši způsob zavedení linterů, formatterů a dalších nástrojů pro statickou analýzu kódu.
@@ -650,41 +652,33 @@ funcRefreshPrepaidCnt = (
 	\caption{Anotace typů v TS}\label{lst:statictyping-js}
 \end{listing}
 
+Co se týče formatterů, tedy nástrojů pro formátování kódu, na klientské části byl zaveden a nakonfigurován Prettier. Kromě JS, TS a TSX souborů má na starost v tomto projektu také formátování souborů CSS, HTML, JSON, YAML, TOML a MD. Pro Python byl úspěšně zaveden a nakonfigurován Black. Oba nástroje jsou propojeny s IDE a k formátování kódu tak dochází automaticky během práce.
 
+Co se týče linterů (v rešerši v podsekci~\ref{subsec:prubeznakontrolakvalitykodu} bylo zmíněno, že reprezentují prakticky nižší vrstvu nástrojů pro statickou analýzu kódu), byl zaveden a nakonfigurován pro TS nástroj ESLint. Jeho konfigurace v souboru \verb|eslintrc.js| je poměrně rozsáhlá -- kromě konfigurace v souvislosti se samotnými vlastnostmi kódu jej bylo třeba korektně nakonfigurovat pro použití s Reactem, využít pravidla pro kontrolu kódu pro různé oblasti Reactu, dále korektně nakonfigurovat pravidla pro TS, obecná doporučená pravidla ESLint, pravidla, která umožní fungování s formatterem Prettier a mnoho dalších pravidel. V souvislosti se zavedením všech těchto pravidel bylo samozřejmě třeba učinit mnoho oprav a vylepšení v kódu, aby splňoval všechna pravidla. Díky zavedení ESLint je kód klientské části mnohem srozumitelnější, méně náchylný k chybám, přehlednější, konzistentní a bylo opraveno i mnoho problémů (např. překrývání oblastí platnosti proměnných kvůli stejnému názvu, problémy s React Hooky, které mohly způsobit chyby na produkci). Pro CSS byl zaveden a nakonfigurován stylelint, díky jeho zavedení jsou CSS soubory mnohem konzistentnější a přehlednější (např. vlastnosti se řadí dle abecedy) a bylo opraveno také množství různých problémů vycházejících např. z nevhodně definovaných CSS pravidel, duplikace selektorů apod. Pro oba nástroje platí, že mnoho z chyb bylo možné opravit automaticky, čehož bylo také hojně využíváno.
 
-TODO!
+V kapitole~\ref{chap:zvolenetechnologie} o zvolených technologií bylo řečeno, že nalezené nástroje z vyšší vrstvy pro statickou analýzu kódu budou otestovány a následně budou zavedeny ty, které se osvědčí. Vzhledem ke způsobu práce na projektu se ukázalo jako důležité, aby nástroj uměl analyzovat repozitář i bez provedení PR, a to buď přímo v závislosti na commitech, nebo alespoň třeba jednou denně. Proto zde nejsou uvažovány nástroje \href{https://houndci.com}{\textbf{HoundCI}} a \href{https://sider.review}{\textbf{Sider}}.
 
+Výsledky aplikace nástrojů založených na integrací více linterů (nástroje 1.~typu z podsekce~\ref{subsec:prubeznakontrolakvalitykodu}):
+\begin{itemize}
+    \item \href{https://www.codacy.com}{\textbf{Codacy}}: oproti CodeFactor mnohem pokročilejší rozhraní s více funkcemi, stále ale srozumitelné a přehledné, po aktivaci ESLint se ale ukázalo, že kvůli neaktualizovanému Prettier (na verzi~2) produkuje mnoho falešných chyb, které ale vychází z použití právě nové verze,
+    \item \href{https://codeclimate.com}{\textbf{Code Climate}}: velmi podobné možnosti jako Codacy, použité nástroje jsou někdy až o mnoho majoritních verzi pozadu, mohou se tedy objevovat nerelevantní chyby,
+    \item \href{https://www.codefactor.io}{\textbf{CodeFactor}}: srozumitelné jednoduché rozhraní, pro ESLint ale nepodporuje soubor s konfigurací ve formátu \enquote{js} (to je pro projekt potřeba), pro stylelint nepodporuje některé závislosti použité jako doplňky (které jsou opět potřeba) -- tedy prakticky neprovádí potřebné kontroly a nelze jej z toho důvodu použít,
+    \item \href{https://www.code-inspector.com}{\textbf{Code Inspector}}: velmi nepřívětivé rozhraní působící dojmem nedodělku, často nepřehledné a s chybami (vše je rozpadlé, nefunguje ani tlačítko zpět), nepodporuje ani korektní parsování kódu, protože prakticky každý řádek kódu označí s chybou, nefungují ani importy -- tedy vůbec nefunguje a nelze využít,
+    \item \href{https://codebeat.co}{\textbf{codebeat}}: velmi odlišný nástroj, který nenabízí integraci s lintery, pouze základní kontrolu -- nabízí tedy základní upozornění na problémy s kódem jako délka metod, počet argumentů ad., toto zatím v rámci projektu není potřeba.
+\end{itemize}
 
-* template strings js
-*  js useEffect - exhaustive deps https://github.com/rodlukas/UP-admin/issues/96
+Jak je vidět z výsledků výše, výsledky nejsou nikterak oslňující, kromě základního nástroje codebeat (který ale není třeba) nelze v praxi především kvůli používaní starých verzí nástrojů použít ani jeden z testovaných nástrojů.
 
+Výsledky aplikace nástrojů, které provádějí pokročilou hloubkovou analýzu pomocí vlastních způsobů a pravidel (nástroje 2.~typu z podsekce~\ref{subsec:prubeznakontrolakvalitykodu}):
+\begin{itemize}
+    \item \href{https://deepsource.io/}{\textbf{DeepSource}}: přehledné a jednoduché rozhraní, zjištěné problémy jsou ovšem spíše základnějšího rázu (který by zvládl podchytit i běžný linter, jak ale bylo uvedeno v rámci kapitoly~\ref{chap:zvolenetechnologie}, linter pro Python zatím není potřeba),
+    \item \href{https://deepscan.io}{\textbf{DeepScan}}: velmi jednoduché rozhraní, výhodou tohoto nástroje je úzké zaměření na React a tedy možné odhalení problémů, které jiné nástroje nenaleznou, protože se přímo Reactem nezabývají, v reálu bylo nalezeno jedno možné vylepšení kódu (zjednodušení podmínky), nalezených problémů by pravděpodobně mohlo být více, ale nástroj byl zaveden až po opravení chyb ze všech ostatních nástrojů,
+    \item \href{https://lgtm.com}{\textbf{LGTM}}: tento nástroj byl zaveden na projektu jako první a velmi se osvědčil, bylo nalezeno necelých 50 problémů za 10 měsíců vývoje a některé z nich byly poměrně pokročilé a mohly v reálné aplikaci skutečně způsobit problémy (např. špatná práce se stavem v rámci React komponent mohla vzhledem ke svému asynchronnímu principu ve vzácných případech způsobit problémy),
+    \item \href{https://sonarcloud.io/}{\textbf{SonarCloud}}: tento nástroj byl na projektu testován jako poslední po všech úpravách hlášených jinými nástroji, přesto v některých souborech odhalil místa pro zlepšení (nikoliv z hlediska přímo problémového kódu, ale zbytečně složitých zápisů, překrývaní oblastí platnosti proměnných, duplikací kódu, jiný název souboru oproti exportované komponentě ad.), také nahlásil několik míst v kódu, které bylo třeba zkontrolovat z hlediska bezpečnosti (protože sám nemůže určit, zda se jedná o problém nebo nikoliv), připomínky byly relevantní, místa byla zkontrolována a nebylo třeba učinit žádné změny (vše bylo v pořádku), nástroj je velmi komplexní a obsahuje obrovské množství pravidel pro různé jazyky a maximální možnou míru konfigurovatelnosti, výhodou je také možnost přímého napojení IDE (Pycharm) a sledování nalezených problémů v reálném čase při psaní kódu, což ostatní nástroje nenabízejí,
+    \item \href{https://www.deepcode.ai/}{\textbf{DeepCode}}: nebyly nalezeny žádné chyby ani varování, nelze tedy vyhodnotit, zda to je kvůli slabým schopnostem nebo dobré kvalitě kódu.
+\end{itemize}
 
-LGTM: 
-[js] odstraneni unused promenne v Applications
-[js] oprava spatneho nazvu promenne v inicializaci ErrorBoundary
-[js] oprava potencialnich chyb zpusobenych nespravnou aktualizaci stavu
-[python] odstraneni vsech import *
-[python] optimalizace importu
-[js] optimalizace importu
-[js] oprava primeho zapisovani do stavu v Card
-[js] konzistentni stav PrepaidCounters
-[js] konzistentni stav at\_state ve FormLecture
-
-sonarcloud viz commity koment
-
-
-sider PR
-houndCI PR
-codefactor nefunkcni dependence stylelint, eslint config js nepodporuje
-code-inspector - katastrofalni UI, naprosto nefunkcni parsovani, importy nefunguji... (v UI nefunguje ani tlacitko zpet a vse je rozpadle...)
-
-
-deepcode
-deepscan, sonarcloud, lgtm
-deepsource
-codebeat
-codeclimate
-codacy
+Nástroje z této oblasti se oproti předcházejícím ukázaly velmi užitečné a díky jejich zavedení bylo nalezeno mnoho různých problémů ať z hlediska srozumitelnosti a udržitelnosti kódu, tak případných chyb na produkci. Zejména se zde osvědčily nástroje LGTM a SonarCloud, navzájem velmi odlišné, ale z hlediska počtu a povahy nahlášených problémů oba velmi užitečné. Pro trvalé zavedení v projektu byly tedy zvoleny LGTM a SonarCloud a dále ještě DeepScan díky svému úzkému zaměření na React. Tyto nástroje trvale sledují změny v repozitáři a upozorní na případné problémy.
 
 \subsection{N4 -- revize bezpečnosti}\label{subsec:N4implementace}
 
@@ -700,7 +694,7 @@ Problém~\ref{B4} podrobně popisuje, které HTTP hlavičky v aplikaci v rámci 
 
 Hlavička \verb|Strict-Transport-Security| umožňuje, aby prohlížeč komunikoval se serverem už od počátku přes HTTPS, jinak jsou první komunikace jen v HTTP, což umožňuje útok typu \enquote{man-in-the-middle} \cite{securityheaders-hsts}. Díky možnosti registrace stránky do autoritativní databáze na adrese \href{https://hstspreload.org/}{https://hstspreload.org/}, která je distribuována do jednotlivých prohlížečů, lze i při úplně první komunikaci s webem (a pak i dalších prvních komunikacích) fungovat přímo přes HTTPS \cite{jakpsatweb-hsts}. Django konfigurace opět umožňuje nastavit HSTS, konkrétní nastavení je v ukázce kódu~\ref{lst:hsts}.
 
-Hlavička \verb|Content-Security-Policy| určuje prohlížeči, odkud může které zdroje načítat -- díky tomu nabízí prevenci např. vůči XSS (Cross-Site Scripting) útokům \cite{adamj}. Django nenabízí nativní podporu CSP \cite{adamj}, k tomu byla využita knihovna \href{https://django-csp.readthedocs.io/en/latest/}{django-csp}. Obsah této hlavičky může být poměrně pokročilý a rozsáhlý vzhledem k počtu nabízených možností \cite{adamj} -- proto zde její finální verzi nebudu ani uvádět. Při její tvorbě bylo třeba upravit práci s některými knihovnami a nástroji tak, aby nevkládaly JS/CSS kód přímo do stránky, ale zvlášť do souborů, dále bylo třeba umožnit aplikaci komunikovat se Sentry, Google Analytics, Google Fonts a umožnit správné fungování všech částí aplikace, protože v původním stavu by aplikace nefungovala vůbec. Na základě dalších doporučení např. z \cite{dareboost} či přímo nástroje \href{https://observatory.mozilla.org/}{Mozilla Observatory} (který na chybějící CSP hlavičku v~\ref{subsec:N4detail} upozornil) byla hlavička rozšířena o další hodnoty až do své finální verze.
+Hlavička \verb|Content-Security-Policy| určuje prohlížeči, odkud může které zdroje načítat -- díky tomu nabízí prevenci např. vůči XSS (Cross-Site Scripting) útokům \cite{adamj}. Django nenabízí nativní podporu CSP \cite{adamj}, k tomu byla využita knihovna \href{https://django-csp.readthedocs.io/en/latest/}{django-csp}. Obsah této hlavičky může být poměrně pokročilý a rozsáhlý vzhledem k počtu nabízených možností \cite{adamj} -- proto zde její finální verzi nebudu ani uvádět. Při její tvorbě bylo třeba upravit práci s některými knihovnami a nástroji tak, aby nevkládaly JS/CSS kód přímo do stránky, ale zvlášť do souborů, dále bylo třeba umožnit aplikaci komunikovat se Sentry, Google Analytics, Google Fonts a umožnit správné fungování všech částí aplikace, protože v původním stavu by aplikace nefungovala vůbec. Na základě dalších doporučení např. z \cite{dareboost} či přímo nástroje \href{https://observatory.mozilla.org/}{Mozilla Observatory} (který na chybějící CSP hlavičku v~\ref{subsec:N4detail} upozornil) byla hlavička rozšířena o další hodnoty až do své finální verze, kdy je kompletní a nástroj Mozilla Observatory ji hodnotí stupněm \enquote{A+} se skóre 115/100.
 
 \begin{listing}[ht]
 	\begin{minted}[bgcolor=bg]{python}

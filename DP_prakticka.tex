@@ -39,7 +39,7 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
     \item \label{N4} \textbf{revize bezpečnosti:} je třeba provést kompletní revizi aplikace z hlediska bezpečnosti a opravit případné slabiny, problémy či zranitelnosti, provést aktualizace závislostí apod., detailní analýza tohoto požadavku viz podsekce~\ref{subsec:N4detail},
     \item \label{N5} \textbf{vylepšení použitelnosti:} z hlášení lektorky a také z vlastní analýzy vyplývá, že je třeba se zaměřit na opravení problémů s použitelností a její vylepšení, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:N5detail},
     \item \label{N6} \textbf{optimalizace API *:} pokud klientská část má někde zobrazit více dat, požadavek někdy probíhá enormně dlouho a dokonce může být ze strany Heroku pro dlouhou prodlevu zastaven a lektorka si data nezobrazí -- je třeba nalézt úzké hrdlo aplikace, které toto zpomalení v jednotkách případů (když je hodně dat) zpomaluje a toto vylepšit, také je třeba se zaměřit na optimalizaci počtu požadavků na API (zda některé nelze uložit a znovupoužít bez dalšího provádění, viz možné rozšíření o React Context API v sekci~\ref{sec:planrozsirenibp}) a případně zjednodušení obsahu odpovědí díky znovupoužívání,
-    \item \label{N7} \textbf{konfigurace více prostředí:} pokud se aplikace úspěšně sestaví na integračním serveru, nahraje se na produkci \cite{bp} -- to může v případě neodhalené chyby v aplikaci způsobit okamžitý pád produkce a případně i ztrátu dat, toto souvisí s lepším pokrytím testy (viz \ref{N2}), ale je třeba se také zaměřit na vhodný návrh více prostředí pro nasazování -- tedy nejen na způsob nasazování na produkci, ale také na zavedení dalších prostředí a rozhodnutí, ve kterých fázích se do nich bude nasazovat -- a to tak, aby bylo k dispozici jak prostředí naprosto totožné s produkcí (např. pro reprodukování chyb hlášených koncovým uživatelem), tak prostředí opět postavené na tom produkčním, ale s novější nasazenou verzí aplikace -- kompletní návrh bude popsán v sekci~\ref{sec:konfiguraceviceprostredi}, součástí implementace v podsekci~\ref{N4implementace} (v rámci požadavku~\ref{N4}) bude také zaveden jednotný způsob práce s proměnnými prostředí napříč všemi prostředími (toho bude využito i v požadavku~\ref{B5}),
+    \item \label{N7} \textbf{konfigurace více prostředí:} pokud se aplikace úspěšně sestaví na integračním serveru, nahraje se na produkci \cite{bp} -- to může v případě neodhalené chyby v aplikaci způsobit okamžitý pád produkce a případně i ztrátu dat, toto souvisí s lepším pokrytím testy (viz \ref{N2}), ale je třeba se také zaměřit na vhodný návrh více prostředí pro nasazování -- tedy nejen na způsob nasazování na produkci, ale také na zavedení dalších prostředí a rozhodnutí, ve kterých fázích se do nich bude nasazovat -- a to tak, aby bylo k dispozici jak prostředí naprosto totožné s produkcí (např. pro reprodukování chyb hlášených koncovým uživatelem), tak prostředí opět postavené na tom produkčním, ale s novější nasazenou verzí aplikace -- kompletní návrh bude popsán v sekci~\ref{sec:konfiguraceviceprostredi}, součástí implementace v podsekci~\ref{subsec:N4implementace} (v rámci požadavku~\ref{N4}) bude také zaveden jednotný způsob práce s proměnnými prostředí napříč všemi prostředími (toho bude využito i v požadavku~\ref{B5}),
     \item \label{N8} \textbf{zálohy databáze:} je třeba zavést pravidelné automatické zálohování databáze z produkce.
 \end{enumerate}
 
@@ -96,7 +96,7 @@ Nalezené problémy:
     \item \label{B2} \textbf{sjednocení konfigurací:} v rámci produkční konfigurace je možné některá nastavení sloučit s konfigurací lokální verze -- kromě zvýšení bezpečnosti dojde především také ke zvýšení konzistence mezi těmito verzemi aplikace a tedy v budoucnu méně problémy kvůli odlišnostem,
     \item \label{B3} \textbf{deaktivace DEBUG módu:} produkční konfigurace pro 
     Django obsahuje nastavenou proměnnou \verb|DEBUG = True|, na produkci toto nastavení ale být nesmí -- jedná se jak o bezpečnostní (náhled útočníka do metadat aplikace, některých proměnných prostředí ad.), tak výkonnostní problém (zbytečné režijní náklady a vysoké nároky na paměť kvůli ukládání všech SQL dotazů) -- na produkci je tedy třeba nastavit \verb|DEBUG = False| \cite{django-debug},
-    \item \label{B4} \textbf{HTTP hlavičky:} díky nástroji Mozilla Observatory bylo zjištěno, že v aplikaci chybí nastavení některých HTTP (Hypertext Transfer Protocol) hlaviček -- Referrer Policy, CSP (Content Security Policy), HSTS (HTTP Strict Transport Security) -- podrobnému popisu významu se budu věnovat v podsekci~\ref{N4implementace},
+    \item \label{B4} \textbf{HTTP hlavičky:} díky nástroji Mozilla Observatory bylo zjištěno, že v aplikaci chybí nastavení některých HTTP (Hypertext Transfer Protocol) hlaviček -- Referrer Policy, CSP (Content Security Policy), HSTS (HTTP Strict Transport Security) -- podrobnému popisu významu se budu věnovat v podsekci~\ref{subsec:N4implementace},
     \item \label{B5} \textbf{sjednocení práce s tokeny:} je třeba sjednotit práci s citlivými tokeny a dalšími podobnými elementy -- těchto citlivých dat bude vzhledem k požadavkům přibývat (např. přístup do banky) a je třeba zavést centrální místo správy, kterým budou proměnné prostředí (nyní jsou některé tokeny zašifrované např. v rámci souboru s konfigurací Travisu, některé kvůli své povaze zašifrované nejsou apod.), nebude tak hrozit žádný únik např. ve verzovacím systému (který již nastal i v případě tohoto projektu, kdy kvůli bezpečnostnímu problému s FontAwesome PRO \cite{fontawesome-token} došlo k úniku tokenu pro přístup k placeným ikonám prostřednictvím souboru \verb|yarn.lock|, což by znamenalo problém právě při zveřejnění repozitáře, což je jeden z úkolů této práce), zavedení proměnných prostředí umožní také jednoduchou práci s více prostředími (viz \ref{N7}),
     \item \label{B6} \textbf{zákaz indexace roboty:} roboti mohou přistupovat na stránku s aplikací a stránku indexovat (např. indexovací robot Google) -- indexace není potřeba a jediným výsledkem jsou pak zbytečné přístupy z vyhledávačů bez přihlášení, tedy zbytečná spotřeba výpočetního výkonu.
 \end{enumerate}
@@ -196,7 +196,7 @@ Ukázalo se, že původní komunikační rozhraní (REST API) z bakalářské pr
 
 Pro odpověď na GET požadavek na lekce (GET \verb|lectures/|) byl u každé účasti klienta klíč \verb|count| pro označení pořadového čísla lekce. Zde jsou dva problémy. Prvním je fakt, že název klíče není úplně přesně vypovídající název vzhledem k dané situaci a při práci v kódu nastávaly nedorozumění, proto došlo k přejmenování na \verb|number|, což lépe odpovídá tomu, že se jedná a pořadové číslo lekce. Druhý problém je, že se z neznámého důvodu tento klíč vyskytoval u každé účasti v rámci lekce, což v případě lekce jednotlivce není důležité, ale v případě skupiny je pak totéž číslo u každé účasti (protože se řeší celkový počet lekcí, nikoliv zda konkrétní klient na nějaké lekci byl) -- tedy zbytečně se informace duplikuje a na klientské části se vezme její první výskyt -- toto bylo opraveno a pořadové číslo lekce se nyní vyskytuje přímo u lekce, nikoliv u každé účasti.
 
-Součástí odpovědi GET \verb|lectures/|, jak již bylo zmíněno, je také přehled účastí jednotlivých klientů, zde bylo rozhodnuto také o odstranění vnořených informací o stavech účasti jednotlivých klientů -- v praxi zde byl poslán vždy název účasti, ID (a nově vzhledem k novému datovému modelu by byly poslány i informace \verb|default| a \verb|excused|), vzhledem k plánovaným změnám v rámci požadavku~\ref{N6} tyto vnořené informace byly odstraněny a nahrazeny pouze ID stavu účasti, protože si klientská část aplikace bude stavy účasti pamatovat (díky zavedení React Context API, implementace viz podsekce~\ref{N6implementace}).
+Součástí odpovědi GET \verb|lectures/|, jak již bylo zmíněno, je také přehled účastí jednotlivých klientů, zde bylo rozhodnuto také o odstranění vnořených informací o stavech účasti jednotlivých klientů -- v praxi zde byl poslán vždy název účasti, ID (a nově vzhledem k novému datovému modelu by byly poslány i informace \verb|default| a \verb|excused|), vzhledem k plánovaným změnám v rámci požadavku~\ref{N6} tyto vnořené informace byly odstraněny a nahrazeny pouze ID stavu účasti, protože si klientská část aplikace bude stavy účasti pamatovat (díky zavedení React Context API, implementace viz podsekce~\ref{subsec:N6implementace}).
 
 U klientů, jak bylo uvedeno v datovém modelu v předchozí sekci~\ref{sec:datovymodel}, se přejmenoval klíč pro křestní jméno na \verb|firstname|.
     
@@ -259,7 +259,7 @@ Aktualizovaný diagram nasazení na obrázku~\ref{fig:deployment-diagram} vychá
 	\caption[Aktualizovaný diagram nasazení]{Aktualizovaný diagram nasazení, vychází z~\cite{bp}}\label{fig:deployment-diagram}
 \end{figure}
 
-V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem uvedeno HTTP/S. Vzhledem k požadavku na revizi bezpečnosti~\ref{N4} a jeho následné detailní analýze~\ref{subsec:N4detail} je v problému~\ref{B4} zmíněno zavedení HSTS. Podrobnému popisu se budu věnovat v podsekci~\ref{N4implementace}, důležitý je ale dopad na návrh architektury, kde díky zavedení HSTS a korektní konfiguraci aplikace všechna komunikace bude probíhat z důvodu bezpečnosti pouze přes HTTPS (Hypertext Transfer Protocol Secure).
+V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem uvedeno HTTP/S. Vzhledem k požadavku na revizi bezpečnosti~\ref{N4} a jeho následné detailní analýze~\ref{subsec:N4detail} je v problému~\ref{B4} zmíněno zavedení HSTS. Podrobnému popisu se budu věnovat v podsekci~\ref{subsec:N4implementace}, důležitý je ale dopad na návrh architektury, kde díky zavedení HSTS a korektní konfiguraci aplikace všechna komunikace bude probíhat z důvodu bezpečnosti pouze přes HTTPS (Hypertext Transfer Protocol Secure).
 
 \section{Konfigurace více prostředí}\label{sec:konfiguraceviceprostredi}
 
@@ -502,7 +502,7 @@ window.addEventListener("beforeunload", beforeUnload)
 	\caption{Upozornění na neuložené změny při zavření stránky}\label{lst:alert2}
 \end{listing}
 
-\subsection{F15 -- vylepšení chybových hlášení}\label{F15implementace}
+\subsection{F15 -- vylepšení chybových hlášení}\label{subsec:F15implementace}
 
 Požadavek~\ref{F15} definuje několik částí, na které je třeba se zaměřit. V prvé řadě byl zvýšen časový limit zobrazení chybové notifikace na 15~s (původně nebyl definován, tedy aplikovala se výchozí hodnota knihovny \href{https://github.com/fkhadra/react-toastify}{React-Toastify} 5~s, což nestačilo na pochopení chyby). Všechny chybové hlášky napříč původní aplikací i novými implementovanými požadavky byly revidovány a rozšířeny o více podrobností, možné způsoby řešení -- např. při vzniku časového konfliktu mezi lekcemi je součástí notifikace podrobné info o lekci (datum, čas, klient/skupina, doba trvání) a také info, že je třeba upravit datum a čas lekce. Notifikace také překrývaly menu aplikace, což znesnadňovalo přechod na jiné stránky (bylo třeba notifikací ručně zavřít nebo čekat na automatické zavření) -- notifikace byly posunuty tak, aby menu nepřekrývaly. Notifikace také díky použití nové komponenty \verb|Notification| mají sjednocený vzhled -- obsahují nadpis, ikony symbolizující ne/úspěch a přehledný popis.
 
@@ -542,7 +542,7 @@ Na klientské části bylo třeba zvolit vhodný způsob zobrazení informací o
     \caption{Automatické zrušení lekce, když jsou všichni omluveni}\label{fig:ui-screen-vlastnostistavu}
 \end{figure}
 
-\subsection{F18 -- omezení a validace hodnot}
+\subsection{F18 -- omezení a validace hodnot}\label{subsec:F18implementace}
 
 V rámci všech požadavků a také na základě revize stávající domény, jejích entit a omezení byla vytvořena a sepsána v rámci návrhu na obrázku~\ref{fig:db-model}, na základě tohoto návrhu bylo třeba mnoho z omezení doimplementovat -- o některých jsem se již zmínil při implementaci jednotlivých funkčních požadavků. Zde uvedu ještě několik komentářů k implementaci.
 
@@ -565,13 +565,13 @@ Bylo rozhodnuto, že je vhodné, aby se na klientské části (ve formuláři pr
     \caption{Automatické zrušení lekce, když jsou všichni omluveni}\label{fig:ui-screen-automatickezruseni}
 \end{figure}
 
-Po nasazení bylo zjištěno, že zde došlo k problému zvoleného řešení tohoto požadavku v souvislosti s požadavkem~\ref{F21}, kdy algoritmus označil jako zrušenou lekci bez účastníků, toto bylo opraveno (viz~\ref{F21implementace}).
+Po nasazení bylo zjištěno, že zde došlo k problému zvoleného řešení tohoto požadavku v souvislosti s požadavkem~\ref{F21}, kdy algoritmus označil jako zrušenou lekci bez účastníků, toto bylo opraveno (viz~\ref{subsec:F21implementace}).
 
 \subsection{F20 -- zobrazení zrušených lekcí}
 
 Vzhledem ke způsobu řešení původního požadavku z bakalářské práce na skrytí zrušených lekcí -- bylo řešeno jednoduchým filtrem na API -- je snadné toto filtrování zrušit a zobrazit tak zrušené lekce i v přehledu a diáři, které právě užívají bod s filtrováním. Filtrování zrušených lekcí bylo tedy v kódu jednoduchou úpravou jednoho řádku zrušeno a zrušené lekce se nyní zobrazují nejen v kartě klientů, ale také se korektně včetně příslušného zvýraznění barvou a symboly zobrazují i v přehledu a diáři.
 
-\subsection{F21 -- skupinové lekce bez účastníků}\label{F21implementace}
+\subsection{F21 -- skupinové lekce bez účastníků}\label{subsec:F21implementace}
 
 V rámci požadavku~\ref{F21} je zmíněno, že původní aplikace nezvládá evidovat lekce bez účastníků -- serverová část s tímto nepočítá (ale při zaslání lekce bez účastníků neprotestuje), klientská část dokonce při práci se skupinou bez členů a lekcí bez účastníků spadne.
 
@@ -585,15 +585,46 @@ V této sekci se zaměřím na implementaci většiny nefunkčních požadavků,
 
 \subsection{N1 -- dokumentace}
 
-TODO!
+Na klientské části (TypeScript) byla do kódu doplněna dokumentace pro všechny exportované funkce a také komponenty (a jejich \enquote{props} a \enquote{state}). V ukázce kódu~\ref{lst:docs-js} je vidět ukázka dokumentace \enquote{props} komponenty \verb|PrepaidCounters|.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{ts}
+type Props = {
+    /** Pole se členstvími všech klientů. */
+    memberships: Array<MembershipType>
+    /** Funkce, která se zavolá po aktualizaci
+     počtu předplacených lekcí. */
+    funcRefreshPrepaidCnt: (
+        id: MembershipType["id"],
+        prepaidCnt: MembershipType["prepaid_cnt"]
+    ) => void
+    /** Skupina je aktivní (true). */
+    isGroupActive: boolean
+}
+	\end{minted}
+	\caption{Dokumentace v TS (komponenta PrepaidCounters)}\label{lst:docs-js}
+\end{listing}
+
+Na serverové části (Python) byla dokumentace dodána ke všem třídám a metodám, mj. obsahuje i popis konkrétních omezení, pokud tato metoda nějaká implementuje -- kvůli trasovatelnosti omezení definovaných v podsekci~\ref{subsec:F18implementace}. Na ukázce kódu~\ref{lst:docs-python} je dokumentace metody pro validování telefonu včetně označení implementovaného omezení.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+def validate_phone(phone: str) -> str:
+    """
+    OMEZENÍ O11: Ověří, že je telefonní číslo ve správném
+     formátu, jinak vyhodí výjimku.
+    """
+	\end{minted}
+	\caption{Dokumentace v TS (komponenta PrepaidCounters)}\label{lst:docs-python}
+\end{listing}
 
 \subsection{N3 -- zavedení nástrojů pro usnadnění vývoje a údržby}
 
 V této podsekci budu psát o způsobu zavedení nástrojů pro usnadnění vývoje a údržby. V rámci kapitoly~\ref{chap:nastrojeprousnadnenivyvojeaudrzby} byla provedena rešerše možných nástrojů a následně v kapitole~\ref{chap:zvolenetechnologie} bylo zvoleno, které nástroje budou použity, případně vyzkoušeny. Nejprve se zaměřím na zavedení nástrojů pro monitorování chyb a správu logů. Poté popíši způsob zavedení statického typování do serverové části (Python) i klientské části (JS). V poslední části pak popíši způsob zavedení linterů, formatterů a dalších nástrojů pro statickou analýzu kódu.
 
-Pro monitorování chyb bylo třeba zavést nástroj Sentry. Aby bylo možné monitorovat chyby jak ze serverové, tak klientské části, bylo potřeba obě tyto části se Sentry propojit zvlášť. Při výskytu jakékoliv chyby na serverové části se v Sentry objeví podrobné informace včetně kontextu, totéž při výskytu problému na klientské části, kde navíc byla integrována do komponenty \verb|ErrorBoundary| implementované v podsekci~\ref{F15implementace} možnost zaslání zpětné vazby lektorkou -- tedy při výskytu chyby je možné prostřednictvím formuláře napsat slovy, co se dělo, a tyto informace jsou pak přiřazeny k danému problému v Sentry. Používaný formulář nabízí Sentry, bylo pouze třeba prostřednictvím konfigurace celý formulář přeložit do českého jazyka. Sentry je propojené s Heroku a GitHubem a díky pokročilé konfiguraci v rámci projektu je možné u problémů vidět, ve kterém nasazeném prostředí problém nastal, jaká zde byla verze aplikace, s jakým commitem chyba může souviset apod. Sentry bylo na projektu zavedeno v červenci 2018 a od té doby se ukázalo jako velmi užitečný pomocník, protože díky němu bylo zachyceno a jednoduše reprodukováno mnoho chyb, díky možnosti zobrazit kontext chyby a např. logy z konzole prohlížeče apod. Formulář pro zaslání zpětné vazby lektorka několikrát využila a i díky němu bylo ještě snadnější chyby reprodukovat. Byla analyzována možnost využití nástroje Logentries pro zaznamenávání videa s kroky uživatele, toto zavedeno nebylo -- za prvé díky podrobným informacím ze Sentry a Logentries byl za celou dobu používání vždy k dispozici dostatek informací, za druhé je zde problém s počtem nahraných sezení, kdy se nahrávají všechna sezení, nikoliv pouze ta vedoucí k chybě, tedy snadno se vyčerpá limit 1~000~ nahrávek a až dojde k chybě, nahrávka už nebude.
+Pro monitorování chyb bylo třeba zavést nástroj Sentry. Aby bylo možné monitorovat chyby jak ze serverové, tak klientské části, bylo potřeba obě tyto části se Sentry propojit zvlášť. Při výskytu jakékoliv chyby na serverové části se v Sentry objeví podrobné informace včetně kontextu, totéž při výskytu problému na klientské části, kde navíc byla integrována do komponenty \verb|ErrorBoundary| implementované v podsekci~\ref{subsec:F15implementace} možnost zaslání zpětné vazby lektorkou -- tedy při výskytu chyby je možné prostřednictvím formuláře napsat slovy, co se dělo, a tyto informace jsou pak přiřazeny k danému problému v Sentry. Používaný formulář nabízí Sentry, bylo pouze třeba prostřednictvím konfigurace celý formulář přeložit do českého jazyka. Sentry je propojené s Heroku a GitHubem a díky pokročilé konfiguraci v rámci projektu je možné u problémů vidět, ve kterém nasazeném prostředí problém nastal, jaká zde byla verze aplikace, s jakým commitem chyba může souviset apod. Sentry bylo na projektu zavedeno v červenci 2018 a od té doby se ukázalo jako velmi užitečný pomocník, protože díky němu bylo zachyceno a jednoduše reprodukováno mnoho chyb, díky možnosti zobrazit kontext chyby a např. logy z konzole prohlížeče apod. Formulář pro zaslání zpětné vazby lektorka několikrát využila a i díky němu bylo ještě snadnější chyby reprodukovat. Byla analyzována možnost využití nástroje Logentries pro zaznamenávání videa s kroky uživatele, toto zavedeno nebylo -- za prvé díky podrobným informacím ze Sentry a Logentries byl za celou dobu používání vždy k dispozici dostatek informací, za druhé je zde problém s počtem nahraných sezení, kdy se nahrávají všechna sezení, nikoliv pouze ta vedoucí k chybě, tedy snadno se vyčerpá limit 1~000~ nahrávek a až dojde k chybě, nahrávka už nebude.
 
-Pro správu logů bylo třeba zavést nástroj Logentries. Bylo využito možnosti jednoduchého napojení Logentries díky doplňku na Heroku, logy z Heroku jsou tak dostupné v rámci Logentries, je k dispozici historie a vyhledávání. Využito je též upozorňování na některé události, aplikace nabízí ve výchozím stavu mnoho předdefinovaných upozornění. Logentries je na projektu nasazeno od září 2018 a od té doby bylo několikrát úspěšně využito např. pro zjištění historie práce lektorky v rámci aplikace (v rámci reprodukování chyby), díky e-mailovým upozorněním byly včas identifikovány problémy ohledně pomalých operací na API (souvisí s optimalizací API v podsekci~\ref{N6implementace}) a také byl díky upozorněním odhalen výpadek API Fio banky (kde kvůli nevhodnému ošetření možného výpadku se aplikace nechovala korektně). Prostor pro ukládání logů je dostačující, dle statistik za celou dobu používání bylo nejvíc za měsíc využito 4~MB prostoru.
+Pro správu logů bylo třeba zavést nástroj Logentries. Bylo využito možnosti jednoduchého napojení Logentries díky doplňku na Heroku, logy z Heroku jsou tak dostupné v rámci Logentries, je k dispozici historie a vyhledávání. Využito je též upozorňování na některé události, aplikace nabízí ve výchozím stavu mnoho předdefinovaných upozornění. Logentries je na projektu nasazeno od září 2018 a od té doby bylo několikrát úspěšně využito např. pro zjištění historie práce lektorky v rámci aplikace (v rámci reprodukování chyby), díky e-mailovým upozorněním byly včas identifikovány problémy ohledně pomalých operací na API (souvisí s optimalizací API v podsekci~\ref{subsec:N6implementace}) a také byl díky upozorněním odhalen výpadek API Fio banky (kde kvůli nevhodnému ošetření možného výpadku se aplikace nechovala korektně). Prostor pro ukládání logů je dostačující, dle statistik za celou dobu používání bylo nejvíc za měsíc využito 4~MB prostoru.
 
 Napříč celou serverovou částí bylo všude v Pythonu zavedeno statické typování, v ukázce kódu~\ref{lst:statictyping-python} je vidět konkrétní implementace statického typování na kusu kódu. Pro kontrolu typů byla nejprve využita vestavěná typová kontrola v IDE (Pycharm), později byla zavedena i kontrola pomocí nástroje mypy -- díky oběma těmto nástrojům (které mimochodem nemají stejný výstup, po zavedení mypy se objevilo mnoho chyb, na které IDE neupozornilo) bylo nalezeno několik potenciálně problematických míst v kódu, které mohly způsobit různé problémy právě v souvislosti s typy, všechny byly opraveny. Díky zavedení typů tak kromě nalezení několika problémů je k dispozici kompletně oanotovaná základna, což tvoří výbornou dokumentaci kódu. Pro definice typů Djanga a Django REST Frameworku jsou využity \enquote{stubs} \href{https://github.com/typeddjango/djangorestframework-stubs}{djangorestframework-stubs} a \href{https://github.com/typeddjango/django-stubs/}{django-stubs}, po zavedení se ale ukázalo, že definice nejsou úplně kompletní a stoprocentně funkční, bylo tedy třeba na několika místech zavést explicitní ignoraci problémů, protože oba balíčky jsou stále ve vývoji.
 
@@ -655,7 +686,7 @@ codebeat
 codeclimate
 codacy
 
-\subsection{N4 -- revize bezpečnosti}\label{N4implementace}
+\subsection{N4 -- revize bezpečnosti}\label{subsec:N4implementace}
 
 V rámci detailní analýzy tohoto požadavku v podsekci~\ref{subsec:N4detail} bylo vytyčeno celkem 6 oblastí, na které je třeba se zaměřit a vylepšit je. Byly detailně specifikovány problémy, které je třeba opravit. Zde se postupně všem těmto vytyčeným bodům budu věnovat.
 
@@ -754,9 +785,9 @@ else:
 	\caption{Řešení řazení podle české abecedy -- 2. část}\label{lst:razeni2}
 \end{listing}
 
-\textbf{\ref{P19}:} Bylo třeba vytvořit komponentu \verb|AuthChecking|, která provádí dotaz na platnost tokenu napříč aplikací (kde se používá autentizace, tedy ne ve veřejných částech), a to nehledě na to, zda se přechází mezi stránkami nebo nikoliv -- jedenkrát za 3,5~h. Při požadavcích na API se taktéž řeší platnost tokenu a pro oba zmíněné případy platí, že pokud má token menší (nebo rovnu) platnost 65~min, obnoví se. Zavedené metody pro kontrolu platnosti jsou součástí objektu kontextu \verb|AuthContext| zavedeného v rámci následujícího požadavku~\ref{N6implementace}, díky zavedení tohoto kontextu bylo kompletně přepracováno přihlašování na klientské části a vyřešeny i další drobné chyby a problémy s tím související (např. už nelze otevřít přihlašovací stránku když je uživatel už přihlášen, během přihlašování se zobrazuje načítání, sloučení veškeré logiky přihlašování, na mobilu už se nezobrazuje ikonka hamburger menu když uživatel není přihlášen ad.).
+\textbf{\ref{P19}:} Bylo třeba vytvořit komponentu \verb|AuthChecking|, která provádí dotaz na platnost tokenu napříč aplikací (kde se používá autentizace, tedy ne ve veřejných částech), a to nehledě na to, zda se přechází mezi stránkami nebo nikoliv -- jedenkrát za 3,5~h. Při požadavcích na API se taktéž řeší platnost tokenu a pro oba zmíněné případy platí, že pokud má token menší (nebo rovnu) platnost 65~min, obnoví se. Zavedené metody pro kontrolu platnosti jsou součástí objektu kontextu \verb|AuthContext| zavedeného v rámci následujícího požadavku~\ref{subsec:N6implementace}, díky zavedení tohoto kontextu bylo kompletně přepracováno přihlašování na klientské části a vyřešeny i další drobné chyby a problémy s tím související (např. už nelze otevřít přihlašovací stránku když je uživatel už přihlášen, během přihlašování se zobrazuje načítání, sloučení veškeré logiky přihlašování, na mobilu už se nezobrazuje ikonka hamburger menu když uživatel není přihlášen ad.).
 
-\subsection{N6 -- optimalizace API}\label{N6implementace}
+\subsection{N6 -- optimalizace API}\label{subsec:N6implementace}
 
 Práci na tomto požadavku lze rozdělit do dvou částí -- optimalizace samotného API na serverové části a optimalizace využívání API z klientské části. Jedním problémem je totiž samotná pomalost API v určitých případech, druhým pak fakt, že na klientské části jsou dokola opakovány požadavky, které by bylo možné si na poději zapamatovat a neprovádět je znovu.
 

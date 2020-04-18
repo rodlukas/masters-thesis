@@ -875,8 +875,11 @@ React.useEffect(() => {
 	\caption{Ukázka použití hooků ze souboru Loading.tsx}\label{lst:hook}
 \end{listing}
 
-\subsection{Další opravy chyb}
+\subsection{Další opravy chyb a vylepšení}
+
 Kromě všech již zmíněných chyb bylo nalezeno množství dalších, pro zajímavost jich několik uvedu v tomto odstavci. V diáři se špatně pracovalo s datem a pokud se do URL zadal datum s 31.~dnem v měsíci, došlo k \enquote{přesunu do minulosti} (číslo dne se změnilo na \enquote{1}) -- v důsledku toho se v aplikaci nedalo dostat do roku 2019, protože 31.~12~2018 bylo pondělí a další týden se přepnul na listopad. Také docházelo k nekorektnímu zobrazení lekcí v předchozím dnu -- pokud by lekce byla v 1~h ráno (což je sice nereálné, ale např. v rámci testů možné), v diáři se ukázala v předchozím dni jako poslední, dělo se to z důvodu porovnávání data s časovou zónou s datem bez časové zóny (vyřešeno použitím \verb|__date| v querysetu na straně API). Dále, při aktualizaci lekce v diáři v rámci nějakého dne došlo pouze k aktualizaci lekcí v rámci daného dnu, neprojevily se změny do jiných dnů (např. informace o \enquote{příště platit}). V souvislosti s výpočtem platby příště docházelo k nekorektním upozorněním, protože logika výpočtu nebrala v úvahu předplacené lekce.
+
+V rámci iteračního vývoje byla vylepšována také stávající implementace nových požadavků, např. bylo potřeba dodat do zájemců o kurzy telefonní číslo klienta, protože bylo zjištěno, že lektorka často tento údaj při práci se zájemcem potřebuje a musí kvůli tomu do karty klienta. Dále bylo napříč aplikací potřeba zvýraznit neaktivitu skupin a klientů -- tedy např. v kartě klienta/skupiny zobrazit upozornění na neaktivitu klientů/skupin/členů skupiny, v seznamu skupin zobrazit upozornění na neaktivního člena apod. -- aby lektorka ihned věděla, že jí vzhledem k uvedené mohou čekat omezení z hlediska funkcí (na základě omezení a validací v sekci~\ref{sec:datovymodel}).
 
 \subsection{Nástroj pro vývoj klientské části}
 
@@ -885,33 +888,73 @@ Jak je popsáno v podsekci~\ref{subsec:bp-klientskacast}, původní verze aplika
 Zmíněná poslední aktualizace byla ale poslední doslova, postupem času se začaly kupit problémy týkající se optimalizace klientské části a bezpečnosti (mnoho z aktuálních požadavků v rámci této práce také, např. \enquote{lazy} načítání, CSP ad.), které všechny čekaly na vyřešení různých problémů v tomto nástroji, které ale řešeny nebyly a autor přestal reagovat. V únoru 2020 tak bylo třeba přistoupit na změnu, opět byly 2 možné cesty -- zvolit nový nástroj a nebo vše nakonfigurovat ručně. Jako možný nový nástroj se ukázal nástroj \href{https://github.com/neutrinojs/neutrino/}{Neutrino}. Bylo rozhodnuto, že se provede testovací migrace jak na Neutrino, tak na vlastní konfiguraci všech nástrojů bez jakékoliv nadstavby v podobě abstrakce nad všemi nástroji (jako třeba Neutrino či nwb). Výsledkem byly nakonec tři finální verze ve třech větvích repozitáře -- vlastní konfigurace, Neutrino a nejnovější verze nástroje nwb (tento nástroj jen pro referenci a srovnávání). První dva nástroje byly porovnávány jak z hlediska fungování, výstupního kódu klientské části po sestavení (především jeho velikosti) a z hlediska jednoduchosti rozšiřování konfigurace. Postupnými změnami konfigurace (nástrojů Webpack, Babel a mnoha dalších) bylo dosaženo stavu, kdy výstupy sestavené klientské části byly prakticky totožné (i velikostí), tedy nikde nebylo ve vlastní konfiguraci opomenuto nic podstatného oproti nástrojům jako nwb či Neutrino. Abstraktní vrstva nad nástroji, kterou nabízí Neutrino, nabízí výhodu v podobě zdánlivě jednoduché konfigurovatelnosti, to je ale za cenu toho, že je třeba podrobně studovat dokumentaci a složitě nalézat, jakou jednoduchou cestou provést nějakou konfiguraci. Naproti tomu totéž v případě vlastní konfigurace je naprosto jednoduché, protože z dokumentace příslušného nástroje (např. Webpack) přesně víme, kde máme co upravit (což v Neutrinu může být naprosto kdekoliv). Tedy, vzhledem k tomu, že jednoduchá konfigurace byla na úkor toho, že je třeba složitě hledat a zkoušet, kam lze napsat kýženou konfiguraci a také vzhledem k tomu, že by se opět záviselo na nástroji, který může být pomalu vyvíjený, bylo rozhodnuto o nezavedení Neutrina (či jiných nástrojů) a o migraci na kompletní vlastní řešení v podobě vlastní konfigurace všech nástrojů a správy závislostí. K tomu bylo třeba podrobně nastudovat příslušné dokumentace, aby byla konfigurace v co nejlepším stavu, výhodou je ale naprostá nezávislost na nadstavbových nástrojích a v případě, že dorazí nějaká novinka, takový nástroj nebude tuto novinku blokovat v její implementaci a začlenění do projektu. V březnu 2020 tak mohlo být toto řešení (dokonce s rovnou začleněným TS) vydáno.
 
 \chapter{Testování}\label{chap:testovani}
-pozadavek N2
-implementace samotneho testovani v behave, Selenium
 
-https://www.katalon.com/resources-center/blog/continuous-testing-introduction/
+V souladu se zvoleným přístupem k testování v sekci~\ref{sec:zvolenetechnologie-testovani} a požadavkem~\ref{N2} byly implementovány v Pythonu API a UI (e2e) testy. Jak zde bylo též uvedeno, bude k tomu využit nástroj behave založený na BDD -- vzhledem k tomu, že v době vytváření testů byla již část aplikace hotová (mírně rozšířená verze oproti bakalářské práci), doslovně zde nelze aplikovat BDD přístup popsaný v podsekci~\ref{subsec:bdd} (protože aplikace je již napsaná), scénáře a testy tedy byly dopsány zpětně, při dalším rozšiřování již mohly být scénáře psány předem.
 
-N2: 
-* vylepseni vsech testu - neprobihala kontrola zobrazenych dat ve formulari pred upravou
-* zrychleni testu upravy klientu
-* vylepseni potvrzovani formulare pro lepsi zachyceni chyb
-* oprava náhodně občas nefungujících testů na CI (po každém scénáři je smazána localstorage) (\#64)
+\section{Scénáře}
 
-akceptacni testovani?:
-* js zvyrazneni neaktivity skupin a klientu napric aplikaci https://github.com/rodlukas/UP-admin/issues/85
-* zobrazení tel. čísel klientů v zájemcích o kurz (\#61)
+Scénáře v prakticky přirozeném jazyce (Gherkin), které popisují požadované chování aplikace -- v jednotlivých krocích (\enquote{steps}). Pro tyto kroky jsou pak implementovány samotné testy, tomu se budu věnovat v následující sekci. Scénáře mohou být psány v mnoha jazycích, pro jednoduchost a srozumitelnost byla zvolena výchozí angličtina. Funkcionality (\enquote{features}) se pak sestávají z více různých scénářů chování aplikace pro danou funkcionalitu, jeden ze scénářů pro funkcionalitu klientů (ze souboru \verb|clients.feature|) je vidět v ukázce kódu~\ref{lst:gherkin}. Kromě samotného scénáře je zde vidět použití tagů (pomocí \enquote{@}), díky tomu lze pak jednoduše selektivně spouštět např. pouze testy pro mazání či pro klienty apod. Mnoho ze scénářů je ale mnohem složitějších a používají klíčová slova \verb|Scenario Outline|, díky kterým lze spouštět daný scénář s různými kombinacemi hodnot (v reálu např. různé údaje klientů). Tyto soubory jsou ve složce \verb|tests/features|.
 
-\begin{itemize}
-\item popis, jak jsem konkretne tvoril vsechny UI/API testy v behave a seleniu, co bylo za problemy (nacitani, viz heuristika), jak to funguje, jak jsem vsechno udelal
-\item coverage 86 \%
-\item popsat co vsechno se testuje, ze je to v jazyku gherkin
-\item popsat co se netestuje
-\item pripadne zminit ze bylo reseno v ramci MI-PYT
-\item popsat dalsi problemy s nehezkym API selenia, ktere je pro ruzne jazyky nejednoznacne a nesjednocene (mozna kvuli verzi 3, v4 uz asi bude lepsi...), hrozna dokumentace, ale zase to pouzivaj vsichni tak se vsechno vsude najde
-\item pripadne dodat akceptacni testovani
-\item niels. heur. analyza, ktera pomohla pak v implementaci prakticky zprovoznit UI testovani, protoze co nevi clovek, nevi ani selenium a tezko se neco testuje (nevi ze se nacita kdyz to nevidi ani clovek, nevi ze se ma cekat..)
-\item mozna zminit usability testovani - zejmena proto, ze prakticky na tom stoji dalsi vylepseni v analyze, kde jsem pozoroval lektorku pri bezne praci a na zaklade toho jsme resili, co by chtela zmenit/pridat/upravit; tady neni treba testovat pro jine uzivatele, je to zamerene na interni pouziti 1 clovekem, o to lepsi to ale musi byt:)
-\end{itemize}
+Při psaní scénářů, jak bylo uvedeno v sekci~\ref{sec:zvolenetechnologie-testovani}, byly scénáře vytvářeny na základě reálných požadavků a nejdůležitějších funkcionalit a vlastností aplikace. Výsledkem je 7 funkcionalit (stavy účasti, zájemci o kurzy, klienti, kurzy, skupiny, lekce, přihlášení/odhlášení), sestávajících se z celkem 94 scénářů, scénáře se celkem skládají ze 374 kroků (to ale neznamená, že bude naimplementováno 374~metod pro testování, bude jich méně, protože mnoho z nich využívá opakovaně též kroky díky již zmíněnému \verb|Scenario Outline|).
 
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{gherkin}
+Feature: Operations with clients
+    Background: Prepared database and logged user
+        Given the database with some clients
+        And the logged user
+        
+    @delete @clients
+    Scenario: Delete client
+        When user deletes the client "Rod Lukáš"
+        Then the client is deleted
+	\end{minted}
+	\caption{Ukázka scénáře pro smazání klienta v souboru clients.feature}\label{lst:gherkin}
+\end{listing}
+
+\section{Implementace testů}
+
+Samotné implementace testů spouští behave na základě scénářů z předchozí sekce, každý krok scénáře příslušní dané implementaci v kódu. Vzhledem k tomu, že se testuje API a UI, tedy dvě vrstvy, bylo třeba tyto testy držet od sebe oddělené -- aby jediné, co mají společné, je implementace kroků ze scénářů (souborů \verb|*.feature|). Bylo zde zavedeno dělení, které behave umožňuje -- kroky UI a API jsou v separátních složkách \verb|api_steps| a \verb|ui_steps|. Dále je zavedena složka \verb|common_steps|, která obsahuje společné testovací kroky pro obě části, které zařídí připravenou a naplněnou databázi daty, které vychází z připravených dat v rámci souboru \verb|fixtures.py|.
+
+V ukázce kódu~\ref{lst:behave-implementace} je implementovaný krok ověřující úspěšné smazání klienta, konkrétně pro část API. Testy API, jak bylo uvedeno v sekci~\ref{sec:zvolenetechnologie-testovani} jsou méně křehké a více stabilní oproti UI, jsou také mnohem jednodušší, protože jsou pouze založené na modelu požadavek a odpověď, kdežto testování UI je mnohem komplexnější.
+
+Jedním z cílů bylo, aby i přes větší křehkost UI testů byl kladen důraz na to, aby výsledná křehkost byla co nejnižší. Pro představu, pokud bychom ve stávající klientské části přistupovali přesně ke každému elementu a jeho obsahu bez jakéhokoliv přemýšlení, můžeme díky zápisu XPath (který Selenium používá) získat kód velmi závislý na konkrétním UI kvůli explicitně uvedené cestě k elementu. Pokud místo toho budeme v rámci aplikace při testování přistupovat k obsahu elementu pomocí jiného mechanismu nezávislého na konkrétní implementaci, stabilita testů by byla mnohem vyšší -- tento mechanismus je známý a používá se v rámci Selenium komunity \cite{dataqa}, využívá vlastního HTML atributu s názvem obvykle \verb|data-qa|, který obsahuje příslušný název obsahu, implementovaný test pak nepřistupuje k elementu v závislosti na aktuální podobě UI, ale pouze pomocí selektoru najde ve stránce příslušný element s názvem v tomto atributu, viz ukázka kódu~\ref{lst:behave-implementace2}. Pokud tedy nedojde ke změnám v oblasti logiky aplikace, ale pouze se určitý element přesune ve struktuře HTML do jiného uzlu, pokud mu ponecháme tento atribut, testy nadále fungují a není třeba je nijak upravovat a jsou tak mnohem stabilnější. Pro některé knihovny UI (např. react-select) dodání vlastního atributu není možné, proto používají atributy \verb|id| nebo \verb|class|.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+@then("the client is deleted")
+def step_impl(context):
+    assert context.resp.status_code == 
+        status.HTTP_204_NO_CONTENT
+    assert not helpers.find_client_with_full_name(
+        context.api_client, context.full_name)
+    assert clients_cnt(context.api_client) < 
+        context.old_clients_cnt
+	\end{minted}
+	\caption{Implementace kroku ověřujícího, že je klient smazaný -- ze souboru api/clients.py}\label{lst:behave-implementace}
+\end{listing}
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{python}
+surname_field = context.browser.find_element_by_css_selector(
+    "[data-qa=client_field_surname]")
+	\end{minted}
+	\caption{Přístup k elementům v UI nezávislý na konkrétní implementaci UI}\label{lst:behave-implementace2}
+\end{listing}
+
+Pro integraci behave s Django se používá knihovna \href{https://github.com/behave/behave-django}{behave-django}. Pro Selenium se používá pro integraci s prohlížečem webdriver \href{https://github.com/mozilla/geckodriver}{geckodriver}, ten umožňuje Seleniu interagovat s prohlížečem Firefox, toto je zvoleno právě na základě primárního prohlížeče používaného lektorkou. Firefox je pak možné používat jak v rychlejším \enquote{headless} módu bez GUI, nebo pomalejším běžném režimu, kdy je možné sledovat průchody UI aplikace při testu.
+
+Při implementaci UI testů se objevilo několik problémů, v prvé řadě muselo být kompletně upraveno napříč aplikací načítání (součást problému s použitelností~\ref{P11}), protože skripty potřebují vědět, kdy se mohou začít rozhlížet po stránce a v ní obsažených datech. Toto bylo napříč aplikací opraveno a díky testům tak víme, že je lektorka informována o načítání skutečně vždy (v testovaných případech) korektně. Dále během vývoje v iteracích nastalo několik situací, kdy se testy ukázaly slabé. Například při pokusu o úpravu stávajících dat nekontrolovaly, zda jsou stávající data ve formuláři zobrazena korektně (což umožnilo vznik chyby v souvislosti se špatným zobrazením doby trvání kurzu). Dále v rámci úprav formuláře pro lekce byl hlášen problém ohledně tlačítka pro přidání lekce, které nebylo aktivní a lekci tak nešlo uložit, napříč tomu, že testy procházely (protože používaly pro odeslání formuláře metodu \verb|submit|, netestovaly tak reálné chování uživatele). Během testování se náhodně objevovaly nefunkční testy, zde se jednalo o falešně pozitivní hlášení, protože aplikace fungovala korektně -- nastal zde ale problém s localStorage, kdy uložené údaje (JWT token) se nestihly pro další scénář smazat, po každém scénáři tak behave automaticky localStorage smaže. UI testy byly také zpočátku poměrně pomalé, podrobnější inspekcí bylo zjištěno, že se v určitých krocích zbytečně dlouho čeká, toto bylo opraveno.
+
+Dalším problémem při práci se Seleniem byla dokumentace jeho API pro konkrétní jazyk, která byla v případě Pythonu poměrně nepřehledná, navíc někdy odlišná od API pro Selenium v Javě, kde se vyskytovalo více možností oproti Pythonu.
+
+Pro všechny důležité části aplikace jsou testy naimplementovány, napsané scénáře také slouží jako dokumentace, čehož bylo s úspěchem využito při práci na tvorbě testů v rámci předmětu \textit{MI-PYT}, kde vyučující mohl jednoduše vidět, co je testováno za funkce a jaké je pokrytí. Co se týče percentuálního pokrytí kódu testy, je cca 84~\%, toto číslo ale nemá příliš vypovídající hodnotu a důležitější je tak fakt, že jsou pokryty všechny důležité průchody v aplikaci. Paralelně k tomu je zároveň veden seznam zbývajících průchodů, které nejsou pokryty automatizovanými testy.
+
+\subsection{Další testování}
+
+Automatizované testování je možné spouštět jak na lokálním stroji, tak i na CI, kde se automaticky nejdříve spustí několik základních smoke testů (složka \verb|admin/tests|) a pakliže vše projde, spustí se nejprve automatizované testy API (které jsou rychlejší a tím pádem rychleji dojde k odhalení případné chyby, která by pravděpodobně ovlivnila i následující UI testy). Poté se spustí i UI testy, které trvají déle, ale výsledkem je zaručení, že důležité části aplikace jsou s nejvyšším pravděpodobností funkční.
+
+Automatizované testy nejsou ale jedinou formou testování v projektu. Samozřejmostí je také akceptační testování v rámci iterací při zavádění různých požadavků. Dále je též při větších změnách prováděno manuální testování zbylých průchodů v aplikaci, které nejsou automatizovány, toto se vyplatí, protože se nejedná o průchody nejdůležitější a velké změny se nedějí často (naopak by se nevyplatilo automatizovat úplně vše, viz podsekce~\ref{subsec:testingpyramid}).
 
 \chapter{Nasazení}\label{chap:nasazeni}
 pozadavky N7,N8

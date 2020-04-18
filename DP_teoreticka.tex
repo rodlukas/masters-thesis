@@ -166,7 +166,7 @@ Základním principem TDD je napsat nejprve testovací případy (přímo v prog
 
 Mezi nástroje pro podporu TDD patří xUnit frameworky, např. \href{https://junit.org/}{JUnit}, \href{https://testng.org/}{TestNG}, \href{https://nunit.org/}{NUnit} \cite{test-swtestinghelp2}. Pro \textbf{JS} se dle \cite{test-chart-js2} a \cite{test-chart-js1} nejvíce používá \href{https://jestjs.io/}{Jest} a \href{https://mochajs.org/}{Mocha}, pro \textbf{Python} se používá \href{https://docs.pytest.org/en/latest/}{PyTest} nebo \href{https://docs.python.org/3/library/unittest.html}{unittest} \cite{test-chart-python}.
 
-\subsection{BDD}
+\subsection{BDD}\label{subsec:bdd}
 
 BDD rozšiřuje TDD a místo psaní testovacích případů se zapisují požadované scénáře chování, později je opět implementován samotný kód aplikace zařizující její předem specifikované chování \cite{test-swtestinghelp2}. Díky zápisu scénářů v jazyce Gherkin, který vychází z přirozeného jazyka, je možná jednoduchá spolupráce mezi vývojáři, testery, analytiky a zákazníkem (i bez znalosti programovacích jazyků) \cite{test-swtestinghelp2, test-cucumber1}, vytvořené scénáře tvoří prakticky základ pro dokumentaci funkcí aplikace \cite{test-smartbear2}. Při vývoji aplikace totiž často dochází k nedorozuměním ohledně výkladu různých požadavků \cite{test-smartbear2}. Výhodou BDD je také zaměření na samotné chování aplikace, nikoliv na přemýšlení o implementaci v kódu, chování aplikace je hlavní prvek, na který se vývojáři a testeři zaměřují a umožňuje to tak držet se lépe požadavků zákazníka \cite{test-swtestinghelp2}. BDD testy se zaměřují zejména na prostřední vrstvy v testovací pyramidě, tedy API testy \cite{test-swtestinghelp1}.
 
@@ -356,7 +356,7 @@ Pro \textbf{Python} se používají 3~formattery: \href{https://github.com/psf/b
 
 V této kapitole uvedu, které nástroje a technologie zvolím pro použití a mj. je budu zavádět v následující praktické části. Volba bude obsahovat argumenty vycházející z provedených rešerší v rámci celé teoretické části.
 
-\section{Testování}
+\section{Testování}\label{sec:zvolenetechnologie-testovani}
 
 V souladu se zadáním práce bude implementováno automatizované testování API a UI. Vzhledem k tomu, že v současné verzi aplikace chybělo testování úplně (resp. bylo zde několik jen velmi základních testů prakticky na smoke úrovni, viz sekce~\ref{sec:prostreditestovaninasazovani}), byl zvolen přístup orientace API a UI testů na klíčové funkce a průchody v aplikaci, aby bylo zajištěno, že obvykle používané části aplikace budou vždy za jakékoliv situace funkční. Vzhledem ke křehkosti UI testů bude při jejich implementaci kladen důraz na co nejvyšší nezávislost na detailech UI, aby při změnách nebylo třeba do testů zasahovat vůbec, nebo v co nejmenší míře. Výhodou zavedení testů API, které jsou v \enquote{testovací pyramidě} (viz sekce~\ref{fig:testing_pyramid}) na nižší úrovni než UI testy je právě větší stabilita API oproti UI a mnohem větší rychlost samotných testů. Navíc, pokud neprojdou API testy, není se třeba ani zatěžovat s UI testováním (klientská část totiž stojí na používání REST API). Ze strategie \enquote{testovací trofeje} (viz sekce~\ref{fig:testing_trophy}) bude vycházet použití nástrojů pro statické typování a statickou analýzu kódu (tedy nejnižší úroveň této strategie), jejichž volbu uvedu v následujících sekcích -- to umožní i bez tvorby dalších testů na nižších úrovních testovací pyramidy kontrolovat v přiměřené míře problémy a kvalitu kódu.
 

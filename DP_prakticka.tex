@@ -952,37 +952,48 @@ Pro všechny důležité části aplikace jsou testy naimplementovány, napsané
 
 \subsection{Další testování}
 
-Automatizované testování je možné spouštět jak na lokálním stroji, tak i na CI, kde se automaticky nejdříve spustí několik základních smoke testů (složka \verb|admin/tests|) a pakliže vše projde, spustí se nejprve automatizované testy API (které jsou rychlejší a tím pádem rychleji dojde k odhalení případné chyby, která by pravděpodobně ovlivnila i následující UI testy). Poté se spustí i UI testy, které trvají déle, ale výsledkem je zaručení, že důležité části aplikace jsou s nejvyšším pravděpodobností funkční.
+Automatizované testování je možné spouštět jak na lokálním stroji, tak i na CI -- tomu se budu věnovat v následující kapitole~\ref{chap:nasazeni}.
 
 Automatizované testy nejsou ale jedinou formou testování v projektu. Samozřejmostí je také akceptační testování v rámci iterací při zavádění různých požadavků. Dále je též při větších změnách prováděno manuální testování zbylých průchodů v aplikaci, které nejsou automatizovány, toto se vyplatí, protože se nejedná o průchody nejdůležitější a velké změny se nedějí často (naopak by se nevyplatilo automatizovat úplně vše, viz podsekce~\ref{subsec:testingpyramid}).
 
 \chapter{Nasazení}\label{chap:nasazeni}
-pozadavky N7,N8
-popis toho jak jsem udelal novej zpusob nasazovani, vice prostredi, releasy
-* django-environ
 
-travis: zavedeni cache pro yarn a pipenv, zjednoduseni prace s .npmrc, na heroku se neprovadi build a collectstatic
+V této kapitole popíši nový způsob řešení nasazování aplikace do více prostředí (viz požadavek~\ref{N7}) další související, jako například zavedení pravidelných záloh databáze z produkce (viz požadavek~\ref{N8}).
 
-\section{Zavedení více prostředí}
-\begin{itemize}
-\item vyvoj BP probihal na lokalu a pak probehl push na GH, travis provedl build a testy a nasadilo se na produkci, to znamená že jsem samozřejmě produkci mohl zbořit (a taky že párkrát zbořil..)
-\item jak funguje stage, testing, produkce, demo co kam kdy jde v souvislosti s releasy, k cemu to je, jak se to osvedcilo - dohledavani problemu na stage kdyz se neco stane na produkci
-\item (zustava dev a produkce)
-\item pokročilé debugování na lokálním i vzdáleném prostředí díky Django Debug Toolbar 
-\item vyhoda testing a demo env je ze tam muze kdokoliv, neuvidi nic duverneho (ani pristup do banky tu neni povolen), takze do toho muze vedouci prace, oponent i bezny uzivatel, da se testovat vse na obdobnem prostredi jako pak bude staging, produkce (heroku)
-\item + samozrejme je zde moznost spustit na lokalu, ale todle je mnohem rychlejsi (viz GH)
-\end{itemize}
+\section{Aktualizace prostředí a vylepšení}
 
-\section{Další úpravy}
-\begin{itemize}
-\item automaticke zalohovani DB
-\item ...
-\end{itemize}
+Před provedením samotných změn týkajících se nasazení do více prostředí bylo třeba provést aktualizace prostředí na integračním serveru a další změny. V původní verzi aplikace byl Travis nakonfigurován pro původní verze Node.js, PostgreSQL a Python -- zde bylo potřeba vše zmigrovat na verze nejnovější v souladu s aplikací, pro PostgreSQL bylo třeba učinit pokročilejší konfiguraci, protože Travis zatím nepodporuje jednoduchý výběr nejnovějších verzí PostgreSQL. Aby bylo možné používat novější Python, bylo třeba přejít na nový obraz systému \enquote{bionic}.
 
+Pro Pipenv (na který bylo na Travisu také třeba zmigrovat z pip) a Yarn bylo třeba zavést cache, protože jinak trvalo sestavení aplikace na CI velmi dlouho. V rámci zavedení proměnných prostředí konfigurovaných z Djanga (v rámci požadavku~\ref{N4}, konkrétně problému~\ref{B5}, k implementaci došlo v podsekci~\ref{subsec:N4implementace}) bylo toto třeba taktéž přizpůsobit a nakonfigurovat v Travisu. Pro správné fungování českého jazyka při řazení v databázi bylo třeba stáhnout na Travisu příslušné balíčky. Toto i další operace jsou nově ve zvláštních skriptech ve složce \verb|scripts|, rozdělené dle toho, zda se používají jen na Travisu, na Heroku, nebo na obou platformách.
 
+Součástí zmíněných spouštěných skriptů je nově například také skript pro substituci řetězců napříč celou aplikací (tedy klientskou i serverovou částí). Ukázalo se, že je totiž potřeba v aplikaci spravovat několik řetězců na obou těchto částech a mít jednotnou možnost jejich přizpůsobení -- bylo by totiž samozřejmě možné např. dodat token pro Sentry do Pythonu z prostředí, ale jelikož klientská část je sestavená ze statických souborů, které nemají přístup k proměnným prostředí, nemohla by tímto způsobem klientská část k danému tokenu přistoupit. V ukázce kódu~\ref{lst:envjs} je vidět způsob řešení dvou řetězců, Travis tyto řetězce pak nahradí příslušnými hodnotami z proměnných prostředí (pro soubory klientské i serverové části).
 
-\chapter{Možná rozšíření}
-klasika - co by se dalo delat dal, o co by se appka mohla rozsirit, dalsi technologie, fce
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{ts}
+Sentry.init({
+    dsn: "\%SENTRY_DSN",
+    environment: getEnvName(),
+    release: "\%GIT_COMMIT",
+})
+	\end{minted}
+	\caption{Substituce řetězců na Travisu}\label{lst:envjs}
+\end{listing}
+
+\section{Testování}
+
+Na Travisu se spouští mnoho testů, nejprve se spustí testy pro typovou kontrolu klientské části (TS) a poté serverové části (mypy). Následně se automaticky nejdříve spustí několik základních smoke testů (složka \verb|admin/tests|) a pakliže vše projde, spustí se nejprve automatizované testy API (které jsou rychlejší a tím pádem rychleji dojde k odhalení případné chyby, která by pravděpodobně ovlivnila i následující UI testy). Poté se spustí i UI testy, které trvají déle, ale výsledkem je zaručení, že důležité části aplikace jsou s nejvyšším pravděpodobností funkční. Výsledné pokrytí se reportuje do služby codecov.
+
+\section{Nasazování na více prostředí}
+
+Původní způsob nasazování každé revize na produkční prostředí byl dle návrhu v sekci~\ref{sec:konfiguraceviceprostredi} nahrazen nasazením na prostředí \enquote{testing} pro každý commit z jakékoliv větve a na prostředí \enquote{staging} a produkci při vytvoření release na GitHubu.
+
+V sekci~\ref{sec:prostreditestovaninasazovani} bylo zmíněno, že ačkoliv se všechny kroky sestavení aplikace odehrají na Travisu, totéž se znovu děje na Heroku, ačkoliv to nemá význam, zpomaluje to nasazování a může vyústit v nefunkční sestavení kvůli mnoha různým důvodům. Z toho důvodu bylo Heroku nakonfigurováno tak, aby pouze provedlo migrace databáze a následně aplikaci spustilo díky všem dodaným závislostem nahraným z Travisu. Na Travisu bylo nově zařízeno, aby se zbytečně nenahrávaly na Heroku např. soubory s testy, dokumentací apod., které nejsou potřeba.
+
+Mimo návrh bylo kvůli požadavku na zveřejnění aplikace jako open-source v rámci zadání práce rozhodnuto, že dojde k zavedení ještě jednoho prostředí. Toto prostředí s názvem \enquote{demo} obsahuje demoverzi aplikace, kterou si může kdokoliv vyzkoušet -- přihlašovací údaje budou veřejně dostupné. Aby se zde nehromadily nesmyslná data v databázi, díky doplňku \href{https://devcenter.heroku.com/articles/scheduler}{Heroku Scheduler} dojde každý den v noci k automatickému smazání všech data a nahrání vzorových dat, která ukazují možnosti aplikace. Oproti ostatním prostředím zde nejsou povoleny výpisy z banky. Nasazení nové verze aplikace na prostředí oproti ostatním prostředím nesouvisí s přidáním revize či releasu, je založeno na přístupu zmíněném v sekci~\ref{sec:prostreditestovaninasazovani}, kde je vytvořena příslušná větev demo, do které se vždy pomocí sloučení změn z vývojové větve \verb|master| přidají nové změny -- tento jiný způsob je zvolen kvůli tomu, aby bylo jasně pod kontrolou, která revize je nahraná na tomto prostředí a dostupná přístupná pro veřejnost, protože tato demoverze slouží například i jako ukázka výsledků této práce např. pro oponenta, není tedy možné, aby zde kvůli vydání nové verze proběhly nějaké změny, verze musí zůstat zachovaná, dokud nebude ručně nasazena jiná.
+
+Kromě zmíněných změn bylo na Heroku samozřejmě potřeba zavést korektně všechny proměnné prostředí. Dále pro prostředí \enquote{testing} bylo umožněno spouštění nástroje Django Debug Toolbar (ve výchozím stavu toto není možné, ale prostřednictvím proměnných prostředí lze nástroj aktivovat a umožnit tak profilování aplikace a databáze i na vzdáleném prostředí, nikoliv pouze na prostředí lokálním. Toho bylo při optimalizaci práce s databází v rámci požadavku~\ref{N6} taktéž využito.
+
+Na produkci bylo zavedeno automatické zálohování databáze, Heroku toto umožňuje jednoduše nastavit \cite{heroku-backups}, toto bylo tedy nastaveno a k automatické záloze dojde každý den v nočních hodinách. Zálohy jsou ukládány každý den a zpětně je dostupných vždy 7~záloh pro předchozích 7~dnů a 1 týdenní záloha, ty je možné obnovit. Kompletní výsledná konfigurace Travisu je v souboru \verb|travis.yml| a vzhledem k její rozsáhlosti ji zde neuvádím.
 
 \chapter{Zveřejnění jako open-source}
 repo na GH uz je pripravene: https://github.com/rodlukas/UP-admin - vcetne instrukci pro spusteni
@@ -994,5 +1005,5 @@ repo na GH uz je pripravene: https://github.com/rodlukas/UP-admin - vcetne instr
 \item (? promenne prostredi mozna zminim i jinde)
 \end{itemize}
 
-
-
+\chapter{Možná rozšíření}
+klasika - co by se dalo delat dal, o co by se appka mohla rozsirit, dalsi technologie, fce

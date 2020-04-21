@@ -944,11 +944,11 @@ surname_field = context.browser.find_element_by_css_selector(
 
 Pro integraci behave s Django se používá knihovna \href{https://github.com/behave/behave-django}{behave-django}. Pro Selenium se používá pro integraci s prohlížečem webdriver \href{https://github.com/mozilla/geckodriver}{geckodriver}, ten umožňuje Seleniu interagovat s prohlížečem Firefox, toto je zvoleno právě na základě primárního prohlížeče používaného lektorkou. Firefox je pak možné používat jak v rychlejším \enquote{headless} módu bez GUI, nebo pomalejším běžném režimu, kdy je možné sledovat průchody UI aplikace při testu.
 
-Při implementaci UI testů se objevilo několik problémů, v prvé řadě muselo být kompletně upraveno napříč aplikací načítání (součást problému s použitelností~\ref{P11}), protože skripty potřebují vědět, kdy se mohou začít rozhlížet po stránce a v ní obsažených datech. Toto bylo napříč aplikací opraveno a díky testům tak víme, že je lektorka informována o načítání skutečně vždy (v testovaných případech) korektně. Dále během vývoje v iteracích nastalo několik situací, kdy se testy ukázaly slabé. Například při pokusu o úpravu stávajících dat nekontrolovaly, zda jsou stávající data ve formuláři zobrazena korektně (což umožnilo vznik chyby v souvislosti se špatným zobrazením doby trvání kurzu). Dále v rámci úprav formuláře pro lekce byl hlášen problém ohledně tlačítka pro přidání lekce, které nebylo aktivní a lekci tak nešlo uložit, napříč tomu, že testy procházely (protože používaly pro odeslání formuláře metodu \verb|submit|, netestovaly tak reálné chování uživatele). Během testování se náhodně objevovaly nefunkční testy, zde se jednalo o falešně pozitivní hlášení, protože aplikace fungovala korektně -- nastal zde ale problém s localStorage, kdy uložené údaje (JWT token) se nestihly pro další scénář smazat, po každém scénáři tak behave automaticky localStorage smaže. UI testy byly také zpočátku poměrně pomalé, podrobnější inspekcí bylo zjištěno, že se v určitých krocích zbytečně dlouho čeká, toto bylo opraveno.
+Při implementaci UI testů se objevilo několik problémů, v prvé řadě muselo být kompletně upraveno napříč aplikací načítání (součást problému s použitelností~\ref{P11}), protože skripty potřebují vědět, kdy se mohou začít rozhlížet po stránce a v ní obsažených datech. Toto bylo napříč aplikací opraveno a díky testům tak víme, že je lektorka informována o načítání skutečně vždy (v testovaných případech) korektně. Dále během vývoje v iteracích nastalo několik situací, kdy se testy ukázaly slabé. Například při pokusu o úpravu stávajících dat nekontrolovaly, zda jsou stávající data ve formuláři zobrazena korektně (což umožnilo vznik chyby v souvislosti se špatným zobrazením doby trvání kurzu). Dále v rámci úprav formuláře pro lekce byl hlášen problém ohledně tlačítka pro přidání lekce, které nebylo aktivní a lekci tak nešlo uložit, napříč tomu, že testy procházely (protože používaly pro odeslání formuláře stisk ENTER, reálné chování uživatele je ale obvykle stisk tlačítka pro odeslání). Během testování se náhodně objevovaly nefunkční testy, zde se jednalo o falešně pozitivní hlášení, protože aplikace fungovala korektně -- nastal zde ale problém s localStorage, kdy uložené údaje (JWT token) se nestihly pro další scénář smazat, po každém scénáři tak behave automaticky localStorage smaže. UI testy byly také zpočátku poměrně pomalé, podrobnější inspekcí bylo zjištěno, že se v určitých krocích zbytečně dlouho čeká, toto bylo opraveno.
 
 Dalším problémem při práci se Seleniem byla dokumentace jeho API pro konkrétní jazyk, která byla v případě Pythonu poměrně nepřehledná, navíc někdy odlišná od API pro Selenium v Javě, kde se vyskytovalo více možností oproti Pythonu.
 
-Pro všechny důležité části aplikace jsou testy naimplementovány, napsané scénáře také slouží jako dokumentace, čehož bylo s úspěchem využito při práci na tvorbě testů v rámci předmětu \textit{MI-PYT}, kde vyučující mohl jednoduše vidět, co je testováno za funkce a jaké je pokrytí. Co se týče percentuálního pokrytí kódu testy, je cca 84~\%, toto číslo ale nemá příliš vypovídající hodnotu a důležitější je tak fakt, že jsou pokryty všechny důležité průchody v aplikaci. Paralelně k tomu je zároveň veden seznam zbývajících průchodů, které nejsou pokryty automatizovanými testy.
+Pro všechny důležité části aplikace jsou testy naimplementovány, napsané scénáře také slouží jako dokumentace, čehož bylo s úspěchem využito při práci na tvorbě testů v rámci předmětu \textit{MI-PYT}, kde vyučující mohl jednoduše vidět, co je testováno za funkce a jaké je pokrytí. Co se týče percentuálního pokrytí kódu testy, je cca 84~\%, toto číslo ale nemá příliš vypovídající hodnotu a důležitější je tak fakt, že jsou pokryty všechny důležité průchody v aplikaci. Paralelně k tomu je zároveň veden seznam zbývajících průchodů (soubor \verb|tests/MANUAL_TESTS.md|), které nejsou pokryty automatizovanými testy.
 
 \subsection{Další testování}
 
@@ -966,7 +966,7 @@ Před provedením samotných změn týkajících se nasazení do více prostřed
 
 Pro Pipenv (na který bylo na Travisu také třeba zmigrovat z pip) a Yarn bylo třeba zavést cache, protože jinak trvalo sestavení aplikace na CI velmi dlouho. V rámci zavedení proměnných prostředí konfigurovaných z Djanga (v rámci požadavku~\ref{N4}, konkrétně problému~\ref{B5}, k implementaci došlo v podsekci~\ref{subsec:N4implementace}) bylo toto třeba taktéž přizpůsobit a nakonfigurovat v Travisu. Pro správné fungování českého jazyka při řazení v databázi bylo třeba stáhnout na Travisu příslušné balíčky. Toto i další operace jsou nově ve zvláštních skriptech ve složce \verb|scripts|, rozdělené dle toho, zda se používají jen na Travisu, na Heroku, nebo na obou platformách.
 
-Součástí zmíněných spouštěných skriptů je nově například také skript pro substituci řetězců napříč celou aplikací (tedy klientskou i serverovou částí). Ukázalo se, že je totiž potřeba v aplikaci spravovat několik řetězců na obou těchto částech a mít jednotnou možnost jejich přizpůsobení -- bylo by totiž samozřejmě možné např. dodat token pro Sentry do Pythonu z prostředí, ale jelikož klientská část je sestavená ze statických souborů, které nemají přístup k proměnným prostředí, nemohla by tímto způsobem klientská část k danému tokenu přistoupit. V ukázce kódu~\ref{lst:envjs} je vidět způsob řešení dvou řetězců, Travis tyto řetězce pak nahradí příslušnými hodnotami z proměnných prostředí (pro soubory klientské i serverové části).
+Součástí zmíněných spouštěných skriptů je nově například také skript pro substituci řetězců napříč celou aplikací (tedy klientskou i serverovou částí). Ukázalo se, že je totiž potřeba v aplikaci spravovat několik řetězců na obou těchto částech a mít jednotnou možnost jejich přizpůsobení -- bylo by totiž samozřejmě možné např. dodat token pro Sentry do Pythonu z prostředí, ale jelikož klientská část je sestavená ze statických souborů, které nemají přístup k proměnným prostředí, nemohla by tímto způsobem klientská část k danému tokenu přistoupit. Dalším příkladem jsou informace o verzi aplikace, větvi, commitu ad., které jsou k vidění v nastavení aplikace a používají se také pro další nástroje, aby tyto měly k dispozici informaci o aplikaci (např. Sentry). V ukázce kódu~\ref{lst:envjs} je vidět způsob řešení dvou řetězců, Travis tyto řetězce pak nahradí příslušnými hodnotami z proměnných prostředí (pro soubory klientské i serverové části).
 
 \begin{listing}[ht]
 	\begin{minted}[bgcolor=bg]{ts}
@@ -983,7 +983,7 @@ Sentry.init({
 
 Na Travisu se spouští mnoho testů, nejprve se spustí testy pro typovou kontrolu klientské části (TS) a poté serverové části (mypy). Následně se automaticky nejdříve spustí několik základních smoke testů (složka \verb|admin/tests|) a pakliže vše projde, spustí se nejprve automatizované testy API (které jsou rychlejší a tím pádem rychleji dojde k odhalení případné chyby, která by pravděpodobně ovlivnila i následující UI testy). Poté se spustí i UI testy, které trvají déle, ale výsledkem je zaručení, že důležité části aplikace jsou s nejvyšším pravděpodobností funkční. Výsledné pokrytí se reportuje do služby codecov.
 
-\section{Nasazování na více prostředí}
+\section{Nasazování na více prostředí}\label{sec:nasazovani-nasazovaninaviceprostredi}
 
 Původní způsob nasazování každé revize na produkční prostředí byl dle návrhu v sekci~\ref{sec:konfiguraceviceprostredi} nahrazen nasazením na prostředí \enquote{testing} pro každý commit z jakékoliv větve a na prostředí \enquote{staging} a produkci při vytvoření release na GitHubu.
 
@@ -995,15 +995,33 @@ Kromě zmíněných změn bylo na Heroku samozřejmě potřeba zavést korektně
 
 Na produkci bylo zavedeno automatické zálohování databáze, Heroku toto umožňuje jednoduše nastavit \cite{heroku-backups}, toto bylo tedy nastaveno a k automatické záloze dojde každý den v nočních hodinách. Zálohy jsou ukládány každý den a zpětně je dostupných vždy 7~záloh pro předchozích 7~dnů a 1 týdenní záloha, ty je možné obnovit. Kompletní výsledná konfigurace Travisu je v souboru \verb|travis.yml| a vzhledem k její rozsáhlosti ji zde neuvádím.
 
-\chapter{Zveřejnění jako open-source}
-repo na GH uz je pripravene: https://github.com/rodlukas/UP-admin - vcetne instrukci pro spusteni
-\begin{itemize}
-\item popsat proc zverejnit - moznost nahlednout na realnou aplikaci s nejnovejsimi technologiemi, jak je nakonfigurovana, inspirovat se + ma reference
-\item MIT licence
-\item popsat co bylo treba pro zverejneni udelat - priprava vsech casti, vyreseni tokenu, promennych prostredi... + problem: automaticky zverejneni buildu frontendu, aby ho clovek mohl pouzit pri spusteni u sebe na lokalu - protoze se pouziva placena knihovna, ke ktere mam pristup jen ja, takze si to nikdo jiny u sebe nezbuildi (resi to travis a nahraje build do assetu k release) - řešení: na travisu se provede build frontendu a ten se automaticky jako *zip* soubor nahraje k příslušnému github release 
-\item na GH  je popsání vlastností, požadavků, postupu instalace a spuštění, testování + připravená vzorová data pro DB (včetně návodu na jejich vložení)
-\item (? promenne prostredi mozna zminim i jinde)
-\end{itemize}
+\section{Ukázka aplikace}
+
+V rámci této sekce pro ilustraci uvedu na obrázku~\ref{fig:screen-tyden} jednu ukázku z reálně nasazené aplikace (data jsou fiktivní), konkrétně z diáře -- zde je velmi dobře vidět, jak jsou například nově začleněny barvy kurzů do UI aplikace (viz požadavek~\ref{F12}), je zde vidět mnoho možností zefektivňujících práci v rámci aplikace (např. rychlé přidání lekce pro daný den, pro jiný den, rychlá úprava lekce, rychlý přechod do karty klienta/skupiny přes jméno, viz požadavek~\ref{F11}), vyhledávání v aplikaci (v horní části, viz požadavek~\ref{F4}). Další snímky z obrazovek jsou k dispozici ve veřejně dostupném repozitáři s aplikací zveřejněném v rámci následující kapitoly~\ref{chap:zverejnenijakoopensource}.
+
+\begin{landscape}
+    \begin{figure}\centering
+    	\includegraphics[totalheight=0.83\textheight]{img/diary.png}
+    	\caption{Snímek obrazovky s týdenním přehledem}\label{fig:screen-tyden}
+    \end{figure}
+\end{landscape}
+
+\chapter{Zveřejnění jako open-source}\label{chap:zverejnenijakoopensource}
+
+Jedním z úkolů této práce je její zveřejnění jako open-source. Vzhledem k tomu, že je aplikace vytvořena na míru projektu ÚP, nepočítá se zde, že by snad byla využívána ostatními i v jiných projektech (ačkoliv je toto samozřejmě teoreticky možné). Hlavní pointou zveřejnění je možnost vývojářů nahlédnout na reálnou aplikaci vytvořenou pomocí nejnovější technologií, projít si její konfiguraci, inspirovat se. Taktéž se jedná o mou vlastní referenci.
+
+V rámci příprav na zveřejnění bylo třeba zpřehlednit strukturu repozitáře, zkontrolovat, že neuniknou žádné soukromé přístupové údaje (např. v případě již zmíněného problému s tokenem FontAwesome v problému s bezpečností~\ref{B5} jej bylo třeba přegenerovat, jinak by byl dostupný v historii repozitáře). Dále bylo třeba zvolit vhodnou licenci, zde byla pro svou jednoduchost zvolena licence MIT. Dále bylo třeba doplnit vzorové hodnoty proměnných prostředí do souboru \verb|.env.template| (zde využívám toho, že je již z podsekce~\ref{subsec:N4implementace} připravena právě práce s proměnnými prostředí jakožto konfigurací celé aplikace).
+
+Hlavním problémem, který souvisí se zveřejněním, je využívání privátních npm registrů pro FontAwesome~PRO -- tedy běžný uživatel nemá k dispozici příslušný token a nemůže si sestavit klientskou část. Toto bylo vyřešeno propojením Travis~CI a GitHub tak, že sestavená klientská část z Travisu (který z proměnných prostředí má k dispozici tokeny) se nahraje při releasu k tzv. \enquote{assets} u daného release, viz obrázek \ref{fig:gh}. Tento \verb|zip| soubor obsahuje statické soubory klientské části připravené k servírování jak na produkci, tak při lokálním spuštění dle návodu v repozitáři -- díky tomu, že je již klientská část takto sestavená, není třeba žádných tokenů.
+
+V repozitáři je \verb|README|, které je ve dvou jazycích -- anglickém a českém. Obsahuje informace pro otevření již nasazené demo verze aplikace (viz sekce~\ref{sec:nasazovani-nasazovaninaviceprostredi}) -- zde tedy doporučuji čtenáři tuto stránku\footnote{\url{https://github.com/rodlukas/UP-admin\#demo}} navštívit a demo verzi vyzkoušet. Dále obsahuje základní informace o aplikaci, klíčové funkce, použité technologie a nástroje pro serverovou i klientskou část, informace o nasazených aplikacích a nástrojích, struktuře repozitáře a v neposlední řadě obsahuje také samozřejmě podrobný srozumitelný návod pro spuštění aplikace v lokálním prostředí (včetně minimálních požadavků), práci s testy, licenci a screenshoty z aplikace. V dalších souborech jsou pak dostupné pokročilejší informace o testech či diagramy.
+
+\begin{figure}[h]\centering
+    \includegraphics[width=0.6\textwidth]{img/gh.png}
+    \caption{Sestavená klientská část ke stažení na GitHubu}\label{fig:gh}
+\end{figure}
+
+Repozitář byl úspěšně zveřejněn\footnote{\url{https://github.com/rodlukas/UP-admin}} a obsahuje všechny informace o aplikaci včetně použitých technologií, funkcí, minimálních požadavků, návodů na spuštění, vzorových dat a dalších informací o architektuře a testech.
 
 \chapter{Možná rozšíření}
 klasika - co by se dalo delat dal, o co by se appka mohla rozsirit, dalsi technologie, fce

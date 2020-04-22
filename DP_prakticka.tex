@@ -470,7 +470,7 @@ Nejtěžším krokem bylo zefektivnění práce s přidáváním lekcí. Je toti
 
 Bylo třeba implementovat uživatelsky přívětivý způsob výběru barvy kurzů, není samozřejmě možné pouze připravit pole pro zapsání kódu barvy. Zde bylo využito knihovny \href{https://github.com/casesandberg/react-color/}{React Color}, která nabízí množství různých komponent pro jednoduchý výběr barvy -- konkrétní komponenta již integrovaná do aplikace je vidět na obrázku~\ref{fig:ui-screen-barva}. Ve formuláři lektorka jednoduše klikne do pole pro změnu barvy a v této komponentě si barvu vybere. Pro integraci této komponenty bylo třeba vymyslet vhodnou formu otevření a zavření komponenty, v rámci drobného testování použitelnosti na lektorce pak byl finální návrh přijat a nasazen.
 
-Vzhledem k pravidlům použitelnosti a přístupnosti~\cite{wcag} je třeba dbát na to, aby volba konkrétní barvy nezpůsobila nečitelnost jednotlivých komponent v aplikaci -- součástí požadavku je totiž nejen samotná volba barvy kurzu, ale také začlenění této barvy do komponent napříč aplikací pro zvýšení přehlednosti. Zde bylo nejprve třeba napříč aplikací tuto barvu vhodně začlenit všude, kde se zmiňuje kurz -- tedy do přehledu lekcí a diáře, do rozbalovacích nabídek ve formulářích (díky tomu, že jsou řešeny komponentou \verb|react-select| je toto možné), do karty klienta, k seznamu skupin, jichž je klient členem, do seznamu všech skupin. Na základě začlenění barvy do aplikace bylo jasné, že se vždy bude vyskytovat barva kurzu s bílým textem, tedy bylo třeba vyřešit, jak lektorku upozornit, že zvolená barva není příliš kontrastní -- byla vytvořena validační funkce, která díky použití knihovny \href{https://github.com/gka/chroma.js/}{chroma.js} umožní zjistit, na kolik jsou dvě barvy vůči sobě kontrastní a toto porovnat vůči vhodně zvolené konstantě (experimenty bylo zjištěno, že je zbytečně restriktivní vycházet z doporučení WCAG a lze jej mírně zrelaxovat pro možnost volby více barev bez zásadního vlivu na čitelnost). Výsledné začlenění barev napříč aplikací je vidět v TODO.
+Vzhledem k pravidlům použitelnosti a přístupnosti~\cite{wcag} je třeba dbát na to, aby volba konkrétní barvy nezpůsobila nečitelnost jednotlivých komponent v aplikaci -- součástí požadavku je totiž nejen samotná volba barvy kurzu, ale také začlenění této barvy do komponent napříč aplikací pro zvýšení přehlednosti. Zde bylo nejprve třeba napříč aplikací tuto barvu vhodně začlenit všude, kde se zmiňuje kurz -- tedy do přehledu lekcí a diáře, do rozbalovacích nabídek ve formulářích (díky tomu, že jsou řešeny komponentou \verb|react-select| je toto možné), do karty klienta, k seznamu skupin, jichž je klient členem, do seznamu všech skupin. Na základě začlenění barvy do aplikace bylo jasné, že se vždy bude vyskytovat barva kurzu s bílým textem, tedy bylo třeba vyřešit, jak lektorku upozornit, že zvolená barva není příliš kontrastní -- byla vytvořena validační funkce, která díky použití knihovny \href{https://github.com/gka/chroma.js/}{chroma.js} umožní zjistit, na kolik jsou dvě barvy vůči sobě kontrastní a toto porovnat vůči vhodně zvolené konstantě (experimenty bylo zjištěno, že je zbytečně restriktivní vycházet z doporučení WCAG a lze jej mírně zrelaxovat pro možnost volby více barev bez zásadního vlivu na čitelnost). Výsledné začlenění barev napříč aplikací je vidět například na obrázku~\ref{fig:screen-tyden}.
 
 \begin{figure}[h]\centering
     \includegraphics[width=0.6\textwidth]{img/ui-screen-barva.png}
@@ -518,7 +518,7 @@ def destroy(self, request, *args, **kwargs):
             "Klienta lze smazat jen pokud nemá žádné lekce.")
     return result
 	\end{minted}
-	\caption{Upozornění na neuložené změny při zavření stránky}\label{lst:protectederror}
+	\caption{Ošetření chyb při mazání entit}\label{lst:protectederror}
 \end{listing}
 
 Jedním z dalších problémů, který nastával, byl pád aplikace na klientské části, který mohl nastat. Takový pád způsobí, že celá aplikace přestane fungovat, zmizí a je třeba celou stránku načíst znovu (toto chování je výchozí od Reactu~16 \cite{react-errorboundaries}, na kterém je tato aplikace postavená). Samozřejmě nejlepší cestou je vše ošetřit, což bylo také učiněno, problémy se ale stále mohou přihodit a je třeba zvolit takové záchranné řešení, aby celá aplikace nespadla a nabídla lektorce možné řešení. React nabízí od verze 16 možnost toto řešit pomocí komponent zvaných \enquote{Error Boundaries} -- je to běžná komponenta, která ale obsahuje navíc jednu (nebo obě) metody \verb|static getDerivedStateFromError| a \verb|componentDidCatch|, tyto komponenty odchytávají všechny chyby ve svých potomcích, logují je a umožňují zobrazit záložní UI \cite{react-errorboundaries}. Je mnoho možností, kam a kolik komponent umístit od zabalení individuálních komponent až po zabalení nejvyšších komponent ve stromu komponent. Zde jsem zvolil přístup zabalení tagu \verb|main| do jedné komponenty zvané přímočaře \verb|ErrorBoundary|, který obsahuje všechny komponenty v rámci aplikace pod menu. Díky tomu při výskytu jakékoliv chyby v těchto potomcích místo pádu a zmizení celé aplikace se zobrazí informace o chybě a stránka je díky zobrazenému menu stále nadále použitelná. Jak bude uvedeno v podsekci~\ref{subsec:N3implementace}, do zmíněné metody \verb|componentDidCatch| bude zakomponováno logování do Sentry a možnost zpětné vazby přiřazené k danému problému.
@@ -605,7 +605,7 @@ type Props = {
 	\caption{Dokumentace v TS (komponenta PrepaidCounters)}\label{lst:docs-js}
 \end{listing}
 
-Na serverové části (Python) byla dokumentace dodána ke všem třídám a metodám, mj. obsahuje i popis konkrétních omezení, pokud tato metoda nějaká implementuje -- kvůli trasovatelnosti omezení definovaných v podsekci~\ref{subsec:F18implementace}. Na ukázce kódu~\ref{lst:docs-python} je dokumentace metody pro validování telefonu včetně označení implementovaného omezení.
+Na serverové části (Python) byla dokumentace dodána ke všem třídám a metodám, mj. obsahuje i popis konkrétních omezení, pokud tato metoda nějaká implementuje -- kvůli trasovatelnosti omezení definovaných v podsekci~\ref{subsec:F18implementace}. Na ukázce kódu~\ref{lst:docs-python} je dokumentace metody pro validování telefonního čísla včetně označení implementovaného omezení.
 
 \begin{listing}[ht]
 	\begin{minted}[bgcolor=bg]{python}
@@ -615,7 +615,7 @@ def validate_phone(phone: str) -> str:
      formátu, jinak vyhodí výjimku.
     """
 	\end{minted}
-	\caption{Dokumentace v TS (komponenta PrepaidCounters)}\label{lst:docs-python}
+	\caption{Dokumentace v Pythonu (metoda pro validaci telefonního čísla)}\label{lst:docs-python}
 \end{listing}
 
 Pro dokumentaci API (která v rámci bakalářské práce vůbec nebyla a jediná forma dokumentace byl jednoduchý popis API v tabulkách přímo v textu práce \cite{bp}) bylo využito možností Django REST Frameworku -- ten nově nabízí podporu pro automatické generování OpenAPI schémat (standard pro jazykově nezávislý popis REST API \cite{openapi}), toto vygenerované schéma je pak možné pomocí dalších nástrojů jednoduše zobrazit uživateli srozumitelnou interaktivní formou \cite{drf-openapi}. Díky automatickému generování není třeba nijak aktualizovat dokumentaci API, protože se generuje dynamicky na základě kódu API, pro zobrazení schématu uživateli byl využit nástroj \href{https://swagger.io/tools/swagger-ui/}{Swagger UI}, díky tomu je možné dokumentaci interaktivně procházet a dokonce zasílat na API přímo z UI dotazy (vše je možné pouze po přihlášení). Na obrázku~TODO je vidět ukázka z této dokumentace.
@@ -726,7 +726,7 @@ Problém~\ref{B6} popisuje požadavek na zakázání indexování všem robotům
 	\begin{minted}[bgcolor=bg]{html}
 <meta name="robots" content="noindex, nofollow"/>
 	\end{minted}
-	\caption{Ukázka konfigurace proměnných prostředí}\label{lst:robots}
+	\caption{Kód pro zákaz indexování webu vyhledávači}\label{lst:robots}
 \end{listing}
 
 \subsection{N5 -- vylepšení použitelnosti}
@@ -1024,4 +1024,14 @@ V repozitáři je \verb|README|, které je ve dvou jazycích -- anglickém a če
 Repozitář byl úspěšně zveřejněn\footnote{\url{https://github.com/rodlukas/UP-admin}} a obsahuje všechny informace o aplikaci včetně použitých technologií, funkcí, minimálních požadavků, návodů na spuštění, vzorových dat a dalších informací o architektuře a testech.
 
 \chapter{Možná rozšíření}
-klasika - co by se dalo delat dal, o co by se appka mohla rozsirit, dalsi technologie, fce
+
+V rámci této práce byly pokryty implementací funkčních požadavků všechny oblasti aplikace a zatím nejsou známé žádné funkční požadavky do budoucna. Z mého pohledu je možné, že se bude zasahovat do oblasti klientů, kde v aplikaci bude v budoucnu přibývat více a více klientů a lektorka možná bude požadovat jednoduchou možnost mazání velmi starých klientů -- v aktuální podobě lze díky omezením ze sekce~\ref{sec:datovymodel} klienta smazat pouze pokud nemá žádné lekce, toto omezení by bylo třeba v této souvislosti upravit, zmírnit či obcházet.
+
+Z bakalářské práce zůstaly dvě možné oblasti rozšíření vyřazeny (viz podsekce~\ref{subsec:vyrazenepozadavky}) -- evidence pomůcek a učebnic pravděpodobně nebude s aplikací potřeba slučovat, protože postačuje její současné řešení. Offline přístup a SSR je ale oblast, o kterou lze na základě rešerše a prozkoumání možností aplikaci rozšířit.
+
+Co se týče dalších vylepšení klientské části, je zde plánovaná migrace na \verb|PureComponent| a \verb|React.memo| -- to umožní dále optimalizovat výkon klientské části a odstranit další zbytečná překreslování \cite{react-docs-api} (další optimalizace byly již provedeny v rámci implementace požadavku~\ref{N6}, viz podsekce~\ref{subsec:N6implementace}). Dále je plánováno zjednodušení některých rozsáhlých komponent, zejména pomocí \enquote{hooků}, byly zmíněny v sekci~\ref{sec:dalsireseneproblemy}, či rozdělení na více komponent. Výhledově bude také možné v aplikaci použít komponentu \verb|Suspense| (která je již v aplikaci použita pro \enquote{lazy} načítání stránek aplikace, viz podsekce~\ref{subsec:N6implementace}) pro práci s API -- umožnilo by to výrazné zjednodušení a vylepšení práce s API v rámci klientské části, zatím ale tuto komponentu pro toto načítání použít nelze, tato funkcionalita bude až v některé z dalších verzí Reactu~\cite{react-blog-roadmap}. S úpravou načítání také souvisí možnost přidání tlačítka pro obnovení dat v aplikaci bez překreslení celé aplikace (to by totiž udělalo nativní tlačítko v prohlížeči). Dalším možným rozšířením Reactu, které prozatím nebylo možné začlenit kvůli knihovnám, které používají zastaralé API Reactu, je použití komponenty \verb|StrictMode| -- ta umožní ve vývojovém režimu upozornit na používání zastaralého API Reactu a také může pomoci při zachycení některých chyb v kódu související s vedlejšími efekty při překreslování \cite{react-docs-strictmode}.
+
+Co se týče dokumentace, je v plánu doplnění dokumentace do kódu pro metody v komponentách klientské části a dále upřesnění typových anotací parametrů na serverové části, kde je např. očekáván obecný slovník, ale je vhodnější zavést striktnější kontrolu obsahu slovníku. Další možnou oblastí je zavedení kontejnerizace (např. Docker), to by mohlo usnadnit např. práci s databází.
+
+Všechna zmíněná možná vylepšení jsou evidována v \enquote{issues} v GitHub repozitáři\footnote{\url{https://github.com/rodlukas/UP-admin/issues}} (který byl zveřejněn v rámci kapitoly \ref{chap:zverejnenijakoopensource}).
+

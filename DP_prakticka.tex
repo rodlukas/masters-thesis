@@ -34,7 +34,7 @@ Následuje seznam funkčních, nefunkčních a vyřazených požadavků na rozš
 
 \begin{enumerate}[label=\textbf{N\arabic*}]
     \item \label{N1} \textbf{dokumentace:} dokumentace v kódu pro serverovou i klientskou část, dokumentace API,
-    \item \label{N2} \textbf{testování *:} aplikace prakticky neobsahuje žádné testy (jen několik základních \enquote{smoke} testů), je třeba zavést API a UI (e2e) testy pro klíčové části aplikace a průchody v aplikaci,
+    \item \label{N2} \textbf{testování *:} aplikace prakticky neobsahuje žádné testy (jen několik základních \enquote{smoke} testů), je třeba zavést API a UI (E2E) testy pro klíčové části aplikace a průchody v aplikaci,
     \item \label{N3} \textbf{zavedení nástrojů pro usnadnění vývoje a údržby:} je třeba zavést nástroje pro monitorování chyb v aplikaci, správu logů (vyhledávání, ukládání), statické typování a analýzu kódu -- k tomu byla provedena v teoretické části rešerše v kapitole~\ref{chap:nastrojeprousnadnenivyvojeaudrzby},
     \item \label{N4} \textbf{revize bezpečnosti:} je třeba provést kompletní revizi aplikace z hlediska bezpečnosti a opravit případné slabiny, problémy či zranitelnosti, provést aktualizace závislostí apod., detailní analýza tohoto požadavku viz podsekce~\ref{subsec:N4detail},
     \item \label{N5} \textbf{vylepšení použitelnosti:} z hlášení lektorky a také z vlastní analýzy vyplývá, že je třeba se zaměřit na opravení problémů s použitelností a její vylepšení, detailní analýza tohoto požadavku viz podsekce~\ref{subsec:N5detail},
@@ -889,7 +889,7 @@ Zmíněná poslední aktualizace byla ale poslední doslova, postupem času se z
 
 \chapter{Testování}\label{chap:testovani}
 
-V souladu se zvoleným přístupem k testování v sekci~\ref{sec:zvolenetechnologie-testovani} a požadavkem~\ref{N2} byly implementovány v Pythonu API a UI (e2e) testy. Jak zde bylo též uvedeno, bude k tomu využit nástroj behave založený na BDD -- vzhledem k tomu, že v době vytváření testů byla již část aplikace hotová (mírně rozšířená verze oproti bakalářské práci), doslovně zde nelze aplikovat BDD přístup popsaný v podsekci~\ref{subsec:bdd} (protože aplikace je již napsaná), scénáře a testy tedy byly dopsány zpětně, při dalším rozšiřování již mohly být scénáře psány předem.
+V souladu se zvoleným přístupem k testování v sekci~\ref{sec:zvolenetechnologie-testovani} a požadavkem~\ref{N2} byly implementovány v Pythonu API a UI (E2E) testy. Jak zde bylo též uvedeno, bude k tomu využit nástroj behave založený na BDD -- vzhledem k tomu, že v době vytváření testů byla již část aplikace hotová (mírně rozšířená verze oproti bakalářské práci), doslovně zde nelze aplikovat BDD přístup popsaný v podsekci~\ref{subsec:bdd} (protože aplikace je již napsaná), scénáře a testy tedy byly dopsány zpětně, při dalším rozšiřování již mohly být scénáře psány předem.
 
 \section{Scénáře}
 

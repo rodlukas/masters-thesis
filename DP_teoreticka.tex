@@ -4,13 +4,15 @@ V této kapitole stručně popíši verzi aplikace, která byla vytvořena v rá
 
 \section{Implementované požadavky}
 
+Pro další práci je třeba si vyjasnit, co už stávající aplikace poskytuje za funkcionalitu a jak je řešená -- zaměřím se proto nejprve na implementované funkční požadavky a poté na vyřešené nefunkční požadavky. Krátce se vždy pokusím uvést, jak je příslušný požadavek v rámci aplikace řešen či jak souvisí s ostatními.
+
 \subsection{Implementované funkční požadavky}
 
 V této podsekci shrnu implementované funkční požadavky. Součástí této podsekce je také původní logický datový model aplikace z bakalářské práce \cite{bp} na obrázku~\ref{fig:db-model-bp} pro lepší pochopení domény.
 
-Shrnutí funkčních požadavků \cite{bp}:
+Shrnutí implementovaných funkčních požadavků \cite{bp}:
 \begin{itemize}
-    \item \textbf{evidence klientů:} evidování základních informací o klientovi,
+    \item \textbf{evidence klientů a skupin:} evidování základních informací o klientovi a skupinách (skupina sdružuje několik klientů dohromady a patří k nějakému kurzu),
     \item \textbf{evidence lekcí klientů:} evidování základních informací o lekcích (včetně stavů účasti všech účastníků a stavu jejich platby za danou lekci), lekce mohou být pro jednotlivce nebo pro skupiny, každá náleží nějakému kurzu,
     \item \textbf{evidence předplacených lekcí:} předplacená lekce je řešená jako lekce, která nemá datum a čas konání,
     \item \textbf{evidence kurzů a stavů účasti:} pro použití při evidenci lekcí,
@@ -28,7 +30,7 @@ Shrnutí funkčních požadavků \cite{bp}:
 
 \subsection{Implementované nefunkční požadavky}
 
-Následuje shrnutí nefunkčních požadavků \cite{bp}:
+Následuje shrnutí implementovaných nefunkčních požadavků \cite{bp}:
 \begin{itemize}
     \item \textbf{kompatibilita s webovými prohlížeči:} aplikace je plně funkční a kompatibilní s běžnými webovými prohlížeči (Google Chrome, Mozilla Firefox, Microsoft Edge, Apple Safari) v posledních verzích, důraz je především kladen na desktopový prohlížeč Mozilla Firefox, na kterém se aplikace používá primárně,
     \item \textbf{podpora široké škály zařízeních:} aplikace je responzivní a korektně se zobrazuje na všech zařízeních používaných lektorkou -- iPad s iOS~13.3 a 9,7palcovým displejem, Nokia~5 s Androidem~9.0 a 5,2palcovým~displejem, notebook s Windows~10 s rozlišením 1920~×~1080 a 15,6palcovým~displejem,
@@ -41,6 +43,8 @@ Následuje shrnutí nefunkčních požadavků \cite{bp}:
 \section{Použité technologie}
 
 V této sekci shrnu všechny podstatné použité technologie pro serverovou i klientskou část. Součástí bakalářské práce byl přehledný diagram nasazení pro lepší orientaci \cite{bp} -- vzhledem k tomu, že se jádro architektury nemění, původní diagram zde neuvádím, na obrázku~\ref{fig:deployment-diagram} z kapitoly návrhu~\ref{chap:navrh} v praktické části je ale k vidění jeho aktualizovaná verze.
+
+Toto shrnutí použitých technologií je také užitečné pro následnou práci, protože je třeba mít podrobný přehled o všech možných používaných nástrojích, frameworcích, knihovnách, doplňcích apod. Taktéž to čtenáři umožní bližší představu o výchozím stavu aplikace, která bude v rámci praktické části rozšiřována.
 
 \subsection{Serverová část}
 
@@ -62,13 +66,13 @@ Klientskou část aplikace lze klasifikovat jako:
 
 Je postavena na knihovně \href{https://reactjs.org/}{React~16.3} spolu s UI frameworkem \href{https://getbootstrap.com}{Bootstrap~4.1} a související knihovnou \href{https://reactstrap.github.io/}{Reactstrap~5.0}, která umožňuje jednoduché použití Bootstrap komponent v Reactu \cite{reactstrap}. Pro asynchronní požadavky na REST API využívá knihovnu \href{https://github.com/axios/axios}{axios~0.18}. 
 
-Konfigurace celé klientské části stojí na nástroji \href{https://github.com/facebook/create-react-app}{create-react-app~1}, který umožňuje \cite{cra} vytvářet React aplikace bez počáteční konfigurace. Vzhledem k použití Djanga bylo ale potřeba \cite{bp} pomocí příkazu \verb|eject| \enquote{vysunout} celou konfiguraci klientské části a pomocí knihoven \href{https://github.com/owais/webpack-bundle-tracker}{webpack-bundle-tracker} a  \href{https://github.com/owais/django-webpack-loader}{django-webpack-loader} propojit Django s nástrojem Webpack. Webpack zde umožňuje mj. spouštět vývojový server pro klientskou část a vytvářet z jednotlivých modulů klientské části balíčky, které lze pak po zadaných transformacích servírovat na produkci pro běžné webové prohlížeče \cite{webpack-ackee}.
+Konfigurace celé klientské části stojí na nástroji \href{https://github.com/facebook/create-react-app}{create-react-app~1}, který umožňuje vytvářet React aplikace bez počáteční konfigurace \cite{cra}. Vzhledem k použití Djanga bylo ale potřeba pro pohodlný vývoj pomocí příkazu \verb|eject| \enquote{vysunout} celou konfiguraci klientské části a pomocí knihoven \href{https://github.com/owais/webpack-bundle-tracker}{webpack-bundle-tracker} a  \href{https://github.com/owais/django-webpack-loader}{django-webpack-loader} propojit Django s nástrojem Webpack \cite{bp}. Webpack zde umožňuje mj. spouštět vývojový server pro klientskou část a vytvářet z jednotlivých modulů klientské části balíčky, které lze pak po zadaných transformacích servírovat na produkci pro běžné webové prohlížeče \cite{webpack-ackee}.
 
 V případě vývoje na lokálním stroji se používá \cite{bp} pro serverovou část vývojový Django server a pro klientskou část \href{https://github.com/webpack/webpack-dev-server}{webpack-dev-server}, oba nabízejí podporu pro \enquote{hot reloading} (tedy okamžité automatické projevení změn v kódu bez kompletního znovunačtení aplikace \cite{webpack-docs-hmr}) a v tomto ohledu bylo vše i díky zmíněným knihovnám zprovozněno.
 
 \section{Prostředí, testování a nasazování}\label{sec:prostreditestovaninasazovani}
 
-Aplikace \cite{bp} je verzována v privátním repozitáři na serveru GitHub. Při každém nahrání nové revize na server (\verb|push|) se na integračním serveru \href{https://travis-ci.com/}{Travis~CI} (Continuous Integration) spustí sestavení aplikace, vytvoří se testovací databáze a spustí se základní testy (viz níže). Výsledné pokrytí kódu spočítané pomocí nástroje \href{https://coverage.readthedocs.io/}{Coverage.py} se poté nahraje na platformu \href{https://codecov.io/}{codecov.io} pro pokročilé statistiky o testování \cite{codecov}. Pokud vše na Travisu proběhne v pořádku, začne nasazení na produkční server běžící na \href{https://www.heroku.com/}{Heroku}. Nasazení na Heroku probíhá tak, že se přímo na něm spouští celé sestavení aplikace znovu, zmigruje se databáze a aplikace se nasadí. I tento průběh lze sledovat přímo z Travis terminálu.
+Aplikace \cite{bp} je verzována v privátním repozitáři na serveru GitHub. Při každém nahrání nové revize na server (\verb|push|) se na integračním serveru \href{https://travis-ci.com/}{Travis~CI} (Continuous Integration) spustí sestavení aplikace, vytvoří se testovací databáze a spustí se základní testy (viz níže). Výsledné pokrytí kódu spočítané pomocí nástroje \href{https://coverage.readthedocs.io/}{Coverage.py} se poté nahraje na platformu \href{https://codecov.io/}{codecov.io} pro pokročilé statistiky o testování \cite{codecov}. Pokud vše na Travisu proběhne v pořádku, začne nasazování na produkční server běžící na \href{https://www.heroku.com/}{Heroku}. Nasazení na Heroku probíhá tak, že se přímo na něm spouští celé sestavení aplikace znovu, zmigruje se databáze a aplikace se nasadí. I tento průběh lze sledovat přímo z Travis terminálu.
 
 Spouštěné testy jsou základní a velmi jednoduché, otestují \cite{bp}:
 \begin{itemize}
@@ -81,7 +85,7 @@ Jak je vidět, testy byly skutečně pouze velmi povrchní, dalo by se říci, �
 
 \section{Plán rozšíření z bakalářské práce}\label{sec:planrozsirenibp}
 
-Na závěr bakalářské práce \cite{bp} bylo zmíněno několik možných rozšíření aplikace. Následuje jejich přehledný stručný přehled, v kapitole~\ref{chap:sberpozadavkuaanalyza} se mimo jiné na některá z nich také dostane, případně bude vysvětleno, proč je daný požadavek vyřazen.
+Na závěr bakalářské práce \cite{bp} bylo zmíněno několik možných rozšíření aplikace. Následuje jejich stručný přehled, v kapitole~\ref{chap:sberpozadavkuaanalyza} se mimo jiné na některá z nich také dostane, případně bude vysvětleno, proč je daný požadavek vyřazen.
 
 Přehled možných rozšíření \cite{bp}:
 \begin{itemize}

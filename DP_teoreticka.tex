@@ -372,7 +372,7 @@ V této kapitole uvedu, které nástroje a technologie zvolím pro použití a m
 
 \section{Testování}\label{sec:zvolenetechnologie-testovani}
 
-V souladu se zadáním práce bude implementováno automatizované testování API a UI. Vzhledem k tomu, že v současné verzi aplikace chybělo testování úplně (resp. bylo zde několik jen velmi základních testů prakticky na smoke úrovni, viz sekce~\ref{sec:prostreditestovaninasazovani}), byl zvolen přístup orientace API a UI testů na klíčové funkce a průchody v aplikaci, aby bylo zajištěno, že obvykle používané části aplikace budou vždy za jakékoliv situace funkční. Vzhledem ke křehkosti UI testů bude při jejich implementaci kladen důraz na co nejvyšší nezávislost na detailech UI, aby při změnách nebylo třeba do testů zasahovat vůbec, nebo v co nejmenší míře. Výhodou zavedení testů API, které jsou v \enquote{testovací pyramidě} (viz sekce~\ref{fig:testing_pyramid}) na nižší úrovni než UI testy je právě větší stabilita API oproti UI a mnohem větší rychlost samotných testů. Navíc, pokud neprojdou API testy, není se třeba ani zatěžovat s UI testováním (klientská část totiž stojí na používání REST API). Ze strategie \enquote{testovací trofeje} (viz sekce~\ref{fig:testing_trophy}) bude vycházet použití nástrojů pro statické typování a statickou analýzu kódu (tedy nejnižší úroveň této strategie), jejichž volbu uvedu v následujících sekcích -- to umožní i bez tvorby dalších testů na nižších úrovních testovací pyramidy kontrolovat v přiměřené míře problémy a kvalitu kódu.
+V souladu se zadáním práce bude implementováno automatizované testování API a UI (v případě UI konkrétně E2E testování). Vzhledem k tomu, že v současné verzi aplikace chybělo testování úplně (resp. bylo zde několik jen velmi základních testů prakticky na smoke úrovni, viz sekce~\ref{sec:prostreditestovaninasazovani}), byl zvolen přístup orientace API a UI testů na klíčové funkce a průchody v aplikaci, aby bylo zajištěno, že obvykle používané části aplikace budou vždy za jakékoliv situace funkční. Vzhledem ke křehkosti UI testů bude při jejich implementaci kladen důraz na co nejvyšší nezávislost na detailech UI, aby při změnách nebylo třeba do testů zasahovat vůbec, nebo v co nejmenší míře. Výhodou zavedení testů API, které jsou v \enquote{testovací pyramidě} (viz sekce~\ref{fig:testing_pyramid}) na nižší úrovni než UI testy je právě větší stabilita API oproti UI a mnohem větší rychlost samotných testů. Navíc, pokud neprojdou API testy, není se třeba ani zatěžovat s UI testováním (klientská část totiž stojí na používání REST API). Ze strategie \enquote{testovací trofeje} (viz sekce~\ref{fig:testing_trophy}) bude vycházet použití nástrojů pro statické typování a statickou analýzu kódu (tedy nejnižší úroveň této strategie), jejichž volbu uvedu v následujících sekcích -- to umožní i bez tvorby dalších testů na nižších úrovních testovací pyramidy kontrolovat v přiměřené míře problémy a kvalitu kódu.
 
 Manuální testování stále bude mít stále své místo v akceptační části, testech použitelnosti a při samotném vývoji.
 
@@ -380,13 +380,15 @@ Co se týče implementace samotného testování, bude kompletně provedeno v ja
 
 \section{Nástroje pro usnadnění vývoje a údržby}
 
+V této sekci uvedu a oargumentuji zvolené nástroje nejprve pro monitorování chyb, pak správu logů a na závěr pro statické typování a statickou analýzu kódu. V některých případech bude volba ponechána z udaných důvodů až na praktickou část.
+
 \subsection{Monitorování chyb}
 
 Jako nástroj, který bude mít na starost monitorování chyb na serverové i klientské části aplikace jsem zvolil Sentry. Dle zjištěných informací (v sekci~\ref{sec:monitorovanichyb}) se jedná o nejpoužívanější nástroj v této oblasti a splňuje všechny vytyčené požadavky. Dále bude prozkoumána možnost použití LogRocket.
 
 \subsection{Správa logů}
 
-Pro správu logů, tedy nástroj, který bude z Heroku přebírat všechny logy a umožní v nich vyhledávat v historii a upozorňovat na zvolené události, byl zvolen nástroj Logentries. Dle zjištěných informací (v sekci~\ref{sec:spravalogu}) se sice jedná až o druhý nejpoužívanější nástroj v této oblasti splňující vytyčené požadavky, v porovnání s nejpoužívanějším nástrojem Papertrail ale nabízí více prostoru pro logy a umožní vyhledávat v záznamech starších než 2~dny.
+Pro správu logů, tedy nástroj, který bude z Heroku přebírat všechny logy, ukládat je a umožní v nich vyhledávat v historii a upozorňovat na zvolené události, byl zvolen nástroj Logentries. Dle zjištěných informací (v sekci~\ref{sec:spravalogu}) se sice jedná až o druhý nejpoužívanější nástroj v této oblasti splňující vytyčené požadavky, v porovnání s nejpoužívanějším nástrojem Papertrail ale nabízí více prostoru pro logy a umožní vyhledávat v záznamech starších než 2~dny.
 
 \subsection{Statické typování}
 

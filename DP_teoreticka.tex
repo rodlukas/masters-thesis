@@ -198,6 +198,8 @@ Nejprve se zaměřím na nástroje pro monitorování chyb a správu logů. Při
 
 Poté se zaměřím na výhody a nevýhody statického a dynamického typování jazyků a možnosti zavedení anotací typů v projektu ÚP. V poslední kapitole se pak zaměřím na možnosti statické analýzy kódu projektu, rozdělení jednotlivých možných nástrojů a popsání jejich vlastností. Obě tyto kapitoly ukazují další možnosti usnadnění vývoje a údržby aplikace.
 
+Některé řešené oblasti souvisí také s respektováním metodiky s názvem \enquote{The Twelve-Factor App} doporučované (a také vytvořené) v rámci Heroku metodikou. Tato metodika se zabývá stavěním webových aplikací, které nabízejí deklarativní způsob spouštění, jsou maximálně přenosné mezi prostředími, minimalizují rozdíl mezi vývojovým a produkčním prostředím a nasazují se do cloudových platforem \cite{12factor}.
+
 \section{Monitorování chyb}\label{sec:monitorovanichyb}
 Pro každou aplikaci je důležité monitorovat chyby, díky tomu (nehledě na to, zda uživatel nahlásí problém a bude jakkoliv konkrétní) je možné pak chyby snadněji reprodukovat a opravit \cite{tools-exception}. Nástroje pro monitorování chyb umožňují upozornit vývojáře na výskyt chyby, poskytnout mu kompletní informace o chybě a kontextu, ve kterém nastala \cite{tools-exception}.
 
@@ -222,7 +224,7 @@ Jiný přístup k monitorování chyb na klientské části nabízí nástroje j
 
 \section{Správa logů}\label{sec:spravalogu}
 % todo pravidlo https://12factor.net/logs
-Nasazené aplikace generují mnoho logů z různých procesů, v případě Heroku jsou všechny tyto logy agregovány do jednoho kanálu a nabízí možnost uchování posledních 1~500 logů nejdéle 1~týden \cite{tools-logs1}. V případě, že chceme přístup k většímu počtu logů či ke starším (zde je především problém s limitem pro počet logů, který je nízký), je třeba využít buď možnost napojení logů na některý z doplňků na Heroku, případně logy rovnou přímo přesměrovávat do jiné služby \cite{tools-logs1}. Tyto nástroje pro správu logů pak umožňují spravovat velké množství agregovaných logů generovaných z mnoha typů zařízení a serverů -- nad nimi provádět mj. různé dotazy, vyhledávání, pohledy, případně i analýzy či upozornění na nějaké události \cite{tools-logs2}.
+Nasazené aplikace generují mnoho logů z různých procesů, v případě Heroku jsou všechny tyto logy agregovány do jednoho kanálu a nabízí možnost uchování posledních 1~500 logů nejdéle 1~týden \cite{tools-logs1}. V případě, že chceme přístup k většímu počtu logů či ke starším (zde je především problém s limitem pro počet logů, který je nízký), je třeba využít buď možnost napojení logů na některý z doplňků na Heroku, případně logy rovnou přímo přesměrovávat do jiné služby \cite{tools-logs1}. Tyto nástroje pro správu logů pak umožňují spravovat velké množství agregovaných logů generovaných z mnoha typů zařízení a serverů -- nad nimi provádět mj. různé dotazy, vyhledávání, pohledy, případně i analýzy či upozornění na nějaké události \cite{tools-logs2}. Uvedený způsob řešení práce s logy též odpovídá jednomu z pravidel metodiky \enquote{The Twelve-Factor App} \cite{12factor}.
 
 Minimální požadavky na nástroje jsou:
 \begin{itemize}

@@ -370,7 +370,25 @@ Všechny tyto změny bylo třeba projevit na klientské části -- především 
 
 \subsection{F4 -- vyhledávání klientů}
 
-TODO!
+Součástí požadavku~\ref{F4} na implementaci vyhledávání mezi aktivními klienty je požadavek na vyhledávání založené na podobnosti řetězců, nikoliv přesné shodě. K tomu byla využita knihovna \href{https://fusejs.io/}{Fuse.js}, která nabízí jednoduché fuzzy vyhledávání bez nutnosti řešení vyhledávání na serverové části.
+
+Pro komplexnější vyhledávání bylo rozhodnuto, že kromě jména a příjmení bude vyhledávání fungovat také pro telefonní čísla a e-maily klientů. Konkrétní konfigurace vyhledávání je v ukázce kódu~\ref{lst:fusejs} -- je zde vidět, že se výsledky vyhledávání řadí dle podobnosti řetězců od nejlepší shody k nejhorší, kde byl testováním vhodně zvolen příslušný práh, kdy ještě dojde k zobrazení příslušné položky ve výsledcích. Zde je třeba říci, že v rámci vývoje aplikace došlo k vydání nové verze knihovny (byla používána verze~3 a poté došlo k vydání verze~5), která výrazně změnila API, zde tedy uvádím popis pro poslední verzi.
+
+Poslední položku v ukázce kódu~\ref{lst:fusejs} zde tvoří klíče, podle kterých se vyhledává -- oproti běžnému modelu klienta je zde navíc klíč \verb|normalized|, který zde řeší problém s diakritikou. Knihovna totiž nepodporuje ignorování diakritiky, tedy pokud by lektorka vyhledávala bez diakritiky, výsledky by byly tímto ovlivněny a k nalezení klienta by nemuselo vůbec dojít -- tedy toto je vyřešeno. Při použití knihovny ve verzi~3 byl součástí tohoto klíče také složený řetězec jména a příjmení, který sloužil pro přesnější vyhledávání z hlediska celého jména, nikoliv jednotlivých částí jména, ve verzi~5 už ale tato konfigurace není k dispozici a tedy tento řetězec dodán již není, výsledky jsou tedy tímto mírně zkresleny, ale bez vážnější újmy a vyhledávání svou hlavní funkci stále plní, pouze se objeví více možných výsledků vyhledávání.
+
+\begin{listing}[ht]
+	\begin{minted}[bgcolor=bg]{ts}
+const searchOptions: Fuse.IFuseOptions<ClientActiveType> = {
+    shouldSort: true,
+    threshold: 0.5,
+    keys: ["firstname", "surname", "phone", "email", 
+        "normalized"],
+}
+	\end{minted}
+	\caption{Konfigurace vyhledávání klientů ze souboru~Main.tsx}\label{lst:fusejs}
+\end{listing}
+
+Zavedené vyhledávání je vidět např. na obrázku~\ref{fig:screen-tyden} -- je dostupné napříč celou aplikací v menu a při napsání prvního písmena do pole dojde k okamžitému zobrazení výsledků vyhledávání spolu s informacemi o klientech (jméno, poznámka, e-mail, telefonní číslo), možností rychlé úpravy klienta (viz požadavek~\ref{F11} na efektivní práci v aplikaci) a počtem nalezených klientů. Díky použití knihovny Fuse.js je vyhledávání benevolentní vůči jak překlepům ve vyhledávacím dotazu, tak v překlepům v uložených údajích klienta (což se lektorce někdy stává).
 
 \subsection{F5 -- přepracování formuláře pro lekce}
 
@@ -548,11 +566,11 @@ V rámci všech požadavků a také na základě revize stávající domény, je
 
 Vzhledem k tomu, že počet omezení od původní aplikace poměrně narostl a v čase se i měnil (zde uvádím finální verze návrhu a implementace), bylo třeba, aby byla omezení trasovatelná napříč aplikací a bylo jasné, který kód řeší které omezení -- proto bylo zavedeno značení pomocí identifikátorů (např. \enquote{O13}). Toto označení je pak součástí dokumentace v kódu a implementace je tak prakticky propojená s návrhem, toto řešení tedy kromě trasovatelnosti umožňuje jistou míru konzistentnosti.
 
-Konkrétní implementaci omezení a validaci zde popisovat nebudu, jednak je často zmíněna v textech o implementaci příslušných souvisejících požadavků, druhak se obvykle nejedná o složité konstrukty. Mnoho z validačních metod bylo přesunuto do zvláštního souboru \verb|serializers_helpers.py|, aby byl původní soubor \verb|serializers.py| zachován co možná nejjednodušší. Součástí implementace tohoto požadavku bylo také mnoho ošetření napříč celou aplikací, zejména na serverové části, kde bylo zjištěno mnoho případů, kdy při využití holého API (nikoliv prostřednictvím klientské části) by v datech vznikly nekonzistence a při následném zobrazení na klientské části by mohly být z toho důvodu způsobeny různé problémy. Byly tedy opraveny všechny problémy na API tak, aby pracovalo v souladu s očekáváním a nepovolovalo ukládat do aplikace z pohledu omezení nevalidní data. Mnoho ze zjištěných problémů nebylo odhaleno dříve z důvodu, že klientská část API používá určitým způsobem a mnoha omezeními na klientské části se zamezí už samotnému zaslání nevalidních dat na API -- kdežto při použití čistého API toto někdy hlídáno nebylo.
+Konkrétní implementaci omezení a validaci zde popisovat nebudu, jednak je často zmíněna v textech o implementaci příslušných souvisejících požadavků, jednak se obvykle nejedná o složité konstrukty. Pro zajímavost zde uvádím, že bylo původně požadováno omezení pro neaktivní klienty, kterým nebylo možné přiřadit lekci -- po delší době existence tohoto omezení nakonec ale vzešel požadavek na zjemnění tohoto omezení tak, že neaktivnímu klientovi sice nelze lekci přiřadit, ale pokud mu bude lekce přiřazována, automaticky se změní na aktivního. Taktéž bylo na základě následného požadavku zrušeno omezení, které zakazovalo přidání neaktivního klienta do skupiny, nyní je to již možné.
+
+Mnoho z validačních metod bylo přesunuto do zvláštního souboru \verb|serializers_helpers.py|, aby byl původní soubor \verb|serializers.py| zachován co možná nejjednodušší. Součástí implementace tohoto požadavku bylo také mnoho ošetření napříč celou aplikací, zejména na serverové části, kde bylo zjištěno mnoho případů, kdy při využití holého API (nikoliv prostřednictvím klientské části) by v datech vznikly nekonzistence a při následném zobrazení na klientské části by mohly být z toho důvodu způsobeny různé problémy. Byly tedy opraveny všechny problémy na API tak, aby pracovalo v souladu s očekáváním a nepovolovalo ukládat do aplikace z pohledu omezení nevalidní data. Mnoho ze zjištěných problémů nebylo odhaleno dříve z důvodu, že klientská část API používá určitým způsobem a mnoha omezeními na klientské části se zamezí už samotnému zaslání nevalidních dat na API -- kdežto při použití čistého API toto někdy hlídáno nebylo.
 
 Do API byly také začleněny některé další transformace dat umožňující konzistentně uložená data, ale s možností zaslání jiného formátu, který je automaticky převeden na požadovaný formát. Příkladem budiž různé délky hexa zápisu barev, mezery v rámci telefonních čísel klientů či velká počáteční písmena křestních jmen a příjmení klientů -- toto řešila klientská část pro lepší použitelnost již při práci v rámci formulářů, pro konzistentnost dat je ale následná validace a transformace kontrolována především také na API. Dalším opraveným problémem byla nefunkčnost některých PATCH metod, které klientská část nepoužívá.
-
-% todo? * zruseni noveho omezeni "neaktivní klienty nelze přiřadit do skupin (UI je ani nezobrazí ve výběru)" - neaktivní klienti již mohou být členové skupiny
 
 \subsection{F19 -- automatické zrušení lekce}
 

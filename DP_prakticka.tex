@@ -154,17 +154,13 @@ Seznam problémů, které již jsou součástí požadavků:
 
 \chapter{Návrh}\label{chap:navrh}
 
-V této kapitole se budu věnovat návrhu aktualizovaného logického datového modelu aplikace, aktualizovaného komunikačního rozhraní a také navrhnu novou konfiguraci více prostředí pro nasazování.
+V této kapitole se budu věnovat návrhu aktualizovaného logického datového modelu aplikace, komunikačního rozhraní, architektury a také navrhnu novou konfiguraci více prostředí pro nasazování. Na závěr se budu věnovat návrhu UI zájemců o kurzy a vylepšením UI v dalších oblastech aplikace na základě požadavků.
 
 \section{Datový model}\label{sec:datovymodel}
 
 Do datového modelu bylo potřeba projevit všechny nové funkční požadavky. Původní logický datový model je na obrázku~\ref{fig:db-model-bp}. Finální návrh nového logického datového modelu je na obrázku~\ref{fig:db-model}.
 
-Nejprve shrnu obecné úpravy a vylepšení tohoto modelu. Během práce se ukázalo velmi vhodné obarvit jednotlivé entity dvěma barvami v závislosti na tom, zda obsahují cizí klíče (oranžová) nebo nikoliv (červená). Popisy vztahů nyní v závorce obsahují i atribut pro přístup k cílové entitě z entity zdrojové, který se fyzicky v rámci aplikace používá. Napříč celým diagramem jsou pak vypsaná všechna omezení v rámci domény, která je v kódu třeba řešit -- mají unikátní identifikátory, které budou i jako komentáře v kódu, který tato omezení implementuje, aby byla omezení jednoduše v kódu trasovatelná v případě úprav (ke kterým v průběhu iteračního vývoje docházelo, ale diagram je ve finální verzi). V legendě je též uveden celkový počet omezení, aby se identifikátory nových omezení snadno vytvářely. Atributy jsou pro přehlednost nyní řazeny dle abecedy.
-
-Taktéž se ukázalo jako výhodné dodefinovat význam povinnosti atributu typu text, jak totiž uvádí \cite{django-docs-model}, je obvykle nesmyslné povolit na textovém atributu jak prázdný string, tak \verb|NULL|, protože pak dvě hodnoty mají stejný význam (žádná data) -- proto je v legendě uvedeno, že znak \verb|*| u atributu znamená, že pole nikdy nebude \verb|NULL| a zároveň ani prázdný string (tato druhá podmínka je řešena validací ze strany Djanga oproti \verb|NOT NULL| podmínce, která je směřovaná na databázi. Jedinou výjimkou (též uvedeno v legendě) je atribut \verb|start| lekce, kde \verb|NULL| znamená předplacenou lekci jednotlivce. Tato povinnost atributů byla napříč entitami revidována a doplněna, stejně jako byly u některých atributů doplněny i výchozí hodnoty a řešení duplicit dle požadavků lektorky (např. klient může mít zájem o daný kurz jen jednou ad.).
-
-Součástí změn uvedených v následujících podsekcích je i zavedení mnoha souvisejících omezení, explicitně je ale uvádět nebudu, protože v přehlednější podobě jsou zapsána v obrázku~\ref{fig:db-model}.
+Nejprve shrnu obecné úpravy a vylepšení tohoto modelu. Během práce se ukázalo velmi vhodné obarvit jednotlivé entity dvěma barvami v závislosti na tom, zda obsahují cizí klíče (oranžová) nebo nikoliv (červená). Popisy vztahů nyní v závorce obsahují i atribut pro přístup k cílové entitě z entity zdrojové, který se fyzicky v rámci aplikace používá. Napříč celým diagramem jsou pak vypsána všechna omezení v rámci domény, která je v kódu třeba řešit -- mají unikátní identifikátory, které budou i jako komentáře v kódu, jež tato omezení implementuje, aby byla omezení jednoduše v kódu trasovatelná v případě úprav (ke kterým v průběhu iteračního vývoje docházelo, ale diagram je ve finální verzi). V legendě je též uveden celkový počet omezení, aby se identifikátory nových omezení snadno vytvářely. Atributy jsou pro přehlednost nyní řazeny dle abecedy.
 
 \begin{figure}\centering
 	\includegraphics[width=1\textwidth]{img/db-model}
@@ -172,11 +168,15 @@ Součástí změn uvedených v následujících podsekcích je i zavedení mnoha
 \vspace{-28pt}
 \end{figure}
 
+Taktéž se ukázalo jako výhodné dodefinovat význam povinnosti atributu typu \verb|text|, jak totiž uvádí \cite{django-docs-model}, je obvykle nesmyslné povolit na textovém atributu jak prázdný \verb|string|, tak \verb|NULL|, protože pak dvě hodnoty mají stejný význam (žádná data) -- proto je v legendě uvedeno, že znak \verb|*| u atributu znamená, že pole nikdy nebude \verb|NULL| a zároveň ani prázdný \verb|string| (prázdný \verb|string| je řešen validací ze strany Djanga, naproti tomu \verb|NOT NULL| podmínku řeší přímo databáze). Jedinou výjimkou (též uvedeno v legendě) je atribut \verb|start| lekce, kde \verb|NULL| znamená předplacenou lekci jednotlivce. Tato povinnost atributů byla napříč entitami revidována a doplněna, stejně jako byly u některých atributů doplněny i výchozí hodnoty a řešení duplicit dle požadavků lektorky (např. klient může mít zájem o daný kurz jen jednou).
+
+V následujících podsekcích se zaměřím na konkrétní změny a přidání entit. Součástí uvedených změn je i zavedení mnoha souvisejících omezení, explicitně je ale uvádět nebudu, protože v přehlednější podobě jsou zapsána právě u datového modelu na obrázku~\ref{fig:db-model}.
+
 \subsection{Předplacené lekce}
 
-V předchozím odstavci jsem se dotkl hodnoty \verb|NULL| pro \verb|start| lekce -- zde nastává změna oproti původnímu modelu, protože nyní jsou takto, jak již bylo zmíněno, vedeny pouze předplacené lekce jednotlivců. Díky tomu pak může být u každé předplacené lekce, která se automaticky vytvoří jako náhrada při omluvě/zrušení lekce (viz požadavek~\ref{F10}).
+V předchozím odstavci jsem se dotkl hodnoty \verb|NULL| pro \verb|start| lekce -- zde nastává změna oproti původnímu modelu, protože nyní jsou takto vedeny pouze předplacené lekce jednotlivců (skupin už nikoliv). Díky tomu pak může být u každé takové předplacené lekce, která je vytvořena jako náhrada při omluvě/zrušení lekce, evidován datum nahrazované lekce (viz požadavek~\ref{F10}).
 
-Předplacené lekce skupin jsou pro umožnění jednoduché evidence (viz požadavek~\ref{F3}) nyní součástí členství klientů ve skupině (Membership), tato entita původně byla dekompozicí vztahu M:N bez dalších atributů, prapůvodní záměr v rámci bakalářské práce byl evidování počátku a konce členství klienta ve skupině, což se pak ukázalo jako zbytečné, ale dekompozice byla pro případné jiné budoucí využití ponechána. Nyní tedy konečně dostála svému řádnému využití a umožní tak evidovat počet předplacených lekcí každého klienta v rámci dané skupiny -- když je klient ze skupiny smazán, smaže se samozřejmě i jeho členství a s tím i předplacené skupiny.
+Předplacené lekce skupin jsou pro umožnění jednoduché evidence (viz požadavek~\ref{F3}) nyní součástí členství klientů ve skupině (Membership), tato entita původně byla dekompozicí vztahu M:N bez dalších atributů, prapůvodní záměr v rámci bakalářské práce byl evidování počátku a konce členství klienta ve skupině, což se pak ukázalo jako zbytečné, ale dekompozice byla pro případné jiné budoucí využití ponechána \cite{bp}. Nyní tedy konečně dostála svému řádnému využití a umožní tak evidovat počet předplacených lekcí každého klienta v rámci dané skupiny -- když je klient ze skupiny smazán, smaže se samozřejmě i jeho členství a s tím i předplacené skupiny.
 
 \subsection{Zájemci o kurzy}
 
@@ -184,7 +184,9 @@ Dalším funkčním požadavkem~\ref{F1}, který je třeba projevit do datového
 
 \subsection{Vlastnosti stavů účasti}
 
-Požadavek~\ref{F17} uvádí, že je třeba některým stavům přiřadit speciální úlohu -- jeden označit jako výchozí (a zároveň ten, který znamená, že uživatel má přijít/přišel) a druhý jako stav s významem \enquote{klient omluven}. Původní řešení, jak též uvádí \ref{F17}, bylo toto zadefinovat napevno v kódu podle názvu stavu účasti, což je ale nedostačující, protože je samozřejmě třeba tento název umožnit upravit. Nabízelo se několik možností -- zavést nový atribut stavu účasti, který bude označovat typ stavu účasti (jako tomu bývá např. při evidování úrovně oprávnění uživatelů v rámci aplikací). Samotné typy by pak musely být evidovány jako další nová entita. Vzhledem k tomu, že se nepočítá s přidáním dalších typů v budoucnu (stavů účasti také ne, ale ty klidně být přidány mohou, jen nebudou mít speciální typ, protože ten je zde zaveden kvůli dalším speciálním výpočtům jako např. počet absolvovaných lekcí v rámci kurzu), toto řešení nebylo zvoleno z důvodu zbytečné komplexity. Byl zvolen jednodušší způsob, kdy stav účasti má dva boolean atributy \verb|default| a \verb|excused|, kde serverová část obstará, že právě jedna instance stavu účasti bude mít příslušný atribut aktivní. Toto řešení není tak dobře škálovatelné, ale jak jsem uvedl, není to třeba -- je jednoduché a nevyžaduje oproti druhému řešení mnoho změn na úrovni API a klientské části.
+Požadavek~\ref{F17} uvádí, že je třeba některým stavům přiřadit speciální úlohu -- jeden označit jako výchozí (a zároveň ten, který znamená, že uživatel má přijít/přišel) a druhý jako stav s významem \enquote{klient omluven}. Původně toto bylo řešeno, jak též uvádí \ref{F17}, pevným zadefinováním v kódu podle názvu stavu účasti, což je ale nedostačující, protože je samozřejmě třeba umožnit upravovat tento název.
+
+Nabízelo se několik možností řešení -- zavést nový atribut stavu účasti, který bude označovat typ stavu účasti (jako tomu bývá např. při evidování úrovně oprávnění uživatelů v rámci aplikací). Samotné typy by pak musely být evidovány jako další nová entita. Vzhledem k tomu, že se nepočítá s přidáním dalších typů v budoucnu (stavů účasti také ne, ale ty klidně být přidány mohou, jen nebudou mít speciální typ, protože ten je zde zaveden kvůli dalším speciálním výpočtům jako např. počet absolvovaných lekcí v rámci kurzu), toto řešení nebylo zvoleno z důvodu zbytečné komplexity. Byl zvolen jednodušší způsob, kdy stav účasti má dva \verb|boolean| atributy \verb|default| a \verb|excused|, kde serverová část obstará, že právě jedna instance stavu účasti bude mít příslušný atribut aktivní. Toto řešení není tak dobře škálovatelné, ale jak jsem uvedl, není to třeba -- je jednoduché a nevyžaduje oproti druhému řešení mnoho změn na úrovni API a klientské části.
 
 \subsection{Další změny}
 
@@ -202,7 +204,7 @@ Ukázalo se, že původní komunikační rozhraní (REST API) z bakalářské pr
 
 Pro odpověď na GET požadavek na lekce (GET \verb|lectures/|) byl u každé účasti klienta klíč \verb|count| pro označení pořadového čísla lekce. Zde jsou dva problémy. Prvním je fakt, že název klíče není úplně přesně vypovídající název vzhledem k dané situaci a při práci v kódu nastávaly nedorozumění, proto došlo k přejmenování na \verb|number|, což lépe odpovídá tomu, že se jedná a pořadové číslo lekce. Druhý problém je, že se z neznámého důvodu tento klíč vyskytoval u každé účasti v rámci lekce, což v případě lekce jednotlivce není důležité, ale v případě skupiny je pak totéž číslo u každé účasti (protože se řeší celkový počet lekcí, nikoliv zda konkrétní klient na nějaké lekci byl) -- tedy zbytečně se informace duplikuje a na klientské části se vezme její první výskyt -- toto bylo opraveno a pořadové číslo lekce se nyní vyskytuje přímo u lekce, nikoliv u každé účasti.
 
-Součástí odpovědi GET \verb|lectures/|, jak již bylo zmíněno, je také přehled účastí jednotlivých klientů, zde bylo rozhodnuto také o odstranění vnořených informací o stavech účasti jednotlivých klientů -- v praxi zde byl poslán vždy název účasti, ID (a nově vzhledem k novému datovému modelu by byly poslány i informace \verb|default| a \verb|excused|), vzhledem k plánovaným změnám v rámci požadavku~\ref{N6} tyto vnořené informace byly odstraněny a nahrazeny pouze ID stavu účasti, protože si klientská část aplikace bude stavy účasti pamatovat (díky zavedení React Context API, implementace viz podsekce~\ref{subsec:N6implementace}).
+Součástí odpovědi GET \verb|lectures/|, jak již bylo zmíněno, je také přehled účastí jednotlivých klientů, zde bylo rozhodnuto také o odstranění vnořených informací o stavech účasti jednotlivých klientů -- v praxi zde byl poslán vždy název účasti, ID (a nově vzhledem k novému datovému modelu by byly poslány i informace \verb|default| a \verb|excused|), vzhledem k plánovaným změnám v rámci požadavku~\ref{N6} (optimalizace API) tyto vnořené informace byly odstraněny a nahrazeny pouze ID stavu účasti, protože si klientská část aplikace bude stavy účasti pamatovat (díky zavedení React Context API, implementace viz podsekce~\ref{subsec:N6implementace}).
 
 U klientů, jak bylo uvedeno v datovém modelu v předchozí sekci~\ref{sec:datovymodel}, se přejmenoval klíč pro křestní jméno na \verb|firstname|.
     
@@ -224,11 +226,15 @@ Pro lepší evidenci předplacených lekcí skupin je na základě předchozí s
 
 \subsection{Banka}
 
-Přidání úplně nového bodu nastalo kvůli požadavku~\ref{F8} na zobrazení transakcí z banky -- zde API bude nově umožňovat GET na \verb|bank/|, odpověď bude především obsahovat samotná data z banky, která budou dle potřeba transformována (upravena, doplněna, zjednodušena). Pokud by tento bod na API nebyl a klientská část by do banky přistupovala na přímo, znamenalo by to, že nelze provést žádné transformace, zjednodušení dat, přidání dalších dat a také by součástí klientské části musel být token do banky, což je nepřípustné. Lektorka pro ÚP používá bankovní účet u Fio banky, která nabízí zdarma možnost zřízení přístupu k datům účtu přes API, pomocí získaného tokenu je možné každých 30 sekund zaslat na API požadavek \cite{fioapi}. Vzhledem k tomuto časovému omezení (kde by se jinak lektorka při dalším načtení stránky dočkala chybové hlášky) bylo zde rozhodnuto o cachování získaných dat z banky po dobu 60 sekund.
+Přidání úplně nového bodu nastalo kvůli požadavku~\ref{F8} na zobrazení transakcí z banky -- zde API bude nově umožňovat GET na \verb|bank/|, odpověď bude především obsahovat samotná data z banky, která budou dle potřeba transformována (upravena, doplněna, zjednodušena). Pokud by tento bod na API nebyl a klientská část by do banky přistupovala na přímo, znamenalo by to, že nelze provést žádné transformace, zjednodušení dat, přidání dalších dat a také by součástí klientské části musel být token do banky, což je nepřípustné.
+
+Lektorka pro ÚP používá bankovní účet u Fio banky, která nabízí zdarma možnost zřízení přístupu k datům účtu přes API, pomocí získaného tokenu je možné každých 30 sekund zaslat na API požadavek \cite{fioapi}. Vzhledem k tomuto časovému omezení (kde by se jinak lektorka při dalším načtení stránky dočkala chybové hlášky) bylo rozhodnuto o cachování získaných dat z banky po dobu 60 sekund.
 
 \subsection{Zájemci o kurzy}
 
-Pro evidenci zájemců o klienty byl též vytvořen nový bod, který pracuje s klíči \verb|id|, \verb|note|, \verb|created_at| a dále obsahuje vnořené informace o kurzu (klíč \verb|course|) a klientovi (klíč \verb|client|). Po vzoru ostatních původních bodů se pro úpravy a vytváření zájemců místo vnořených informací zasílá pouze ID a klíč je ve tvaru \verb|klíč_id| -- tedy \verb|client_id| a \verb|course_id|). Podoba bodu je následující:
+Pro evidenci zájemců o klienty byl též vytvořen nový bod, který pracuje s klíči \verb|id|, \verb|note|, \verb|created_at| a dále obsahuje vnořené informace o kurzu (klíč \verb|course|) a klientovi (klíč \verb|client|). Po vzoru ostatních původních bodů se pro úpravy a vytváření zájemců místo vnořených informací zasílá pouze ID a klíč je ve tvaru \verb|klíč_id| -- tedy \verb|client_id| a \verb|course_id|.
+
+Podoba bodu je následující:
 
 {\centering
 \begin{tabular}{p{\apiA\textwidth}p{\apiB\textwidth}p{\apiC\textwidth}}&&\\
@@ -242,7 +248,7 @@ Pro evidenci zájemců o klienty byl též vytvořen nový bod, který pracuje s
 
 \subsection{Další rozšíření}
 
-Kvůli požadavku~\ref{F6} pro evidenci aktivních a neaktivních klientů byla pro klienty a lekce zavedena možnost filtrování pomocí query string:
+Kvůli požadavku~\ref{F6} pro evidenci aktivních a neaktivních klientů byla pro klienty a lekce zavedena možnost filtrování pomocí \enquote{query string}:
 \begin{itemize}
     \item \verb|groups/?active=:boolean|,
     \item \verb|clients/?active=:boolean|.
@@ -250,7 +256,7 @@ Kvůli požadavku~\ref{F6} pro evidenci aktivních a neaktivních klientů byla 
 
 V rámci požadavku~\ref{N6} pro optimalizaci API bylo také přidáno filtrování pro kurzy dle viditelnosti -- \verb|courses/?visible=:boolean|.
 
-Do API bylo také třeba projevit změny z datového modelu v předchozí sekci~\ref{sec:datovymodel}. Pro klienty a skupiny přibyl nový klíč \verb|active| znázorňující aktivitu klienta/skupiny. Pro kurzy byl přidán nový klíč \verb|duration| pro evidování délky trvání kurzu a \verb|color| pro evidování barvy kurzu. Stejně tak zde došlo k projevení změn povinných atributů, povolených hodnota ad., vzhledem k použití Django REST Framework ale není v této oblasti na API provádět v kódu žádné změny, protože se projeví automaticky z datové vrstvy (modelů).
+Do API bylo také třeba projevit změny z datového modelu v předchozí sekci~\ref{sec:datovymodel}. Pro klienty a skupiny přibyl nový klíč \verb|active| znázorňující aktivitu klienta/skupiny. Pro kurzy byl přidán nový klíč \verb|duration| pro evidování délky trvání kurzu a \verb|color| pro evidování barvy kurzu. Stejně tak zde došlo k projevení změn povinných atributů, povolených hodnot ad., vzhledem k použití Django REST Framework ale není v této oblasti na API provádět v kódu žádné změny, protože se projeví automaticky z datové vrstvy (modelů).
 
 Dále, vzhledem ke zvolenému řešení evidování vlastností stavů účasti v předchozí sekci~\ref{sec:datovymodel} je třeba v bodu \verb|attendancestates/| umožnit pracovat nově i s klíči \verb|default| a \verb|excused|, to je velmi jednoduché (proto byl také tento přístup zvolen).
 
@@ -269,11 +275,11 @@ V původním diagramu byl jako protokol pro komunikaci mezi serverem a klientem 
 
 \section{Konfigurace více prostředí}\label{sec:konfiguraceviceprostredi}
 
-V této sekci se budu zabývat návrhem více prostředí pro nasazování aplikace. Nejprve několik úvodních vět pro uvedení do problému. V současnosti je aplikace nasazena pouze v produkčním prostředí (viz popis aktuálního řešení v sekci~\ref{sec:prostreditestovaninasazovani}), kam se automaticky nasazuje při každém úspěchu na CI. V rámci požadavku~\ref{N7} je uvedeno, že je třeba prostředí totožné s produkcí (např. pro reprodukci chyb) a prostředí s aplikací sestavenou na základě poslední revize v repozitáři.
+V této sekci se budu zabývat návrhem více prostředí pro nasazování aplikace. Nejprve několik úvodních vět pro uvedení do problému. V současnosti je aplikace nasazena pouze v produkčním prostředí (viz popis aktuálního řešení v sekci~\ref{sec:prostreditestovaninasazovani}), kam se automaticky nasazuje při každém úspěšném sestavení na CI. V rámci požadavku~\ref{N7} je uvedeno, že je třeba prostředí totožné s produkcí (např. pro reprodukci chyb) a prostředí s aplikací sestavenou na základě poslední revize v repozitáři.
 
-Jak uvádí \cite{deployment-beanstalk}, více prostředí může jít ruku v ruce se vznikem příslušných větví v repozitáři, jejichž názvy odpovídají prostředím, do kterých se nasazují, probíhají zde slučování změn z jednotlivých větví do jiných a poté nasazování do příslušných prostředí. Vzhledem k tomu, že na aplikaci pracuji pouze já, jedná se o aplikaci na míru pro lektorku a nejedná se o obrovský projekt, tento, ač často užívaný postup, jsem se rozhodl zde nezavést. 
+Jak uvádí \cite{deployment-beanstalk}, více prostředí může jít ruku v ruce se vznikem příslušných větví v repozitáři, jejichž názvy odpovídají prostředím, do kterých se nasazují, probíhají zde slučování změn z jednotlivých větví do jiných a poté nasazování do příslušných prostředí. Vzhledem k tomu, že se jedná o aplikaci na míru vyvíjenou pouze mnou a nejedná se o obrovský projekt, tento, ač často užívaný postup, jsem se rozhodl zde nezavést. Místo něj jsem se zaměřil na vytvoření vhodnějšího přístupu vzhledem ke způsobu práce na projektu.
 
-Obvyklý vývoj v repozitáři probíhá pomocí vytvoření nové větve s danou novou funkcí, otestování a začlenění změn do hlavní vývojové větve. Některé menší změny jsou případně prováděny rovnou ve výchozí větvi. Na tomto pracovním postupu jsem tedy vytvořil způsob řešení více prostředí, který bude vhodný pro tento projekt na základě požadavku a všech dosavadních znalostech o projektu.
+Obvyklý vývoj v repozitáři probíhá pomocí vytvoření nové větve s danou novou funkcí, otestování a začlenění změn do hlavní vývojové větve. Některé menší změny jsou případně prováděny rovnou ve výchozí větvi. Na tomto pracovním postupu jsem tedy postavil způsob řešení více prostředí, který bude vhodný pro tento projekt na základě požadavků a dosavadních znalostí projektu.
 
 Byl vytvořen návrh více prostředí bez využití příslušných větví:
 \begin{itemize}
@@ -283,11 +289,17 @@ Byl vytvořen návrh více prostředí bez využití příslušných větví:
     \item \textbf{produkce:} nasazení pro otagované revize, aplikace používaná lektorkou.
 \end{itemize}
 
-Jakákoliv nová revize (nezávisle na větvi) v repozitáři bude sestavena a automaticky otestována na integračním serveru a nasazena do prostředí \enquote{testing}. Toto prostředí bude velmi podobné produkčnímu, až na verzi aplikace -- jakékoliv změny v aplikaci po provedení \verb|git push| budou tedy vidět nasazené v reálném prostředí -- bude je zde možné pak testovat manuálně jak mnou, tak lektorkou, řešit další úpravy apod. Zde podotknu, že samozřejmě stále zůstává vývojové (lokální prostředí). Až bude vše vyladěno a připraveno na nasazení do produkce, vydá se nová verze aplikace pomocí tagu v gitu (resp. release v GitHubu) -- pak, když tento otagovaný commit dorazí na CI, proběhnou opět též kroky jako v případě běžného commitu, výsledná aplikace bude ale nasazena nejen do prostředí \enquote{testing}, ale také na \enquote{staging} a produkci. Snažím se zde respektovat obecně známé názvy prostředí (jak třeba uvádí \cite{deployment-beanstalk, deployment-oroinc}). Prostředí \enquote{staging} je přesná kopie produkční verze odlišná pouze svou instancí databáze a slouží např. pro reprodukci problémů hlášených z produkce. Produkční prostředí je verze aplikace používaná lektorkou. Díky zmíněnému návrhu se může na produkci nasazovat až v případě, kdy máme vysokou jistotu hladkého běhu na produkci, tedy například po důkladném automatizovaném i manuálním otestování (v závislosti na změnách). Díky zavedení \enquote{staging} prostředí lze snadno reprodukovat problémy mimo produkci, díky \enquote{testing} prostředí lze okamžitě vidět aktuální změny nasazené v reálném prostředí. Navrženému způsobu dodávání nových verzí aplikace se říká průběžné dodávání (CD -- \enquote{Continuous Delivery}) \cite{deployment-atlassian} a jak uvádí \cite{deployment-atlassian}, pro správné fungování CD je třeba mít dostatečně pokrytou aplikaci testy, což řeší požadavek~\ref{N2}. Z hlediska existence více prostředí a jejich co největší podobnosti je v této oblasti vycházeno také z příslušného pravidla v metodice \enquote{The Twelve-Factor App} \cite{12factor-envs}.
+Jakákoliv nová revize (nezávisle na větvi) v repozitáři bude sestavena a automaticky otestována na integračním serveru a nasazena do prostředí \enquote{testing}. Toto prostředí bude velmi podobné produkčnímu, až na verzi aplikace -- jakékoliv změny v aplikaci po provedení \verb|git push| budou tedy vidět nasazené v reálném prostředí -- bude je zde možné pak testovat manuálně jak mnou, tak lektorkou, řešit další úpravy apod. Zde podotknu, že samozřejmě stále zůstává vývojové (lokální prostředí).
+
+Až bude vše vyladěno a připraveno na nasazení do produkce, vydá se nová verze aplikace pomocí tagu v gitu (resp. release v GitHubu) -- pak, když tento otagovaný commit dorazí na CI, proběhnou opět tytéž kroky jako v případě běžného commitu, výsledná aplikace bude ale nasazena nejen do prostředí \enquote{testing}, ale také na \enquote{staging} a produkci. Snažím se zde respektovat obecně známé názvy prostředí (jak třeba uvádí \cite{deployment-beanstalk, deployment-oroinc}). Prostředí \enquote{staging} je přesná kopie produkční verze odlišná pouze svou instancí databáze a slouží např. pro reprodukci problémů hlášených z produkce. Produkční prostředí je verze aplikace používaná lektorkou.
+
+Díky popsanému návrhu se může na produkci nasazovat až v případě, kdy máme vysokou jistotu hladkého běhu na produkci, tedy například po důkladném automatizovaném i manuálním otestování (v závislosti na změnách). Díky zavedení \enquote{staging} prostředí lze snadno reprodukovat problémy mimo produkci, díky \enquote{testing} prostředí lze okamžitě vidět aktuální změny nasazené v reálném prostředí. Navrženému způsobu dodávání nových verzí aplikace se říká průběžné dodávání (CD -- \enquote{Continuous Delivery}) \cite{deployment-atlassian} a jak uvádí \cite{deployment-atlassian}, pro správné fungování CD je třeba mít dostatečně pokrytou aplikaci testy, což řeší požadavek~\ref{N2}. Z hlediska existence více prostředí a jejich co největší podobnosti je v této oblasti vycházeno také z příslušného pravidla v metodice \enquote{The Twelve-Factor App} \cite{12factor-envs}. Jednoduchou práci s tokeny a dalšími položkami napříč prostředími umožní zavedení různých příslušných proměnných prostředí, viz informace v požadavku~\ref{N7}.
 
 \section{Uživatelské prostředí}\label{sec:uzivatelskeprostredi}
 
 Do klientské části bylo třeba navrhnout několik prvků z požadavků. Drobnější změny zde ukázány nebudou, zaměřím se jen na nejdůležitější změny v uživatelském rozhraní. Návrhy obvykle probíhaly na papír, ale pro lepší čitelnost je zde uvádím překreslené v aplikaci \href{https://pencil.evolus.vn/}{Pencil}.
+
+\subsection{Zájemci o kurzy}
 
 \begin{figure}[h]\centering
     \includegraphics[width=1\textwidth]{img/ui-zajemci}
@@ -296,24 +308,26 @@ Do klientské části bylo třeba navrhnout několik prvků z požadavků. Drobn
 
 Nejvýraznější změnou v klientské části je přidání nové stránky se zájemci kurzu (viz požadavek~\ref{F1}). Návrh je na obrázku~\ref{fig:ui-zajemci}, jak lze vidět, jsou barevně odlišeny kurzy -- zde již počítám se zavedením požadavku~\ref{F12} pro evidování barev kurzů (změny budou v implementaci učiněny napříč celou aplikací). Návrh splňuje všechny požadavky lektorky, kromě jednoduše dostupné úpravy je také dostupné tlačítko pro smazání -- to je obvykle napříč aplikací dostupné až v modálním okně s úpravou (protože se obvykle stejně nepoužívá a díky tomu, že není přímo na příslušné hlavní stránce, nemůže být ani omylem stisknuto a potvrzeno smazání ve vyskakovacím okně), zde je přímo u každého zájemce, protože oproti ostatním případům zde frekvence mazání bude vysoká vzhledem k postupnému obsluhování všech zájmů o kurzy.
 
-\begin{figure}[h]\centering
+\subsection{Formulář pro lekce}
+
+\begin{figure}\centering
     \includegraphics[width=1\textwidth]{img/ui-lekce-skupina}
     \caption{Návrh nového formuláře pro skupinové lekce}\label{fig:ui-lekce-skupina}
 \end{figure}
 
-\begin{figure}[ht]\centering
+\begin{figure}\centering
     \includegraphics[width=1\textwidth]{img/ui-lekce-klient}
     \caption{Návrh nového formuláře pro lekce jednotlivců}\label{fig:ui-lekce-klient}
 \end{figure}
 
+Na obrázcích~\ref{fig:ui-lekce-skupina} a \ref{fig:ui-lekce-klient} jsou kompletně přepracované návrhy formulářů pro přidání (a potažmo i úpravu) lekce skupiny, resp. klienta. V rámci příslušného požadavku~\ref{F5} bylo třeba postupnými iteracemi dojít k návrhu, který umožní jednoduší práci s tímto nejpoužívanějším formulářem v aplikaci. V detailní analýze požadavku~\ref{F3} v podsekci~\ref{subsec:F3detail} bylo zjištěno, že je třeba usnadnit přidávání více předplacených lekcí pro jednotlivce, tento požadavek v rámci tohoto přepracování formuláře pro lekce byl též začleněn -- pro klienty je v levém horním rohu dostupné pole pro zapsání počtu předplacených lekcí. Toto pole bude možné upravit při zaškrtnutí volby \enquote{Předplaceno}. Znaky \enquote{XX} u polí naznačují přítomnost ikony vysvětlující význam příslušného pole (místo textů, alternativní text se samozřejmě zobrazí po najetí na ikonu).
+
+Díky větší šířce formuláře bylo možné vměstnat více polí na méně řádků. Místo bylo také ušetřeno použitím ikon a zobrazením účastí klientů ve formě řádků. Platba klientů je navíc odlišena barvou. Všechny tyto změny napomohly přehlednější a jednodušší evidenci lekcí. Jak bylo uvedeno v požadavku~\ref{F5}, jedním z hlavních problémů bylo, že ve skupině může být např. 6 dětí a formulář má pak výšku několika obrazovek a je prakticky nepoužitelný -- zjednodušený názorný příklad původního formuláře (pouze se dvěma účastníky pro jednoduchost, ale účastníků je obvykle mnohem více) je na obrázku~\ref{fig:ui-screen-lekce-skupina}. Formuláře pro skupiny a jednotlivce (klienty) se liší jak počítadlem pro předplacené lekce (u skupin tato možnost není, protože bude řešena počítadly v rámci karty skupiny, viz požadavek~\ref{F3}). Druhou odlišností je pak zobrazení jména účastníka, které v případě jednotlivce je samozřejmě zbytečné (je v horní části formuláře), v případě skupin je toto jméno klienta současně odkazem do jeho karty pro rychlý přechod v případě potřeby.
+
 \begin{figure}\centering
-    \includegraphics[width=0.55\textwidth]{img/ui-screen-lekce-skupina.png}
+    \includegraphics[width=0.6\textwidth]{img/ui-screen-lekce-skupina.png}
     \caption{Původní formulář pro lekce skupin}\label{fig:ui-screen-lekce-skupina}
 \end{figure}
-
-Na obrázcích~\ref{fig:ui-lekce-skupina} a \ref{fig:ui-lekce-klient} jsou kompletně přepracované návrhy formulářů pro přidání (a potažmo i úpravu) lekce skupiny, resp. klienta. V rámci příslušného požadavku~\ref{F5} bylo třeba postupnými iteracemi dojít k návrhu, který umožní jednoduší práci s tímto formulářem, který je nejpoužívanější v rámci celé aplikace. V rámci detailní analýzy požadavku~\ref{F3} bylo zjištěno, že je třeba usnadnit přidávání více předplacených lekcí pro jednotlivce, tento požadavek v rámci tohoto přepracování formuláře pro lekce byl též začleněn -- pro klienty je v levém horním rohu dostupné pole pro zapsání počtu předplacených lekcí. Toto pole bude možné upravit při zaškrtnutí volby \enquote{Předplaceno}. Znaky \enquote{XX} u polí naznačují přítomnost ikony vysvětlující význam příslušného pole (místo textů, alternativní text se samozřejmě zobrazí po najetí na ikonu).
-
-Díky větší šířce formuláře bylo možné vměstnat více polí na méně řádků, díky tomu a také ikonám došlo k ušetření místa, díky nově zobrazeným účastem klientů též ve formě řádků, navíc s odlišenou barvou platby je umožněna přehlednější a jednoduší evidence. Jak bylo uvedeno v požadavku~\ref{F5}, jedním z hlavních problémů bylo, že ve skupině může být např. 6 dětí a formulář má pak výšku několika obrazovek a je prakticky nepoužitelný -- zjednodušený názorný příklad původního formuláře (pouze se dvěma účastníky pro jednoduchost, ale účastníků je obvykle mnohem více) je na obrázku~\ref{fig:ui-screen-lekce-skupina}. Formuláře pro skupiny a jednotlivce (klienty) se liší jak počítadlem pro předplacené lekce (u skupin tato možnost není, protože bude řešena počítadly v rámci karty skupiny, viz požadavek~\ref{F3}). Druhou odlišností je pak zobrazení jména účastníka, které v případě jednotlivce je samozřejmě zbytečné (je v horní části formuláře), v případě skupin je toto jméno klienta současně odkazem do jeho karty pro rychlý přechod v případě potřeby.
 
 \chapter{Implementace}
 

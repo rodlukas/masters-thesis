@@ -585,7 +585,7 @@ Na klientské části bylo třeba zvolit vhodný způsob zobrazení informací o
 
 \begin{figure}[h]\centering
     \includegraphics[width=0.7\textwidth]{img/ui-screen-vlastnostistavu.png}
-    \caption{Automatické zrušení lekce, když jsou všichni omluveni}\label{fig:ui-screen-vlastnostistavu}
+    \caption{Konfigurace vlastností stavů účasti v nastavení aplikace}\label{fig:ui-screen-vlastnostistavu}
 \end{figure}
 
 \subsection{F18 -- omezení a validace hodnot}\label{subsec:F18implementace}
@@ -715,9 +715,9 @@ Postupným zaváděním typů se přicházelo na více a více drobných i vět�
 \begin{listing}[ht]
 	\begin{minted}[bgcolor=bg]{ts}
 funcRefreshPrepaidCnt = (
-        id: MembershipType["id"],
-        prepaidCnt: MembershipType["prepaid_cnt"]
-    ): void => {...}
+    id: MembershipType["id"],
+    prepaidCnt: MembershipType["prepaid_cnt"]
+): void => {...}
 	\end{minted}
 	\caption{Anotace typů v TS}\label{lst:statictyping-js}
 \end{listing}
@@ -899,16 +899,16 @@ Hlavními kroky k této optimalizaci na straně Djanga bylo využití metod \ver
 \begin{listing}[ht]
 	\begin{minted}[bgcolor=bg]{python}
 queryset = (
-        Lecture.objects.order_by("-start")
-        .select_related("group__course", "course")
-        .prefetch_related(
-            Prefetch("attendances",
-                queryset=Attendance.objects
-                    .select_related("client")),
-            Prefetch("group__memberships",
-                queryset=Membership.objects
-                    .select_related("client")),
-        ))
+    Lecture.objects.order_by("-start")
+    .select_related("group__course", "course")
+    .prefetch_related(
+        Prefetch("attendances",
+            queryset=Attendance.objects
+                .select_related("client")),
+        Prefetch("group__memberships",
+            queryset=Membership.objects
+                .select_related("client")),
+    ))
 	\end{minted}
 	\caption{Optimalizace SQL dotazů v Djangu}\label{lst:optimalizace-django}
 \end{listing}

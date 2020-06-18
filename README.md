@@ -26,7 +26,7 @@ covering more areas of functionality thanks to the new features.
 6. Deploy the final application.
 7. Publish the final application as open-source with instructions on how to start the app.
 
-Brief info (EN + CZ) and text (CZ) is also available at [Czech Technical University Digital Library (TBD)](http://hdl.handle.net/).
+Brief info (EN + CZ) and text (CZ) is also available at [Czech Technical University Digital Library](http://hdl.handle.net/10467/87969).
 
 **This thesis is written in Czech language, so the following text won't be in English.**
 
@@ -64,7 +64,7 @@ Práce navazuje na mou předešlou **[bakalářskou práci *Webová aplikace pro
 Práce byla vypracována v roce 2020 na **[Fakultě informačních technologií ČVUT v Praze](https://fit.cvut.cz/)**. Obor *Webové a softwarové inženýrství*, zaměření *Softwarové inženýrství* ([MI-WSI-SI](http://bk.fit.cvut.cz/cz/plany/pl30013758.html)).
 ## Jak si práci přečíst
 Práce je dispozici ve [formátu PDF](https://github.com/rodlukas/masters-thesis/raw/master/DP.pdf). K jejímu otevření postačí běžný PDF prohlížeč.
-> Součástí tohoto repozitáře je také [PREZENTACE (TBD)](https://github.com/rodlukas/masters-thesis/raw/master/prezentace/DP_prezentace.pdf) shrnující informace o práci (aplikaci) použitá při obhajobě.
+> Součástí tohoto repozitáře je také [PREZENTACE](https://github.com/rodlukas/masters-thesis/raw/master/prezentace/DP_prezentace.pdf) shrnující informace o práci (aplikaci) použitá při obhajobě.
 ## Zdrojové kódy aplikace
 Práce na aplikaci touto diplomovou prací neskončily a stále ji aktivně vyvíjím a rozšiřuji. Přejděte na [repozitář s kompletními kódy aplikace](https://github.com/rodlukas/UP-admin).
 ## Použité nástroje
